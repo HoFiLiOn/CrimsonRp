@@ -2,28 +2,29 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>CRIMSON RP</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background: #000;
             color: #fff;
-            height: 100vh;
-            overflow: hidden;
-            position: fixed;
-            width: 100%;
+            min-height: 100vh;
         }
 
-        /* ЖИДКОЕ СТЕКЛО - ФОН */
+        body.font-small { font-size: 12px; }
+        body.font-medium { font-size: 14px; }
+        body.font-large { font-size: 16px; }
+        body.no-animations * { animation: none !important; transition: none !important; }
+
+        /* ЖИДКОЕ СТЕКЛО */
         .liquid-bg {
             position: fixed;
             top: 0;
@@ -33,48 +34,23 @@
             z-index: 0;
             overflow: hidden;
         }
-
         .blob {
             position: absolute;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(150,150,150,0.08) 0%, rgba(80,80,80,0.03) 50%, transparent 70%);
-            border-radius: 50%;
-            filter: blur(70px);
-            animation: floatBlob 20s ease-in-out infinite;
-        }
-
-        .blob:nth-child(1) {
-            top: -200px;
-            left: -200px;
             width: 500px;
             height: 500px;
-            animation-delay: 0s;
+            background: radial-gradient(circle, rgba(150,150,150,0.1) 0%, rgba(80,80,80,0.03) 50%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            animation: floatBlob 18s ease-in-out infinite;
         }
-
-        .blob:nth-child(2) {
-            bottom: -200px;
-            right: -200px;
-            width: 600px;
-            height: 600px;
-            animation-delay: -7s;
-        }
-
-        .blob:nth-child(3) {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 700px;
-            height: 700px;
-            animation-delay: -14s;
-        }
-
+        .blob:nth-child(1) { top: -200px; left: -200px; }
+        .blob:nth-child(2) { bottom: -200px; right: -200px; animation-delay: -6s; width: 600px; }
+        .blob:nth-child(3) { top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: -12s; width: 700px; }
         @keyframes floatBlob {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(40px, -30px) scale(1.1); }
-            66% { transform: translate(-30px, 20px) scale(0.9); }
+            0%, 100% { transform: translate(0,0) scale(1); }
+            33% { transform: translate(30px,-30px) scale(1.05); }
+            66% { transform: translate(-20px,20px) scale(0.95); }
         }
-
         body::after {
             content: '';
             position: fixed;
@@ -82,348 +58,286 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
             z-index: -1;
         }
 
         .container {
-            max-width: 500px;
+            max-width: 700px;
             margin: 0 auto;
             padding: 16px;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
             position: relative;
             z-index: 1;
         }
 
-        /* СТЕКЛЯННЫЕ ВКЛАДКИ */
+        /* ВКЛАДКИ С ПРОКРУТКОЙ */
+        .tabs-wrapper {
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: thin;
+            margin-bottom: 20px;
+        }
+        .tabs-wrapper::-webkit-scrollbar { height: 3px; }
         .tabs {
-            display: flex;
-            gap: 6px;
-            background: rgba(255,255,255,0.03);
+            display: inline-flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.05);
             backdrop-filter: blur(20px);
             border-radius: 60px;
             padding: 6px;
-            margin-bottom: 20px;
-            border: 0.5px solid rgba(255,255,255,0.1);
         }
-
         .tab {
-            flex: 1;
-            padding: 10px 8px;
-            text-align: center;
-            font-size: 12px;
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 13px;
             font-weight: 600;
             background: transparent;
             border: none;
             color: rgba(255,255,255,0.5);
             cursor: pointer;
             border-radius: 50px;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: 0.3s;
         }
-
         .tab.active {
             background: rgba(255,255,255,0.95);
             color: #000;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .tab:active { transform: scale(0.96); }
+
+        .page { display: none; animation: fadeIn 0.3s ease; }
+        .page.active-page { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .tab:active {
-            transform: scale(0.96);
-        }
-
-        .pages-container {
-            flex: 1;
-            overflow-y: auto;
-            scrollbar-width: none;
-        }
-
-        .pages-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .page {
-            display: none;
-            animation: fadeInUp 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-        }
-
-        .page.active-page {
-            display: block;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* СТЕКЛЯННЫЕ КАРТОЧКИ */
         .glass {
-            background: rgba(255,255,255,0.04);
+            background: rgba(255,255,255,0.05);
             backdrop-filter: blur(20px);
-            border-radius: 28px;
+            border-radius: 24px;
             padding: 20px;
-            border: 0.5px solid rgba(255,255,255,0.12);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
+            border: 0.5px solid rgba(255,255,255,0.1);
             margin-bottom: 16px;
-        }
-
-        .glass:hover {
-            background: rgba(255,255,255,0.06);
-            border-color: rgba(255,255,255,0.2);
         }
 
         h2 {
-            font-size: 22px;
-            font-weight: 600;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            letter-spacing: 2px;
             margin-bottom: 16px;
-            letter-spacing: -0.3px;
         }
 
-        h3 {
+        /* ПОИСК */
+        .search-box { margin-bottom: 20px; }
+        .search-input {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 60px;
+            color: #fff;
             font-size: 14px;
-            font-weight: 500;
-            color: rgba(255,255,255,0.6);
-            margin-bottom: 12px;
         }
+        .search-input:focus { outline: none; border-color: rgba(255,255,255,0.3); }
 
-        /* НОВОСТИ - ГОРИЗОНТАЛЬНЫЙ СКРОЛЛ */
-        .news-scroll {
-            overflow-x: auto;
-            overflow-y: hidden;
-            white-space: nowrap;
-            padding: 10px 0;
-            cursor: grab;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
+        /* ФИЛЬТР ТЕГОВ */
+        .tags-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
         }
-
-        .news-scroll:active {
-            cursor: grabbing;
+        .tag-filter {
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 40px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
         }
+        .tag-filter:hover { background: rgba(255,255,255,0.15); }
+        .tag-filter.active { background: #fff; color: #000; }
 
-        .news-track {
-            display: inline-flex;
-            gap: 16px;
-            padding: 5px;
-        }
-
+        /* НОВОСТИ */
+        .news-grid { display: flex; flex-direction: column; gap: 16px; }
         .news-card {
             background: rgba(20,20,20,0.7);
             backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 0;
-            width: 320px;
-            white-space: normal;
-            display: inline-block;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .news-card.active-card {
-            transform: scale(1.05);
-            border-color: rgba(255,255,255,0.4);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .news-card:hover {
-            transform: scale(1.02);
-            border-color: rgba(255,255,255,0.3);
-        }
-
-        .news-card-content {
+            border-radius: 20px;
             padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.3s;
         }
-
-        .news-title {
+        .news-card.read-mode {
+            background: #000;
+            backdrop-filter: none;
+        }
+        .read-mode .news-media,
+        .read-mode .news-votes,
+        .read-mode .news-tags,
+        .read-mode .star-btn {
+            display: none;
+        }
+        .read-mode .news-content {
             font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #fff;
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto;
         }
-
-        .news-date {
-            font-size: 11px;
+        .news-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+        .news-title { font-size: 18px; font-weight: 700; }
+        .star-btn {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.3);
+            font-size: 22px;
+            cursor: pointer;
+        }
+        .star-btn.active { color: #ffcc00; }
+        .news-date { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
+        .news-content { color: rgba(255,255,255,0.8); line-height: 1.5; }
+        .news-media {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .media-item img, .media-item video {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 12px;
+        }
+        .news-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 12px 0;
+        }
+        .news-tag {
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 20px;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        .news-votes {
+            display: flex;
+            gap: 15px;
+            margin-top: 12px;
+        }
+        .vote-btn {
+            background: none;
+            border: none;
             color: rgba(255,255,255,0.5);
-            margin-bottom: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
-
-        .news-text {
-            color: rgba(255,255,255,0.7);
-            line-height: 1.5;
-            font-size: 13px;
-        }
+        .vote-btn:hover { color: #fff; }
 
         /* АДМИНКА */
-        .admin-login {
-            max-width: 300px;
-            margin: 50px auto;
-            text-align: center;
-        }
-
+        .admin-login { max-width: 300px; margin: 50px auto; text-align: center; }
         .admin-login input {
             width: 100%;
             padding: 14px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 60px;
             color: #fff;
             margin-bottom: 15px;
-            font-family: 'Inter', sans-serif;
+            text-align: center;
         }
-
         input, textarea {
             width: 100%;
-            padding: 14px;
-            margin: 10px 0;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 60px;
+            padding: 12px;
+            margin: 8px 0;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
             color: #fff;
-            font-family: 'Inter', sans-serif;
         }
-
-        textarea {
-            border-radius: 24px;
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        button {
+        .btn {
+            padding: 12px 24px;
             background: rgba(255,255,255,0.95);
             color: #000;
-            padding: 12px 24px;
             border: none;
             border-radius: 60px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
         }
-
-        button:active {
-            transform: scale(0.97);
-        }
-
-        .delete-btn {
-            background: rgba(100,0,0,0.8);
-            color: #fff;
-            margin-top: 10px;
-        }
-
+        .delete-btn { background: rgba(150,0,0,0.8); color: #fff; margin-top: 10px; }
         .admin-news-item {
             background: rgba(20,20,20,0.6);
-            backdrop-filter: blur(10px);
             padding: 16px;
             margin-bottom: 12px;
             border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
         }
-
-        .rules-list {
-            list-style: none;
-        }
-
-        .rules-list li {
-            padding: 14px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            color: rgba(255,255,255,0.8);
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            margin-top: 20px;
-            color: rgba(255,255,255,0.4);
-            font-size: 12px;
-        }
-
-        .stats {
+        .media-preview {
             display: flex;
-            justify-content: space-around;
-            margin: 30px 0;
-            text-align: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .media-preview-item {
+            position: relative;
+            display: inline-block;
+        }
+        .media-preview-item img, .media-preview-item video {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .remove-media {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: red;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
         }
 
-        .stat .num {
-            font-size: 32px;
-            font-weight: 700;
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        select {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 40px;
             color: #fff;
         }
 
-        .stat span {
-            display: block;
-            margin-top: 5px;
-            color: rgba(255,255,255,0.5);
-            font-size: 12px;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .feature {
-            background: rgba(20,20,20,0.5);
-            backdrop-filter: blur(10px);
-            padding: 16px;
-            border-radius: 20px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .feature h3 {
-            margin-bottom: 8px;
-            color: #fff;
-        }
-
-        .feature p {
-            font-size: 12px;
-            color: rgba(255,255,255,0.5);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.25);
-            color: #fff;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        @media (max-width: 480px) {
-            .container { padding: 12px; }
-            .tab { font-size: 11px; padding: 8px 4px; }
-            .news-card { width: 280px; }
-            .features { grid-template-columns: 1fr; }
-        }
+        footer { text-align: center; padding: 20px; color: rgba(255,255,255,0.3); font-size: 11px; }
+        @media (max-width: 480px) { .container { padding: 12px; } .tab { padding: 8px 14px; } }
     </style>
 </head>
 <body>
 
-<div class="liquid-bg">
-    <div class="blob"></div>
-    <div class="blob"></div>
-    <div class="blob"></div>
-</div>
+<div class="liquid-bg"><div class="blob"></div><div class="blob"></div><div class="blob"></div></div>
 
 <div class="container">
-    <div class="tabs">
-        <button class="tab active" data-tab="home">ГЛАВНАЯ</button>
-        <button class="tab" data-tab="news">НОВОСТИ</button>
-        <button class="tab" data-tab="rules">ПРАВИЛА</button>
-        <button class="tab" data-tab="admin">АДМИН</button>
+    <div class="tabs-wrapper">
+        <div class="tabs">
+            <button class="tab active" data-tab="home">ГЛАВНАЯ</button>
+            <button class="tab" data-tab="news">НОВОСТИ</button>
+            <button class="tab" data-tab="myfeed">МОЯ ЛЕНТА</button>
+            <button class="tab" data-tab="favorites">ИЗБРАННОЕ</button>
+            <button class="tab" data-tab="settings">НАСТРОЙКИ</button>
+            <button class="tab" data-tab="admin" id="adminTab" style="display:none;">АДМИН</button>
+        </div>
     </div>
 
     <div class="pages-container">
@@ -431,239 +345,315 @@
         <div class="page active-page" id="homePage">
             <div class="glass">
                 <h2>CRIMSON RP</h2>
-                <p style="font-size: 15px; line-height: 1.5; color: rgba(255,255,255,0.7);">Строгий ролевой проект. Погрузись в мир криминала и власти.</p>
-                
-                <div class="stats">
-                    <div class="stat"><span class="num">500+</span><span>Игроков</span></div>
-                    <div class="stat"><span class="num">24/7</span><span>Онлайн</span></div>
-                    <div class="stat"><span class="num">15+</span><span>Фракций</span></div>
-                </div>
-
-                <div class="features">
-                    <div class="feature"><h3>Экономика</h3><p>Сбалансированная система</p></div>
-                    <div class="feature"><h3>Криминал</h3><p>Развитая система</p></div>
-                    <div class="feature"><h3>Закон</h3><p>Активная полиция</p></div>
-                    <div class="feature"><h3>Недвижимость</h3><p>Дома и бизнесы</p></div>
-                </div>
+                <p>Строгий ролевой проект. Погрузись в мир криминала и власти.</p>
             </div>
         </div>
 
         <!-- НОВОСТИ -->
         <div class="page" id="newsPage">
-            <h2>Новости проекта</h2>
-            <div class="news-scroll" id="newsScroll">
-                <div class="news-track" id="newsTrack"></div>
+            <h2>НОВОСТИ</h2>
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" placeholder="🔍 Поиск... (введите АДМИНКА для входа)">
             </div>
+            <div class="tags-filter" id="tagsFilter"></div>
+            <div class="news-grid" id="newsGrid"></div>
         </div>
 
-        <!-- ПРАВИЛА -->
-        <div class="page" id="rulesPage">
+        <!-- МОЯ ЛЕНТА (по подписке) -->
+        <div class="page" id="myfeedPage">
+            <h2>МОЯ ЛЕНТА</h2>
+            <div class="tags-filter" id="subscribedTagsFilter"></div>
+            <div class="news-grid" id="myfeedGrid"></div>
+        </div>
+
+        <!-- ИЗБРАННОЕ -->
+        <div class="page" id="favoritesPage">
+            <h2>ИЗБРАННОЕ</h2>
+            <div class="news-grid" id="favoritesGrid"></div>
+        </div>
+
+        <!-- НАСТРОЙКИ -->
+        <div class="page" id="settingsPage">
             <div class="glass">
-                <h2>Правила проекта</h2>
-                <ul class="rules-list">
-                    <li>1. Уважайте других игроков и администрацию</li>
-                    <li>2. Запрещены читы, баги и стороннее ПО</li>
-                    <li>3. Соблюдайте ролевую игру (Role Play)</li>
-                    <li>4. Запрещён флуд, спам, оскорбления</li>
-                    <li>5. Не покидайте игру во время RP ситуации</li>
-                    <li>6. Запрещён метагейминг и пауэргейминг</li>
-                    <li>7. Следуйте указаниям администрации</li>
-                    <li>8. Запрещена реклама других проектов</li>
-                </ul>
+                <h2>НАСТРОЙКИ</h2>
+                <div class="setting-item">
+                    <span>📏 Размер шрифта</span>
+                    <select id="fontSizeSelect">
+                        <option value="small">Маленький</option>
+                        <option value="medium" selected>Средний</option>
+                        <option value="large">Большой</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span>✨ Анимации</span>
+                    <label><input type="checkbox" id="animationsToggle" checked> Включить</label>
+                </div>
+                <div class="setting-item">
+                    <span>📖 Режим чтения</span>
+                    <label><input type="checkbox" id="readModeToggle"> Включить</label>
+                </div>
+                <button class="btn" id="resetBtn" style="margin-top:20px;">Сбросить настройки</button>
             </div>
         </div>
 
         <!-- АДМИНКА -->
         <div class="page" id="adminPage">
-            <div id="adminLoginBlock">
-                <div class="admin-login">
-                    <input type="password" id="adminPassword" placeholder="Пароль">
-                    <button onclick="checkAdmin()">Войти</button>
+            <div class="glass">
+                <h2>АДМИН-ПАНЕЛЬ</h2>
+                <input type="text" id="newsTitle" placeholder="Заголовок">
+                <textarea id="newsContent" rows="3" placeholder="Текст новости"></textarea>
+                <input type="text" id="newsTags" placeholder="Теги (через запятую)">
+                <div id="mediaInputs">
+                    <div style="display:flex; gap:10px; margin:10px 0;">
+                        <input type="file" accept="image/*,video/*" id="mediaFile" style="display:none;" multiple>
+                        <button class="btn" onclick="document.getElementById('mediaFile').click()">📎 Выбрать фото/видео</button>
+                    </div>
                 </div>
+                <div class="media-preview" id="mediaPreview"></div>
+                <button class="btn" onclick="addNews()">➕ Опубликовать</button>
             </div>
-            <div id="adminPanelBlock" style="display: none;">
-                <div class="glass">
-                    <h3>➕ Добавить новость</h3>
-                    <input type="text" id="newsTitle" placeholder="Заголовок">
-                    <textarea id="newsContent" placeholder="Текст новости"></textarea>
-                    <button onclick="addNews()">Опубликовать</button>
-                </div>
-                
-                <h3 style="margin-top: 20px;">📋 Управление новостями</h3>
-                <div id="adminNewsList"></div>
-            </div>
+            <h3 style="margin:20px 0 10px;">Управление новостями</h3>
+            <div id="adminNewsList"></div>
         </div>
     </div>
-
-    <footer>
-        <p>© 2026 CRIMSON RP — Role Play Project</p>
-    </footer>
+    <footer>© 2026 CRIMSON RP</footer>
 </div>
 
 <script>
     let newsData = [];
-    let activeCardId = null;
-    const ADMIN_PASSWORD = "crimson123";
+    let currentSearch = '';
+    let currentTagFilter = 'all';
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    let subscriptions = JSON.parse(localStorage.getItem('subscriptions') || '[]');
+    let readMode = localStorage.getItem('readMode') === 'true';
+    let mediaFiles = [];
 
-    // API вызовы
-    async function apiRequest(url, options = {}) {
-        try {
-            const response = await fetch(url, options);
-            return await response.json();
-        } catch (error) {
-            console.error('API error:', error);
-            return null;
-        }
-    }
-
+    // Загрузка новостей
     async function loadNews() {
-        const data = await apiRequest('/api/news');
-        if (data && !data.error) {
-            newsData = data;
-            displayNews();
-            displayAdminNews();
-        }
+        const res = await fetch('/api/news');
+        newsData = await res.json();
+        renderTagsFilter();
+        filterAndDisplayNews();
+        renderAdminNews();
+        renderMyFeed();
+        renderFavorites();
     }
 
-    function displayNews() {
-        const track = document.getElementById('newsTrack');
-        if (!newsData.length) {
-            track.innerHTML = '<div style="padding: 50px; text-align: center; color: rgba(255,255,255,0.5);">Новостей пока нет</div>';
-            return;
-        }
+    function renderTagsFilter() {
+        const allTags = [...new Set(newsData.flatMap(n => n.tags || []))];
+        const container = document.getElementById('tagsFilter');
+        container.innerHTML = `<div class="tag-filter ${currentTagFilter === 'all' ? 'active' : ''}" onclick="setTagFilter('all')">Все</div>` +
+            allTags.map(t => `<div class="tag-filter ${currentTagFilter === t ? 'active' : ''}" onclick="setTagFilter('${t}')">${t}</div>`).join('');
+    }
 
-        track.innerHTML = newsData.map(news => `
-            <div class="news-card" data-id="${news.id}">
-                <div class="news-card-content">
-                    <div class="news-title">${escapeHtml(news.title)}</div>
-                    <div class="news-date">${news.date}</div>
-                    <div class="news-text">${escapeHtml(news.content)}</div>
+    function setTagFilter(tag) {
+        currentTagFilter = tag;
+        filterAndDisplayNews();
+        renderTagsFilter();
+    }
+
+    function filterAndDisplayNews() {
+        let filtered = [...newsData];
+        if (currentSearch) {
+            const s = currentSearch.toLowerCase();
+            filtered = filtered.filter(n => n.title.toLowerCase().includes(s) || n.content.toLowerCase().includes(s));
+        }
+        if (currentTagFilter !== 'all') {
+            filtered = filtered.filter(n => n.tags && n.tags.includes(currentTagFilter));
+        }
+        displayNews(filtered, 'newsGrid');
+    }
+
+    function displayNews(newsArray, containerId) {
+        const container = document.getElementById(containerId);
+        if (!newsArray.length) { container.innerHTML = '<div class="glass">Новостей нет</div>'; return; }
+        
+        container.innerHTML = newsArray.map(n => `
+            <div class="news-card ${readMode ? 'read-mode' : ''}" data-id="${n.id}">
+                <div class="news-header">
+                    <div class="news-title">${escapeHtml(n.title)}</div>
+                    <button class="star-btn ${favorites.includes(n.id) ? 'active' : ''}" onclick="toggleFavorite(${n.id})">★</button>
+                </div>
+                <div class="news-date">${n.date}</div>
+                <div class="news-content">${escapeHtml(n.content)}</div>
+                <div class="news-media">
+                    ${(n.media || []).map(m => m.startsWith('data:video') ? 
+                        `<video controls src="${m}"></video>` : 
+                        `<img src="${m}" loading="lazy">`).join('')}
+                </div>
+                <div class="news-tags">
+                    ${(n.tags || []).map(t => `<span class="news-tag" onclick="subscribeToTag('${t}')">#${t}</span>`).join('')}
+                </div>
+                <div class="news-votes">
+                    <button class="vote-btn" onclick="vote(${n.id}, 'like')">👍 ${n.likes || 0}</button>
+                    <button class="vote-btn" onclick="vote(${n.id}, 'dislike')">👎 ${n.dislikes || 0}</button>
                 </div>
             </div>
         `).join('');
-
-        setupScrollEffect();
     }
 
-    function setupScrollEffect() {
-        const container = document.getElementById('newsScroll');
-        const cards = document.querySelectorAll('.news-card');
-        
-        if (!container || !cards.length) return;
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                const card = entry.target;
-                if (entry.isIntersecting) {
-                    card.classList.add('active-card');
-                } else {
-                    card.classList.remove('active-card');
-                }
-            });
-        }, { threshold: 0.6, root: container });
-
-        cards.forEach(card => observer.observe(card));
+    function renderMyFeed() {
+        const subscribedNews = newsData.filter(n => n.tags && n.tags.some(t => subscriptions.includes(t)));
+        displayNews(subscribedNews, 'myfeedGrid');
     }
 
-    async function addNews() {
-        const title = document.getElementById('newsTitle').value.trim();
-        const content = document.getElementById('newsContent').value.trim();
-        const password = prompt('Введите пароль администратора');
-        
-        if (!title || !content) {
-            alert('Заполните все поля');
-            return;
+    function renderFavorites() {
+        const favNews = newsData.filter(n => favorites.includes(n.id));
+        displayNews(favNews, 'favoritesGrid');
+    }
+
+    function toggleFavorite(id) {
+        if (favorites.includes(id)) {
+            favorites = favorites.filter(f => f !== id);
+        } else {
+            favorites.push(id);
         }
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        renderFavorites();
+        filterAndDisplayNews();
+        renderMyFeed();
+    }
 
-        const result = await apiRequest('/api/news', {
+    function subscribeToTag(tag) {
+        if (subscriptions.includes(tag)) {
+            subscriptions = subscriptions.filter(t => t !== tag);
+        } else {
+            subscriptions.push(tag);
+        }
+        localStorage.setItem('subscriptions', JSON.stringify(subscriptions));
+        renderMyFeed();
+        alert(subscriptions.includes(tag) ? `Вы подписались на #${tag}` : `Отписка от #${tag}`);
+    }
+
+    async function vote(id, type) {
+        await fetch(`/api/news/${id}/vote`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, content, password })
+            body: JSON.stringify({ type })
         });
+        loadNews();
+    }
 
-        if (result && result.success) {
-            document.getElementById('newsTitle').value = '';
-            document.getElementById('newsContent').value = '';
-            loadNews();
-            alert('Новость добавлена!');
-        } else {
-            alert('Ошибка или неверный пароль');
-        }
+    // АДМИНКА
+    document.getElementById('mediaFile').addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        const preview = document.getElementById('mediaPreview');
+        
+        files.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                mediaFiles.push(ev.target.result);
+                const div = document.createElement('div');
+                div.className = 'media-preview-item';
+                if (file.type.startsWith('image/')) {
+                    div.innerHTML = `<img src="${ev.target.result}"><div class="remove-media" onclick="this.parentElement.remove(); mediaFiles = mediaFiles.filter(m => m !== '${ev.target.result}')">✖</div>`;
+                } else {
+                    div.innerHTML = `<video src="${ev.target.result}"></video><div class="remove-media" onclick="this.parentElement.remove()">✖</div>`;
+                }
+                preview.appendChild(div);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+
+    async function addNews() {
+        const title = document.getElementById('newsTitle').value;
+        const content = document.getElementById('newsContent').value;
+        const tags = document.getElementById('newsTags').value;
+        
+        if (!title || !content) { alert('Заполните поля'); return; }
+        
+        await fetch('/api/news', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, content, tags, media: mediaFiles, secret: 'АДМИНКА' })
+        });
+        
+        document.getElementById('newsTitle').value = '';
+        document.getElementById('newsContent').value = '';
+        document.getElementById('newsTags').value = '';
+        document.getElementById('mediaPreview').innerHTML = '';
+        mediaFiles = [];
+        loadNews();
+        alert('Новость добавлена');
     }
 
     async function deleteNews(id) {
-        const password = prompt('Введите пароль администратора для удаления');
-        if (!password) return;
-
-        const result = await apiRequest(`/api/news/${id}`, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password })
-        });
-
-        if (result && result.success) {
+        if (confirm('Удалить?')) {
+            await fetch(`/api/news/${id}`, { method: 'DELETE' });
             loadNews();
-            alert('Новость удалена');
-        } else {
-            alert('Ошибка или неверный пароль');
         }
     }
 
-    function displayAdminNews() {
+    function renderAdminNews() {
         const container = document.getElementById('adminNewsList');
-        if (!newsData.length) {
-            container.innerHTML = '<div class="glass" style="text-align:center; color:rgba(255,255,255,0.5);">Новостей нет</div>';
-            return;
-        }
-
-        container.innerHTML = newsData.map(news => `
+        container.innerHTML = newsData.map(n => `
             <div class="admin-news-item">
-                <strong style="font-size: 16px;">${escapeHtml(news.title)}</strong>
-                <div style="color:rgba(255,255,255,0.5); font-size:11px; margin:5px 0;">${news.date}</div>
-                <div style="color:rgba(255,255,255,0.7); margin:10px 0;">${escapeHtml(news.content)}</div>
-                <button class="delete-btn" onclick="deleteNews(${news.id})">Удалить</button>
+                <strong>${escapeHtml(n.title)}</strong>
+                <div style="font-size:11px; color:rgba(255,255,255,0.5);">${n.date}</div>
+                <button class="delete-btn" onclick="deleteNews(${n.id})">Удалить</button>
             </div>
         `).join('');
     }
 
-    function checkAdmin() {
-        const pass = document.getElementById('adminPassword').value;
-        if (pass === ADMIN_PASSWORD) {
-            document.getElementById('adminLoginBlock').style.display = 'none';
-            document.getElementById('adminPanelBlock').style.display = 'block';
-            loadNews();
-        } else {
-            alert('Неверный пароль');
+    // ПОИСК + АДМИНКА
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        currentSearch = e.target.value;
+        filterAndDisplayNews();
+        if (currentSearch === 'АДМИНКА') {
+            document.getElementById('adminTab').style.display = 'inline-block';
+            alert('Админ-панель разблокирована!');
         }
+    });
+
+    // НАСТРОЙКИ
+    function loadSettings() {
+        const fontSize = localStorage.getItem('fontSize') || 'medium';
+        document.getElementById('fontSizeSelect').value = fontSize;
+        document.body.classList.remove('font-small', 'font-medium', 'font-large');
+        document.body.classList.add(`font-${fontSize}`);
+        
+        const animations = localStorage.getItem('animations') !== 'disabled';
+        document.getElementById('animationsToggle').checked = animations;
+        document.body.classList.toggle('no-animations', !animations);
+        
+        readMode = localStorage.getItem('readMode') === 'true';
+        document.getElementById('readModeToggle').checked = readMode;
     }
 
-    // Переключение вкладок
+    function saveSettings() {
+        localStorage.setItem('fontSize', document.getElementById('fontSizeSelect').value);
+        localStorage.setItem('animations', document.getElementById('animationsToggle').checked ? 'enabled' : 'disabled');
+        localStorage.setItem('readMode', document.getElementById('readModeToggle').checked);
+        loadSettings();
+        filterAndDisplayNews();
+        renderMyFeed();
+        renderFavorites();
+    }
+
+    document.getElementById('fontSizeSelect').addEventListener('change', saveSettings);
+    document.getElementById('animationsToggle').addEventListener('change', saveSettings);
+    document.getElementById('readModeToggle').addEventListener('change', saveSettings);
+    document.getElementById('resetBtn').addEventListener('click', () => { localStorage.clear(); loadSettings(); });
+
+    // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
     function switchTab(tabId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
         document.getElementById(tabId + 'Page').classList.add('active-page');
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
-        
-        if (tabId === 'news') {
-            loadNews();
-        }
+        if (tabId === 'news') loadNews();
+        if (tabId === 'myfeed') renderMyFeed();
+        if (tabId === 'favorites') renderFavorites();
     }
 
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-
-    // Инициализация
     document.querySelectorAll('.tab').forEach(tab => {
         tab.onclick = () => switchTab(tab.dataset.tab);
     });
 
+    function escapeHtml(str) { return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
+
+    loadSettings();
     loadNews();
 </script>
 </body>
