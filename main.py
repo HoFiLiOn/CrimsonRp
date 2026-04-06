@@ -16,20 +16,17 @@ def init_db():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     
-    # Таблица новостей
     c.execute('''CREATE TABLE IF NOT EXISTS news (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
         content TEXT NOT NULL,
         date TEXT NOT NULL,
         tags TEXT DEFAULT '[]',
-        media TEXT DEFAULT '[]',
         likes INTEGER DEFAULT 0,
         dislikes INTEGER DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )''')
     
-    # Таблица голосов пользователей
     c.execute('''CREATE TABLE IF NOT EXISTS user_votes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         news_id INTEGER NOT NULL,
@@ -38,7 +35,6 @@ def init_db():
         UNIQUE(news_id, user_id)
     )''')
     
-    # Таблица подписок на теги
     c.execute('''CREATE TABLE IF NOT EXISTS subscriptions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id TEXT NOT NULL,
@@ -46,7 +42,6 @@ def init_db():
         UNIQUE(user_id, tag)
     )''')
     
-    # Таблица избранного
     c.execute('''CREATE TABLE IF NOT EXISTS favorites (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id TEXT NOT NULL,
@@ -54,13 +49,11 @@ def init_db():
         UNIQUE(user_id, news_id)
     )''')
     
-    # Добавляем тестовую новость если нет новостей
     c.execute('SELECT COUNT(*) FROM news')
     if c.fetchone()[0] == 0:
-        test_image = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23e31b23'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3ECRIMSON%3C/text%3E%3C/svg%3E"
-        c.execute('INSERT INTO news (title, content, date, tags, media, likes) VALUES (?, ?, ?, ?, ?, ?)',
-                  ('🔴 CRIMSON RP ОТКРЫТ', 'Добро пожаловать на проект! Сервер официально запущен.', 
-                   datetime.now().strftime('%Y-%m-%d'), '["Открытие", "Важное"]', json.dumps([test_image]), 15))
+        c.execute('INSERT INTO news (title, content, date, tags, likes) VALUES (?, ?, ?, ?, ?)',
+                  ('CRIMSON RP ОТКРЫТ', 'Добро пожаловать на проект! Сервер официально запущен.', 
+                   datetime.now().strftime('%Y-%m-%d'), '["Открытие", "Важное"]', 15))
     
     conn.commit()
     conn.close()
@@ -93,9 +86,9 @@ def add_news():
         return jsonify({'error': 'Unauthorized'}), 403
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute('INSERT INTO news (title, content, date, tags, media) VALUES (?, ?, ?, ?, ?)',
+    c.execute('INSERT INTO news (title, content, date, tags) VALUES (?, ?, ?, ?)',
               (data['title'], data['content'], datetime.now().strftime('%Y-%m-%d'), 
-               json.dumps(data.get('tags', [])), json.dumps(data.get('media', []))))
+               json.dumps(data.get('tags', []))))
     conn.commit()
     conn.close()
     return jsonify({'success': True})

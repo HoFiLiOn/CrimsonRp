@@ -4,31 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRIMSON RP</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #000;
-            color: #fff;
-            min-height: 100vh;
+        
+        /* ПЕРЕМЕННЫЕ КАСТОМИЗАЦИИ */
+        :root {
+            --bg-color: #0a0a0a;
+            --text-color: #ffffff;
+            --accent-color: #e31b23;
+            --accent-hover: #ff4d4d;
+            --card-bg: rgba(20,20,20,0.7);
+            --card-border: rgba(255,255,255,0.1);
+            --card-radius: 20px;
+            --card-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            --glass-bg: rgba(255,255,255,0.04);
+            --glass-blur: 20px;
+            --tab-bg: rgba(255,255,255,0.05);
+            --tab-active-bg: #ffffff;
+            --tab-active-color: #000000;
+            --font-family: 'Inter', sans-serif;
+            --title-font: 'Bebas Neue', sans-serif;
+            --animation-speed: 0.3s;
+            --blob-opacity: 0.5;
+            --blur-intensity: 80px;
+            --peach-opacity: 0.6;
+            --border-width: 1px;
+            --hover-scale: 1.02;
+            --card-translate: 8px;
         }
-        body.font-small { font-size: 12px; }
-        body.font-medium { font-size: 14px; }
-        body.font-large { font-size: 16px; }
-        body.no-animations * { animation: none !important; transition: none !important; }
-
+        
+        /* СТИЛЬ 1: КЛАССИКА */
+        body.style-classic { --card-radius: 8px; --card-shadow: none; --glass-blur: 0px; --card-bg: #111; }
+        
+        /* СТИЛЬ 2: НЕОН */
+        body.style-neon { --accent-color: #00ff00; --card-border: 0 0 5px #00ff00; --card-shadow: 0 0 10px rgba(0,255,0,0.3); }
+        
+        /* СТИЛЬ 3: КИБЕРПАНК */
+        body.style-cyber { --accent-color: #ff00ff; --font-family: 'Fira Code', monospace; --title-font: 'Orbitron', sans-serif; --card-radius: 0px; }
+        
+        /* СТИЛЬ 4: МИНИМАЛИЗМ */
+        body.style-minimal { --card-bg: #111; --glass-blur: 0px; --card-radius: 4px; --card-shadow: none; --tab-bg: #111; }
+        
+        /* СТИЛЬ 5: ПРЕМИУМ */
+        body.style-premium { --accent-color: #ffd700; --font-family: 'Playfair Display', serif; --card-shadow: 0 8px 30px rgba(0,0,0,0.5); --card-radius: 28px; }
+        
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            transition: all var(--animation-speed);
+        }
+        
         /* ЖИДКОЕ СТЕКЛО */
         .liquid-glass {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
-            background: linear-gradient(125deg, #0a0a0a, #1a0a0a, #0a0a0a);
+            background: var(--bg-color);
             transition: opacity 0.3s;
         }
         .liquid-glass.hidden { opacity: 0; }
         .color-layer {
             position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
-            background: radial-gradient(circle at 30% 40%, rgba(30,30,30,0.8), rgba(10,10,10,0.9)),
-                        radial-gradient(circle at 70% 60%, rgba(50,50,50,0.5), transparent);
+            background: radial-gradient(circle at 30% 40%, rgba(30,30,30,0.5), transparent),
+                        radial-gradient(circle at 70% 60%, rgba(50,50,50,0.3), transparent);
             animation: slowShift 20s ease-in-out infinite;
         }
         @keyframes slowShift {
@@ -38,18 +77,18 @@
             100% { transform: translate(0,0) rotate(0deg); }
         }
         .blob {
-            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5;
+            position: absolute; border-radius: 50%; filter: blur(var(--blur-intensity)); opacity: var(--blob-opacity);
             animation: floatBlob 18s ease-in-out infinite;
         }
-        .blob:nth-child(1) { width: 500px; height: 500px; background: #1a1a1a; top: -150px; left: -150px; }
-        .blob:nth-child(2) { width: 600px; height: 600px; background: #2a2a2a; bottom: -200px; right: -200px; animation-delay: -6s; }
-        .blob:nth-child(3) { width: 450px; height: 450px; background: #151515; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: -12s; }
+        .blob:nth-child(1) { width: 500px; height: 500px; background: var(--accent-color); top: -150px; left: -150px; }
+        .blob:nth-child(2) { width: 600px; height: 600px; background: var(--accent-color); bottom: -200px; right: -200px; animation-delay: -6s; }
+        .blob:nth-child(3) { width: 450px; height: 450px; background: var(--accent-color); top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: -12s; }
         @keyframes floatBlob {
             0%,100% { transform: translate(0,0) scale(1); }
             33% { transform: translate(40px,-30px) scale(1.1); }
             66% { transform: translate(-30px,40px) scale(0.95); }
         }
-
+        
         /* ПЕПЕЛ */
         .ash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; overflow: hidden; }
         .ash.hidden { display: none; }
@@ -61,134 +100,171 @@
             0% { transform: translateY(-10vh) rotate(0deg); opacity: 0.7; }
             100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
-
+        
         .glass-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2;
-            backdrop-filter: blur(8px) brightness(0.7);
+            backdrop-filter: blur(var(--glass-blur)) brightness(0.7);
             pointer-events: none;
         }
         .glass-overlay.hidden { backdrop-filter: none; }
-
-        .container { position: relative; z-index: 3; max-width: 700px; margin: 0 auto; padding: 16px; min-height: 100vh; }
+        
+        .container { position: relative; z-index: 3; max-width: 800px; margin: 0 auto; padding: 16px; min-height: 100vh; }
+        
+        /* ВКЛАДКИ */
         .tabs-wrapper { overflow-x: auto; white-space: nowrap; margin-bottom: 20px; }
-        .tabs { display: inline-flex; gap: 8px; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 60px; padding: 6px; }
+        .tabs { display: inline-flex; gap: 8px; background: var(--tab-bg); backdrop-filter: blur(20px); border-radius: 60px; padding: 6px; }
         .tab {
-            display: inline-block; padding: 10px 20px; font-size: 13px; font-weight: 600;
+            display: inline-block; padding: 10px 24px; font-size: 14px; font-weight: 600;
             background: transparent; border: none; color: rgba(255,255,255,0.5);
-            cursor: pointer; border-radius: 50px; transition: all 0.3s;
+            cursor: pointer; border-radius: 50px; transition: all var(--animation-speed);
         }
         .tab:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
-        .tab.active { background: rgba(255,255,255,0.95); color: #000; transform: scale(1.02); }
-        .page { display: none; animation: fadeIn 0.4s; }
+        .tab.active { background: var(--tab-active-bg); color: var(--tab-active-color); transform: scale(1.02); }
+        
+        .page { display: none; animation: fadeIn var(--animation-speed); }
         .page.active-page { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* КАРТОЧКИ */
         .glass {
-            background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); border-radius: 24px;
-            padding: 20px; border: 0.5px solid rgba(255,255,255,0.1); margin-bottom: 16px;
-            transition: all 0.3s;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: var(--card-radius);
+            padding: 24px;
+            border: var(--border-width) solid var(--card-border);
+            margin-bottom: 16px;
+            transition: all var(--animation-speed);
+            box-shadow: var(--card-shadow);
         }
-        .glass:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.2); }
-        h2 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 2px; margin-bottom: 16px; }
-        .search-box { margin-bottom: 20px; }
+        .glass:hover { transform: translateY(-3px); border-color: var(--accent-color); }
+        
+        h2 {
+            font-family: var(--title-font);
+            font-size: 32px;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+        
+        h3 { font-size: 18px; margin-bottom: 15px; color: var(--text-color); }
+        
+        /* ПОИСК */
         .search-input {
             width: 100%; padding: 14px 18px; background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 60px; color: #fff; font-size: 14px;
+            border: var(--border-width) solid var(--card-border); border-radius: 60px; color: var(--text-color);
+            font-size: 14px; transition: all var(--animation-speed);
         }
+        .search-input:focus { outline: none; border-color: var(--accent-color); background: rgba(255,255,255,0.1); }
+        
+        /* ТЕГИ */
         .tags-filter { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
         .tag-filter {
             padding: 6px 14px; background: rgba(255,255,255,0.05); border-radius: 40px;
-            font-size: 12px; cursor: pointer; transition: all 0.2s;
+            font-size: 12px; cursor: pointer; transition: all var(--animation-speed);
+            border: var(--border-width) solid transparent;
         }
-        .tag-filter:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); }
-        .tag-filter.active { background: #fff; color: #000; }
+        .tag-filter:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); border-color: var(--accent-color); }
+        .tag-filter.active { background: var(--accent-color); color: #fff; }
+        
+        /* НОВОСТИ */
         .news-grid { display: flex; flex-direction: column; gap: 16px; }
         .news-card {
-            background: rgba(20,20,20,0.5); backdrop-filter: blur(10px); border-radius: 20px;
-            padding: 20px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: var(--card-radius);
+            padding: 20px;
+            border: var(--border-width) solid var(--card-border);
+            transition: all var(--animation-speed);
+            box-shadow: var(--card-shadow);
         }
-        .news-card:hover { transform: translateX(8px); border-color: rgba(255,255,255,0.3); }
+        .news-card:hover { transform: translateX(var(--card-translate)); border-color: var(--accent-color); background: rgba(30,30,30,0.6); }
+        
         .news-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px; }
-        .news-title { font-size: 18px; font-weight: 700; }
+        .news-title { font-size: 20px; font-weight: 700; color: var(--accent-color); }
         .star-btn {
-            background: none; border: none; color: rgba(255,255,255,0.3); font-size: 22px;
-            cursor: pointer; transition: all 0.2s;
+            background: none; border: none; color: rgba(255,255,255,0.3); font-size: 24px;
+            cursor: pointer; transition: all var(--animation-speed);
         }
         .star-btn:hover { transform: scale(1.2); color: #ffcc00; }
         .star-btn.active { color: #ffcc00; }
-        .news-date { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
-        .news-content { color: rgba(255,255,255,0.8); line-height: 1.5; }
-        .news-media { display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0; }
-        .news-media img, .news-media video { max-width: 100%; max-height: 200px; border-radius: 12px; }
+        
+        .news-date { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
+        .news-content { color: var(--text-color); line-height: 1.6; opacity: 0.9; }
         .news-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
         .news-tag {
-            padding: 4px 10px; background: rgba(255,255,255,0.08); border-radius: 20px;
-            font-size: 10px; cursor: pointer; transition: all 0.2s;
+            padding: 4px 12px; background: rgba(255,255,255,0.08); border-radius: 40px;
+            font-size: 11px; cursor: pointer; transition: all var(--animation-speed);
+            border: var(--border-width) solid transparent;
         }
-        .news-tag:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+        .news-tag:hover { background: var(--accent-color); transform: translateY(-2px); }
+        
         .news-votes { display: flex; gap: 15px; margin-top: 12px; }
         .vote-btn {
             background: none; border: none; color: rgba(255,255,255,0.5);
-            cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.2s;
+            cursor: pointer; display: flex; align-items: center; gap: 6px;
+            transition: all var(--animation-speed); padding: 5px 10px;
+            border-radius: 40px;
         }
-        .vote-btn:hover { color: #fff; transform: scale(1.1); }
+        .vote-btn:hover { color: var(--accent-color); transform: scale(1.05); background: rgba(255,255,255,0.05); }
         .vote-btn.disabled { opacity: 0.5; cursor: not-allowed; }
-
+        
         /* АДМИНКА */
-        .admin-login { max-width: 300px; margin: 50px auto; text-align: center; }
-        .admin-login input {
-            width: 100%; padding: 14px; background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 60px; color: #fff;
-            margin-bottom: 15px; text-align: center;
-        }
         input, textarea {
             width: 100%; padding: 12px; margin: 8px 0;
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px; color: #fff;
+            background: rgba(255,255,255,0.05); border: var(--border-width) solid var(--card-border);
+            border-radius: 16px; color: var(--text-color);
         }
         .btn {
-            padding: 12px 24px; background: rgba(255,255,255,0.95); color: #000;
+            padding: 12px 24px; background: var(--accent-color); color: #fff;
             border: none; border-radius: 60px; font-weight: 600; cursor: pointer;
-            transition: all 0.2s;
+            transition: all var(--animation-speed);
         }
-        .btn:hover { transform: translateY(-2px); }
-        .delete-btn { background: rgba(150,0,0,0.8); color: #fff; margin-top: 10px; }
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
+        .delete-btn { background: rgba(150,0,0,0.8); margin-top: 10px; }
+        
         .admin-news-item {
-            background: rgba(20,20,20,0.6); padding: 16px; margin-bottom: 12px; border-radius: 20px;
+            background: var(--card-bg); padding: 16px; margin-bottom: 12px;
+            border-radius: var(--card-radius); border: var(--border-width) solid var(--card-border);
         }
-        .media-preview { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; }
-        .media-preview-item { position: relative; display: inline-block; }
-        .media-preview-item img, .media-preview-item video { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
-        .remove-media {
-            position: absolute; top: -8px; right: -8px; background: red; border-radius: 50%;
-            width: 20px; height: 20px; cursor: pointer; text-align: center; line-height: 18px;
-            font-size: 14px; color: white;
+        
+        /* НАСТРОЙКИ КАСТОМИЗАЦИИ */
+        .settings-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;
         }
-
-        .setting-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
+        .setting-group {
+            background: var(--card-bg); border-radius: var(--card-radius); padding: 16px;
+            border: var(--border-width) solid var(--card-border);
         }
-        select {
-            padding: 8px 16px; background: rgba(255,255,255,0.1);
-            border: none; border-radius: 40px; color: #fff; cursor: pointer;
+        .setting-group label { display: block; margin-bottom: 8px; font-size: 13px; opacity: 0.7; }
+        .setting-group input, .setting-group select {
+            width: 100%; padding: 10px; background: rgba(255,255,255,0.05);
+            border: var(--border-width) solid var(--card-border); border-radius: 12px; color: var(--text-color);
         }
-        .toggle-btn {
-            width: 50px; height: 26px; background: rgba(255,255,255,0.2);
-            border-radius: 30px; cursor: pointer; position: relative; transition: 0.3s;
+        .color-preview {
+            width: 40px; height: 40px; border-radius: 8px; margin-top: 8px;
+            border: var(--border-width) solid var(--card-border);
         }
-        .toggle-btn.active { background: #fff; }
-        .toggle-slider {
-            position: absolute; width: 22px; height: 22px; background: #000;
-            border-radius: 50%; top: 2px; left: 3px; transition: 0.3s;
+        .style-badge {
+            display: inline-block; padding: 8px 16px; background: rgba(255,255,255,0.1);
+            border-radius: 40px; cursor: pointer; margin: 4px; transition: all 0.2s;
         }
-        .toggle-btn.active .toggle-slider { transform: translateX(24px); background: #000; }
-
+        .style-badge:hover { background: var(--accent-color); transform: translateY(-2px); }
+        .style-badge.active { background: var(--accent-color); }
+        
         .creator-card {
-            background: rgba(255,255,255,0.03); border-radius: 16px; padding: 12px; margin-top: 10px; transition: all 0.3s;
+            background: var(--card-bg); border-radius: var(--card-radius); padding: 16px;
+            margin-top: 16px; border: var(--border-width) solid var(--card-border);
+            transition: all var(--animation-speed);
         }
-        .creator-card:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); }
-        footer { text-align: center; padding: 20px; color: rgba(255,255,255,0.3); font-size: 11px; }
-        @media (max-width: 480px) { .container { padding: 12px; } .tab { padding: 8px 14px; } }
+        .creator-card:hover { transform: translateX(5px); border-color: var(--accent-color); }
+        
+        footer { text-align: center; padding: 30px; color: rgba(255,255,255,0.3); font-size: 12px; margin-top: 20px; }
+        
+        @media (max-width: 600px) {
+            .container { padding: 12px; }
+            .tab { padding: 8px 16px; font-size: 12px; }
+            .settings-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -203,24 +279,28 @@
         <button class="tab" data-tab="news">НОВОСТИ</button>
         <button class="tab" data-tab="myfeed">МОЯ ЛЕНТА</button>
         <button class="tab" data-tab="favorites">ИЗБРАННОЕ</button>
-        <button class="tab" data-tab="settings">НАСТРОЙКИ</button>
+        <button class="tab" data-tab="customize">КАСТОМИЗАЦИЯ</button>
         <button class="tab" data-tab="admin" id="adminTab" style="display:none;">АДМИН</button>
     </div></div>
 
     <div class="pages-container">
+        <!-- ГЛАВНАЯ -->
         <div class="page active-page" id="homePage">
             <div class="glass">
                 <h2>CRIMSON RP</h2>
-                <p style="line-height: 1.5;">Строгий ролевой проект. Погрузись в мир криминала и власти.</p>
-                <div style="margin-top: 25px;">
-                    <h3 style="font-size: 18px; margin-bottom: 15px;">📖 О ПРОЕКТЕ</h3>
-                    <p style="color: rgba(255,255,255,0.7); line-height: 1.6;">Crimson RP — ролевой проект с уникальной экономикой и системой криминала.</p>
-                    <div class="creator-card"><span style="color: rgba(255,255,255,0.5);">👑 Создатель проекта:</span><span style="margin-left: 10px;">Advantage</span></div>
-                    <div class="creator-card"><span style="color: rgba(255,255,255,0.5);">💻 Создатель сайта:</span><span style="margin-left: 10px;">HoFiLiOn</span></div>
+                <p style="line-height: 1.6; font-size: 16px;">Строгий ролевой проект. Погрузись в мир криминала и власти. Каждый твой выбор имеет значение.</p>
+                <div class="creator-card">
+                    <span style="opacity: 0.6;">👑 Создатель проекта:</span>
+                    <span style="font-weight: 600; margin-left: 10px;">Advantage</span>
+                </div>
+                <div class="creator-card">
+                    <span style="opacity: 0.6;">💻 Создатель сайта:</span>
+                    <span style="font-weight: 600; margin-left: 10px;">HoFiLiOn</span>
                 </div>
             </div>
         </div>
 
+        <!-- НОВОСТИ -->
         <div class="page" id="newsPage">
             <h2>НОВОСТИ</h2>
             <div class="search-box"><input type="text" class="search-input" id="searchInput" placeholder="🔍 Поиск... (введите АДМИНКА для входа)"></div>
@@ -231,33 +311,136 @@
         <div class="page" id="myfeedPage"><h2>МОЯ ЛЕНТА</h2><div class="news-grid" id="myfeedGrid"></div></div>
         <div class="page" id="favoritesPage"><h2>ИЗБРАННОЕ</h2><div class="news-grid" id="favoritesGrid"></div></div>
 
-        <div class="page" id="settingsPage">
-            <div class="glass">
-                <h2>НАСТРОЙКИ</h2>
-                <div class="setting-item"><span>💧 Жидкое стекло</span><div class="toggle-btn" id="glassToggle"><div class="toggle-slider"></div></div></div>
-                <div class="setting-item"><span>🌫️ Падающий пепел</span><div class="toggle-btn" id="ashToggle"><div class="toggle-slider"></div></div></div>
-                <div class="setting-item"><span>✨ Анимации</span><div class="toggle-btn" id="animationsToggle"><div class="toggle-slider"></div></div></div>
-                <div class="setting-item"><span>📏 Размер шрифта</span><select id="fontSizeSelect"><option value="small">Маленький</option><option value="medium" selected>Средний</option><option value="large">Большой</option></select></div>
-                <button class="btn" id="resetBtn" style="margin-top:20px;">Сбросить</button>
+        <!-- КАСТОМИЗАЦИЯ -->
+        <div class="page" id="customizePage">
+            <h2>КАСТОМИЗАЦИЯ ДИЗАЙНА</h2>
+            
+            <div class="settings-grid">
+                <div class="setting-group">
+                    <label>🎨 ГОТОВЫЕ СТИЛИ</label>
+                    <div>
+                        <span class="style-badge" onclick="applyStyle('classic')">КЛАССИКА</span>
+                        <span class="style-badge" onclick="applyStyle('neon')">НЕОН</span>
+                        <span class="style-badge" onclick="applyStyle('cyber')">КИБЕРПАНК</span>
+                        <span class="style-badge" onclick="applyStyle('minimal')">МИНИМАЛИЗМ</span>
+                        <span class="style-badge" onclick="applyStyle('premium')">ПРЕМИУМ</span>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <label>🎨 Основной цвет</label>
+                    <input type="color" id="accentColor" value="#e31b23">
+                </div>
+                <div class="setting-group">
+                    <label>🌑 Цвет фона</label>
+                    <input type="color" id="bgColor" value="#0a0a0a">
+                </div>
+                <div class="setting-group">
+                    <label>📝 Цвет текста</label>
+                    <input type="color" id="textColor" value="#ffffff">
+                </div>
+                <div class="setting-group">
+                    <label>🃏 Цвет карточек</label>
+                    <input type="color" id="cardBg" value="#1a1a1a">
+                </div>
+                
+                <div class="setting-group">
+                    <label>🔘 Скругление карточек (px)</label>
+                    <input type="range" id="cardRadius" min="0" max="40" value="20">
+                    <span id="cardRadiusVal">20px</span>
+                </div>
+                <div class="setting-group">
+                    <label>📦 Тень карточек</label>
+                    <select id="cardShadow">
+                        <option value="none">Нет</option>
+                        <option value="0 4px 15px rgba(0,0,0,0.3)">Лёгкая</option>
+                        <option value="0 8px 30px rgba(0,0,0,0.5)">Средняя</option>
+                        <option value="0 15px 40px rgba(0,0,0,0.7)">Сильная</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>💨 Прозрачность карточек</label>
+                    <input type="range" id="cardOpacity" min="0.3" max="1" step="0.05" value="0.7">
+                </div>
+                
+                <div class="setting-group">
+                    <label>🔤 Шрифт текста</label>
+                    <select id="fontFamily">
+                        <option value="'Inter', sans-serif">Inter</option>
+                        <option value="'Montserrat', sans-serif">Montserrat</option>
+                        <option value="'Fira Code', monospace">Fira Code</option>
+                        <option value="'Rajdhani', sans-serif">Rajdhani</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>✨ Шрифт заголовков</label>
+                    <select id="titleFont">
+                        <option value="'Bebas Neue', sans-serif">Bebas Neue</option>
+                        <option value="'Playfair Display', serif">Playfair Display</option>
+                        <option value="'Orbitron', sans-serif">Orbitron</option>
+                        <option value="'Inter', sans-serif">Inter</option>
+                    </select>
+                </div>
+                
+                <div class="setting-group">
+                    <label>⚡ Скорость анимаций</label>
+                    <input type="range" id="animSpeed" min="0.1" max="0.8" step="0.05" value="0.3">
+                    <span id="animSpeedVal">0.3s</span>
+                </div>
+                <div class="setting-group">
+                    <label>💎 Стекло (размытие фона, px)</label>
+                    <input type="range" id="glassBlur" min="0" max="30" value="20">
+                    <span id="glassBlurVal">20px</span>
+                </div>
+                <div class="setting-group">
+                    <label>🌀 Размытие блобов (px)</label>
+                    <input type="range" id="blurIntensity" min="30" max="150" value="80">
+                </div>
+                <div class="setting-group">
+                    <label>🎯 Прозрачность блобов</label>
+                    <input type="range" id="blobOpacity" min="0" max="1" step="0.05" value="0.5">
+                </div>
+                <div class="setting-group">
+                    <label>📏 Сдвиг карточки при ховере (px)</label>
+                    <input type="range" id="cardTranslate" min="0" max="20" value="8">
+                </div>
+                <div class="setting-group">
+                    <label>🔲 Толщина границ (px)</label>
+                    <input type="range" id="borderWidth" min="0" max="5" value="1">
+                </div>
+                
+                <div class="setting-group">
+                    <label>🌫️ Падающий пепел</label>
+                    <select id="ashToggle">
+                        <option value="on">Включён</option>
+                        <option value="off">Выключен</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>💧 Жидкое стекло</label>
+                    <select id="liquidToggle">
+                        <option value="on">Включено</option>
+                        <option value="off">Выключено</option>
+                    </select>
+                </div>
             </div>
+            <button class="btn" id="resetCustomBtn" style="margin-top: 20px; background: #555;">Сбросить настройки</button>
         </div>
 
+        <!-- АДМИНКА -->
         <div class="page" id="adminPage">
             <div class="glass">
                 <h2>АДМИН-ПАНЕЛЬ</h2>
                 <input type="text" id="newsTitle" placeholder="Заголовок">
                 <textarea id="newsContent" rows="3" placeholder="Текст новости"></textarea>
                 <input type="text" id="newsTags" placeholder="Теги (через запятую)">
-                <p style="font-size:12px; color:rgba(255,255,255,0.5);">Максимум 5 файлов</p>
-                <input type="file" accept="image/*,video/*" id="mediaFile" multiple>
-                <div class="media-preview" id="mediaPreview"></div>
                 <button class="btn" onclick="addNews()">➕ Опубликовать</button>
             </div>
             <h3 style="margin:20px 0 10px;">Управление новостями</h3>
             <div id="adminNewsList"></div>
         </div>
     </div>
-    <footer>© 2026 CRIMSON RP</footer>
+    <footer>© 2026 CRIMSON RP — Role Play Project</footer>
 </div>
 
 <script>
@@ -268,10 +451,10 @@
     let subscriptions = [];
     let userVotes = {};
     let userId = localStorage.getItem('userId');
-    let mediaFiles = [];
     
     if (!userId) { userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); localStorage.setItem('userId', userId); }
     
+    // ========== API ==========
     async function loadNews() {
         const res = await fetch('/api/news');
         newsData = await res.json();
@@ -333,14 +516,17 @@
     }
     
     async function addNews() {
-        const title = document.getElementById('newsTitle').value;
-        const content = document.getElementById('newsContent').value;
+        const title = document.getElementById('newsTitle').value.trim();
+        const content = document.getElementById('newsContent').value.trim();
         const tags = document.getElementById('newsTags').value;
         if (!title || !content) { alert('Заполните поля'); return; }
-        await fetch('/api/news', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title, content, tags: tags ? tags.split(',').map(t=>t.trim()) : [], media: mediaFiles, secret: 'АДМИНКА' }) });
-        document.getElementById('newsTitle').value = ''; document.getElementById('newsContent').value = ''; document.getElementById('newsTags').value = '';
-        document.getElementById('mediaPreview').innerHTML = ''; mediaFiles = [];
-        loadNews();
+        const res = await fetch('/api/news', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ 
+            title, content, tags: tags ? tags.split(',').map(t=>t.trim()) : [], secret: 'АДМИНКА' 
+        }) });
+        if (res.ok) {
+            document.getElementById('newsTitle').value = ''; document.getElementById('newsContent').value = ''; document.getElementById('newsTags').value = '';
+            loadNews(); alert('Новость добавлена!');
+        } else { alert('Ошибка'); }
     }
     
     async function deleteNews(id) {
@@ -374,11 +560,10 @@
                 <button class="star-btn ${favorites.includes(n.id) ? 'active' : ''}" onclick="toggleFavorite(${n.id})">★</button></div>
                 <div class="news-date">${n.date}</div>
                 <div class="news-content">${escapeHtml(n.content)}</div>
-                <div class="news-media">${(n.media || []).map(m => m.startsWith('data:video') ? `<video controls src="${m}"></video>` : `<img src="${m}">`).join('')}</div>
                 <div class="news-tags">${(n.tags || []).map(t => `<span class="news-tag" onclick="subscribeToTag('${t}')">#${t}</span>`).join('')}</div>
                 <div class="news-votes">
-                    <button class="vote-btn" onclick="vote(${n.id}, 'like')">👍 ${n.likes || 0}</button>
-                    <button class="vote-btn" onclick="vote(${n.id}, 'dislike')">👎 ${n.dislikes || 0}</button>
+                    <button class="vote-btn ${userVotes[n.id] ? 'disabled' : ''}" onclick="vote(${n.id}, 'like')">👍 ${n.likes || 0}</button>
+                    <button class="vote-btn ${userVotes[n.id] ? 'disabled' : ''}" onclick="vote(${n.id}, 'dislike')">👎 ${n.dislikes || 0}</button>
                 </div>
             </div>
         `).join('');
@@ -388,25 +573,9 @@
     function renderFavorites() { const favNews = newsData.filter(n => favorites.includes(n.id)); displayNews(favNews, 'favoritesGrid'); }
     function renderAdmin() { document.getElementById('adminNewsList').innerHTML = newsData.map(n => `<div class="admin-news-item"><strong>${escapeHtml(n.title)}</strong><div style="font-size:11px; opacity:0.6;">${n.date}</div><button class="delete-btn" onclick="deleteNews(${n.id})">Удалить</button></div>`).join(''); }
     
-    document.getElementById('mediaFile').addEventListener('change', function(e) {
-        const files = Array.from(e.target.files);
-        if (mediaFiles.length + files.length > 5) { alert('Максимум 5 файлов'); return; }
-        const preview = document.getElementById('mediaPreview');
-        files.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = ev => {
-                mediaFiles.push(ev.target.result);
-                const div = document.createElement('div'); div.className = 'media-preview-item';
-                div.innerHTML = `<img src="${ev.target.result}"><div class="remove-media" onclick="this.parentElement.remove(); mediaFiles = mediaFiles.filter(m => m !== '${ev.target.result}')">✖</div>`;
-                preview.appendChild(div);
-            };
-            reader.readAsDataURL(file);
-        });
-    });
-    
     document.getElementById('searchInput').addEventListener('input', (e) => { currentSearch = e.target.value.toLowerCase(); filterNews(); if (currentSearch === 'админка') { document.getElementById('adminTab').style.display = 'inline-block'; alert('Админ-панель разблокирована!'); } });
     
-    // ПЕПЕЛ
+    // ========== ПЕПЕЛ ==========
     function createAsh() {
         const container = document.getElementById('ashContainer');
         for (let i = 0; i < 60; i++) {
@@ -418,28 +587,100 @@
     }
     createAsh();
     
-    // НАСТРОЙКИ
-    function loadSettings() {
-        const glass = localStorage.getItem('glassEnabled') !== 'false';
-        document.getElementById('glassToggle').classList.toggle('active', glass);
-        document.getElementById('liquidGlass').classList.toggle('hidden', !glass);
-        const ash = localStorage.getItem('ashEnabled') !== 'false';
-        document.getElementById('ashToggle').classList.toggle('active', ash);
-        document.getElementById('ashContainer').classList.toggle('hidden', !ash);
-        const animations = localStorage.getItem('animationsEnabled') !== 'false';
-        document.getElementById('animationsToggle').classList.toggle('active', animations);
-        document.body.classList.toggle('no-animations', !animations);
-        const fontSize = localStorage.getItem('fontSize') || 'medium';
-        document.getElementById('fontSizeSelect').value = fontSize;
-        document.body.classList.remove('font-small', 'font-medium', 'font-large');
-        document.body.classList.add(`font-${fontSize}`);
+    // ========== КАСТОМИЗАЦИЯ ==========
+    function applyStyle(style) {
+        document.body.classList.remove('style-classic', 'style-neon', 'style-cyber', 'style-minimal', 'style-premium');
+        if (style !== 'default') document.body.classList.add(`style-${style}`);
+        if (style === 'classic') { document.getElementById('cardRadius').value = '8'; document.getElementById('glassBlur').value = '0'; document.getElementById('cardShadow').value = 'none'; }
+        if (style === 'neon') { document.getElementById('accentColor').value = '#00ff00'; document.getElementById('cardShadow').value = '0 0 10px rgba(0,255,0,0.3)'; }
+        if (style === 'cyber') { document.getElementById('accentColor').value = '#ff00ff'; document.getElementById('fontFamily').value = "'Fira Code', monospace"; document.getElementById('titleFont').value = "'Orbitron', sans-serif"; document.getElementById('cardRadius').value = '0'; }
+        if (style === 'minimal') { document.getElementById('cardRadius').value = '4'; document.getElementById('glassBlur').value = '0'; document.getElementById('cardShadow').value = 'none'; document.getElementById('cardOpacity').value = '1'; }
+        if (style === 'premium') { document.getElementById('accentColor').value = '#ffd700'; document.getElementById('fontFamily').value = "'Playfair Display', serif"; document.getElementById('cardRadius').value = '28'; document.getElementById('cardShadow').value = '0 8px 30px rgba(0,0,0,0.5)'; }
+        applyCustomization();
     }
-    function saveSetting(setting, value) { localStorage.setItem(setting, value); loadSettings(); }
-    document.getElementById('glassToggle').onclick = () => saveSetting('glassEnabled', !document.getElementById('glassToggle').classList.contains('active'));
-    document.getElementById('ashToggle').onclick = () => saveSetting('ashEnabled', !document.getElementById('ashToggle').classList.contains('active'));
-    document.getElementById('animationsToggle').onclick = () => saveSetting('animationsEnabled', !document.getElementById('animationsToggle').classList.contains('active'));
-    document.getElementById('fontSizeSelect').onchange = (e) => saveSetting('fontSize', e.target.value);
-    document.getElementById('resetBtn').onclick = () => { localStorage.clear(); loadSettings(); };
+    
+    function applyCustomization() {
+        document.documentElement.style.setProperty('--accent-color', document.getElementById('accentColor').value);
+        document.documentElement.style.setProperty('--bg-color', document.getElementById('bgColor').value);
+        document.documentElement.style.setProperty('--text-color', document.getElementById('textColor').value);
+        document.documentElement.style.setProperty('--card-bg', document.getElementById('cardBg').value + document.getElementById('cardOpacity').value);
+        document.documentElement.style.setProperty('--card-radius', document.getElementById('cardRadius').value + 'px');
+        document.documentElement.style.setProperty('--card-shadow', document.getElementById('cardShadow').value);
+        document.documentElement.style.setProperty('--font-family', document.getElementById('fontFamily').value);
+        document.documentElement.style.setProperty('--title-font', document.getElementById('titleFont').value);
+        document.documentElement.style.setProperty('--animation-speed', document.getElementById('animSpeed').value + 's');
+        document.documentElement.style.setProperty('--glass-blur', document.getElementById('glassBlur').value + 'px');
+        document.documentElement.style.setProperty('--blur-intensity', document.getElementById('blurIntensity').value + 'px');
+        document.documentElement.style.setProperty('--blob-opacity', document.getElementById('blobOpacity').value);
+        document.documentElement.style.setProperty('--card-translate', document.getElementById('cardTranslate').value + 'px');
+        document.documentElement.style.setProperty('--border-width', document.getElementById('borderWidth').value + 'px');
+        
+        const ashOn = document.getElementById('ashToggle').value === 'on';
+        document.getElementById('ashContainer').classList.toggle('hidden', !ashOn);
+        const liquidOn = document.getElementById('liquidToggle').value === 'on';
+        document.getElementById('liquidGlass').classList.toggle('hidden', !liquidOn);
+        
+        localStorage.setItem('accentColor', document.getElementById('accentColor').value);
+        localStorage.setItem('bgColor', document.getElementById('bgColor').value);
+        localStorage.setItem('textColor', document.getElementById('textColor').value);
+        localStorage.setItem('cardBg', document.getElementById('cardBg').value);
+        localStorage.setItem('cardRadius', document.getElementById('cardRadius').value);
+        localStorage.setItem('cardShadow', document.getElementById('cardShadow').value);
+        localStorage.setItem('cardOpacity', document.getElementById('cardOpacity').value);
+        localStorage.setItem('fontFamily', document.getElementById('fontFamily').value);
+        localStorage.setItem('titleFont', document.getElementById('titleFont').value);
+        localStorage.setItem('animSpeed', document.getElementById('animSpeed').value);
+        localStorage.setItem('glassBlur', document.getElementById('glassBlur').value);
+        localStorage.setItem('blurIntensity', document.getElementById('blurIntensity').value);
+        localStorage.setItem('blobOpacity', document.getElementById('blobOpacity').value);
+        localStorage.setItem('cardTranslate', document.getElementById('cardTranslate').value);
+        localStorage.setItem('borderWidth', document.getElementById('borderWidth').value);
+        localStorage.setItem('ashToggle', document.getElementById('ashToggle').value);
+        localStorage.setItem('liquidToggle', document.getElementById('liquidToggle').value);
+    }
+    
+    function loadCustomization() {
+        document.getElementById('accentColor').value = localStorage.getItem('accentColor') || '#e31b23';
+        document.getElementById('bgColor').value = localStorage.getItem('bgColor') || '#0a0a0a';
+        document.getElementById('textColor').value = localStorage.getItem('textColor') || '#ffffff';
+        document.getElementById('cardBg').value = localStorage.getItem('cardBg') || '#1a1a1a';
+        document.getElementById('cardRadius').value = localStorage.getItem('cardRadius') || '20';
+        document.getElementById('cardRadiusVal').innerText = document.getElementById('cardRadius').value + 'px';
+        document.getElementById('cardShadow').value = localStorage.getItem('cardShadow') || '0 4px 15px rgba(0,0,0,0.3)';
+        document.getElementById('cardOpacity').value = localStorage.getItem('cardOpacity') || '0.7';
+        document.getElementById('fontFamily').value = localStorage.getItem('fontFamily') || "'Inter', sans-serif";
+        document.getElementById('titleFont').value = localStorage.getItem('titleFont') || "'Bebas Neue', sans-serif";
+        document.getElementById('animSpeed').value = localStorage.getItem('animSpeed') || '0.3';
+        document.getElementById('animSpeedVal').innerText = document.getElementById('animSpeed').value + 's';
+        document.getElementById('glassBlur').value = localStorage.getItem('glassBlur') || '20';
+        document.getElementById('glassBlurVal').innerText = document.getElementById('glassBlur').value + 'px';
+        document.getElementById('blurIntensity').value = localStorage.getItem('blurIntensity') || '80';
+        document.getElementById('blobOpacity').value = localStorage.getItem('blobOpacity') || '0.5';
+        document.getElementById('cardTranslate').value = localStorage.getItem('cardTranslate') || '8';
+        document.getElementById('borderWidth').value = localStorage.getItem('borderWidth') || '1';
+        document.getElementById('ashToggle').value = localStorage.getItem('ashToggle') || 'on';
+        document.getElementById('liquidToggle').value = localStorage.getItem('liquidToggle') || 'on';
+        applyCustomization();
+    }
+    
+    document.getElementById('accentColor').addEventListener('input', applyCustomization);
+    document.getElementById('bgColor').addEventListener('input', applyCustomization);
+    document.getElementById('textColor').addEventListener('input', applyCustomization);
+    document.getElementById('cardBg').addEventListener('input', applyCustomization);
+    document.getElementById('cardRadius').addEventListener('input', () => { document.getElementById('cardRadiusVal').innerText = document.getElementById('cardRadius').value + 'px'; applyCustomization(); });
+    document.getElementById('cardShadow').addEventListener('change', applyCustomization);
+    document.getElementById('cardOpacity').addEventListener('input', applyCustomization);
+    document.getElementById('fontFamily').addEventListener('change', applyCustomization);
+    document.getElementById('titleFont').addEventListener('change', applyCustomization);
+    document.getElementById('animSpeed').addEventListener('input', () => { document.getElementById('animSpeedVal').innerText = document.getElementById('animSpeed').value + 's'; applyCustomization(); });
+    document.getElementById('glassBlur').addEventListener('input', () => { document.getElementById('glassBlurVal').innerText = document.getElementById('glassBlur').value + 'px'; applyCustomization(); });
+    document.getElementById('blurIntensity').addEventListener('input', applyCustomization);
+    document.getElementById('blobOpacity').addEventListener('input', applyCustomization);
+    document.getElementById('cardTranslate').addEventListener('input', applyCustomization);
+    document.getElementById('borderWidth').addEventListener('input', applyCustomization);
+    document.getElementById('ashToggle').addEventListener('change', applyCustomization);
+    document.getElementById('liquidToggle').addEventListener('change', applyCustomization);
+    document.getElementById('resetCustomBtn').addEventListener('click', () => { localStorage.clear(); loadCustomization(); });
     
     // ВКЛАДКИ
     function switchTab(tabId) {
@@ -455,7 +696,7 @@
     
     function escapeHtml(str) { return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
     
-    loadSettings();
+    loadCustomization();
     loadNews();
 </script>
 </body>
