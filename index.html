@@ -2,413 +2,254 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRIMSON RP</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
             background: #000;
             color: #fff;
             min-height: 100vh;
         }
-
         body.font-small { font-size: 12px; }
         body.font-medium { font-size: 14px; }
         body.font-large { font-size: 16px; }
         body.no-animations * { animation: none !important; transition: none !important; }
 
         /* ЖИДКОЕ СТЕКЛО */
-        .liquid-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            overflow: hidden;
+        .liquid-glass {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(125deg, #0a0a0a, #1a0a0a, #0a0a0a);
+            transition: opacity 0.3s;
+        }
+        .liquid-glass.hidden { opacity: 0; }
+        .color-layer {
+            position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
+            background: radial-gradient(circle at 30% 40%, rgba(30,30,30,0.8), rgba(10,10,10,0.9)),
+                        radial-gradient(circle at 70% 60%, rgba(50,50,50,0.5), transparent);
+            animation: slowShift 20s ease-in-out infinite;
+        }
+        @keyframes slowShift {
+            0% { transform: translate(0,0) rotate(0deg); }
+            33% { transform: translate(3%,2%) rotate(2deg); }
+            66% { transform: translate(-2%,4%) rotate(-1deg); }
+            100% { transform: translate(0,0) rotate(0deg); }
         }
         .blob {
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(150,150,150,0.1) 0%, rgba(80,80,80,0.03) 50%, transparent 70%);
-            border-radius: 50%;
-            filter: blur(60px);
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5;
             animation: floatBlob 18s ease-in-out infinite;
         }
-        .blob:nth-child(1) { top: -200px; left: -200px; }
-        .blob:nth-child(2) { bottom: -200px; right: -200px; animation-delay: -6s; width: 600px; }
-        .blob:nth-child(3) { top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: -12s; width: 700px; }
+        .blob:nth-child(1) { width: 500px; height: 500px; background: #1a1a1a; top: -150px; left: -150px; }
+        .blob:nth-child(2) { width: 600px; height: 600px; background: #2a2a2a; bottom: -200px; right: -200px; animation-delay: -6s; }
+        .blob:nth-child(3) { width: 450px; height: 450px; background: #151515; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: -12s; }
         @keyframes floatBlob {
-            0%, 100% { transform: translate(0,0) scale(1); }
-            33% { transform: translate(30px,-30px) scale(1.05); }
-            66% { transform: translate(-20px,20px) scale(0.95); }
-        }
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.6);
-            z-index: -1;
+            0%,100% { transform: translate(0,0) scale(1); }
+            33% { transform: translate(40px,-30px) scale(1.1); }
+            66% { transform: translate(-30px,40px) scale(0.95); }
         }
 
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 16px;
-            position: relative;
-            z-index: 1;
+        /* ПЕПЕЛ */
+        .ash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; overflow: hidden; }
+        .ash.hidden { display: none; }
+        .ash-particle {
+            position: absolute; background: rgba(255,255,255,0.6); border-radius: 50%;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0.7; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
 
-        /* ВКЛАДКИ С ПРОКРУТКОЙ */
-        .tabs-wrapper {
-            overflow-x: auto;
-            white-space: nowrap;
-            scrollbar-width: thin;
-            margin-bottom: 20px;
+        .glass-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2;
+            backdrop-filter: blur(8px) brightness(0.7);
+            pointer-events: none;
         }
-        .tabs-wrapper::-webkit-scrollbar { height: 3px; }
-        .tabs {
-            display: inline-flex;
-            gap: 8px;
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 60px;
-            padding: 6px;
-        }
+        .glass-overlay.hidden { backdrop-filter: none; }
+
+        .container { position: relative; z-index: 3; max-width: 700px; margin: 0 auto; padding: 16px; min-height: 100vh; }
+        .tabs-wrapper { overflow-x: auto; white-space: nowrap; margin-bottom: 20px; }
+        .tabs { display: inline-flex; gap: 8px; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 60px; padding: 6px; }
         .tab {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 13px;
-            font-weight: 600;
-            background: transparent;
-            border: none;
-            color: rgba(255,255,255,0.5);
-            cursor: pointer;
-            border-radius: 50px;
-            transition: 0.3s;
+            display: inline-block; padding: 10px 20px; font-size: 13px; font-weight: 600;
+            background: transparent; border: none; color: rgba(255,255,255,0.5);
+            cursor: pointer; border-radius: 50px; transition: all 0.3s;
         }
-        .tab.active {
-            background: rgba(255,255,255,0.95);
-            color: #000;
-        }
-        .tab:active { transform: scale(0.96); }
-
-        .page { display: none; animation: fadeIn 0.3s ease; }
+        .tab:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+        .tab.active { background: rgba(255,255,255,0.95); color: #000; transform: scale(1.02); }
+        .page { display: none; animation: fadeIn 0.4s; }
         .page.active-page { display: block; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .glass {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 20px;
-            border: 0.5px solid rgba(255,255,255,0.1);
-            margin-bottom: 16px;
+            background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); border-radius: 24px;
+            padding: 20px; border: 0.5px solid rgba(255,255,255,0.1); margin-bottom: 16px;
+            transition: all 0.3s;
         }
-
-        h2 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 32px;
-            letter-spacing: 2px;
-            margin-bottom: 16px;
-        }
-
-        /* ПОИСК */
+        .glass:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.2); }
+        h2 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 2px; margin-bottom: 16px; }
         .search-box { margin-bottom: 20px; }
         .search-input {
-            width: 100%;
-            padding: 14px 18px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 60px;
-            color: #fff;
-            font-size: 14px;
+            width: 100%; padding: 14px 18px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 60px; color: #fff; font-size: 14px;
         }
-        .search-input:focus { outline: none; border-color: rgba(255,255,255,0.3); }
-
-        /* ФИЛЬТР ТЕГОВ */
-        .tags-filter {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
+        .tags-filter { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
         .tag-filter {
-            padding: 6px 14px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 40px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: 0.2s;
+            padding: 6px 14px; background: rgba(255,255,255,0.05); border-radius: 40px;
+            font-size: 12px; cursor: pointer; transition: all 0.2s;
         }
-        .tag-filter:hover { background: rgba(255,255,255,0.15); }
+        .tag-filter:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); }
         .tag-filter.active { background: #fff; color: #000; }
-
-        /* НОВОСТИ */
         .news-grid { display: flex; flex-direction: column; gap: 16px; }
         .news-card {
-            background: rgba(20,20,20,0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: 0.3s;
+            background: rgba(20,20,20,0.5); backdrop-filter: blur(10px); border-radius: 20px;
+            padding: 20px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s;
         }
-        .news-card.read-mode {
-            background: #000;
-            backdrop-filter: none;
-        }
-        .read-mode .news-media,
-        .read-mode .news-votes,
-        .read-mode .news-tags,
-        .read-mode .star-btn {
-            display: none;
-        }
-        .read-mode .news-content {
-            font-size: 18px;
-            line-height: 1.8;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .news-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 10px;
-        }
+        .news-card:hover { transform: translateX(8px); border-color: rgba(255,255,255,0.3); }
+        .news-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px; }
         .news-title { font-size: 18px; font-weight: 700; }
         .star-btn {
-            background: none;
-            border: none;
-            color: rgba(255,255,255,0.3);
-            font-size: 22px;
-            cursor: pointer;
+            background: none; border: none; color: rgba(255,255,255,0.3); font-size: 22px;
+            cursor: pointer; transition: all 0.2s;
         }
+        .star-btn:hover { transform: scale(1.2); color: #ffcc00; }
         .star-btn.active { color: #ffcc00; }
         .news-date { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
         .news-content { color: rgba(255,255,255,0.8); line-height: 1.5; }
-        .news-media {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 15px 0;
-        }
-        .media-item img, .media-item video {
-            max-width: 100%;
-            max-height: 200px;
-            border-radius: 12px;
-        }
-        .news-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin: 12px 0;
-        }
+        .news-media { display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0; }
+        .news-media img, .news-media video { max-width: 100%; max-height: 200px; border-radius: 12px; }
+        .news-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
         .news-tag {
-            padding: 4px 10px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 20px;
-            font-size: 10px;
-            cursor: pointer;
+            padding: 4px 10px; background: rgba(255,255,255,0.08); border-radius: 20px;
+            font-size: 10px; cursor: pointer; transition: all 0.2s;
         }
-        .news-votes {
-            display: flex;
-            gap: 15px;
-            margin-top: 12px;
-        }
+        .news-tag:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+        .news-votes { display: flex; gap: 15px; margin-top: 12px; }
         .vote-btn {
-            background: none;
-            border: none;
-            color: rgba(255,255,255,0.5);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            background: none; border: none; color: rgba(255,255,255,0.5);
+            cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.2s;
         }
-        .vote-btn:hover { color: #fff; }
+        .vote-btn:hover { color: #fff; transform: scale(1.1); }
+        .vote-btn.disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* АДМИНКА */
         .admin-login { max-width: 300px; margin: 50px auto; text-align: center; }
         .admin-login input {
-            width: 100%;
-            padding: 14px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 60px;
-            color: #fff;
-            margin-bottom: 15px;
-            text-align: center;
+            width: 100%; padding: 14px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 60px; color: #fff;
+            margin-bottom: 15px; text-align: center;
         }
         input, textarea {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            color: #fff;
+            width: 100%; padding: 12px; margin: 8px 0;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px; color: #fff;
         }
         .btn {
-            padding: 12px 24px;
-            background: rgba(255,255,255,0.95);
-            color: #000;
-            border: none;
-            border-radius: 60px;
-            font-weight: 600;
-            cursor: pointer;
+            padding: 12px 24px; background: rgba(255,255,255,0.95); color: #000;
+            border: none; border-radius: 60px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s;
         }
+        .btn:hover { transform: translateY(-2px); }
         .delete-btn { background: rgba(150,0,0,0.8); color: #fff; margin-top: 10px; }
         .admin-news-item {
-            background: rgba(20,20,20,0.6);
-            padding: 16px;
-            margin-bottom: 12px;
-            border-radius: 20px;
+            background: rgba(20,20,20,0.6); padding: 16px; margin-bottom: 12px; border-radius: 20px;
         }
-        .media-preview {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 10px 0;
-        }
-        .media-preview-item {
-            position: relative;
-            display: inline-block;
-        }
-        .media-preview-item img, .media-preview-item video {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
+        .media-preview { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; }
+        .media-preview-item { position: relative; display: inline-block; }
+        .media-preview-item img, .media-preview-item video { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
         .remove-media {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: red;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
+            position: absolute; top: -8px; right: -8px; background: red; border-radius: 50%;
+            width: 20px; height: 20px; cursor: pointer; text-align: center; line-height: 18px;
+            font-size: 14px; color: white;
         }
 
         .setting-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         select {
-            padding: 8px 16px;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            border-radius: 40px;
-            color: #fff;
+            padding: 8px 16px; background: rgba(255,255,255,0.1);
+            border: none; border-radius: 40px; color: #fff; cursor: pointer;
         }
+        .toggle-btn {
+            width: 50px; height: 26px; background: rgba(255,255,255,0.2);
+            border-radius: 30px; cursor: pointer; position: relative; transition: 0.3s;
+        }
+        .toggle-btn.active { background: #fff; }
+        .toggle-slider {
+            position: absolute; width: 22px; height: 22px; background: #000;
+            border-radius: 50%; top: 2px; left: 3px; transition: 0.3s;
+        }
+        .toggle-btn.active .toggle-slider { transform: translateX(24px); background: #000; }
 
+        .creator-card {
+            background: rgba(255,255,255,0.03); border-radius: 16px; padding: 12px; margin-top: 10px; transition: all 0.3s;
+        }
+        .creator-card:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); }
         footer { text-align: center; padding: 20px; color: rgba(255,255,255,0.3); font-size: 11px; }
         @media (max-width: 480px) { .container { padding: 12px; } .tab { padding: 8px 14px; } }
     </style>
 </head>
 <body>
 
-<div class="liquid-bg"><div class="blob"></div><div class="blob"></div><div class="blob"></div></div>
+<div class="liquid-glass" id="liquidGlass"><div class="color-layer"></div><div class="blob"></div><div class="blob"></div><div class="blob"></div></div>
+<div class="ash" id="ashContainer"></div>
+<div class="glass-overlay" id="glassOverlay"></div>
 
 <div class="container">
-    <div class="tabs-wrapper">
-        <div class="tabs">
-            <button class="tab active" data-tab="home">ГЛАВНАЯ</button>
-            <button class="tab" data-tab="news">НОВОСТИ</button>
-            <button class="tab" data-tab="myfeed">МОЯ ЛЕНТА</button>
-            <button class="tab" data-tab="favorites">ИЗБРАННОЕ</button>
-            <button class="tab" data-tab="settings">НАСТРОЙКИ</button>
-            <button class="tab" data-tab="admin" id="adminTab" style="display:none;">АДМИН</button>
-        </div>
-    </div>
+    <div class="tabs-wrapper"><div class="tabs">
+        <button class="tab active" data-tab="home">ГЛАВНАЯ</button>
+        <button class="tab" data-tab="news">НОВОСТИ</button>
+        <button class="tab" data-tab="myfeed">МОЯ ЛЕНТА</button>
+        <button class="tab" data-tab="favorites">ИЗБРАННОЕ</button>
+        <button class="tab" data-tab="settings">НАСТРОЙКИ</button>
+        <button class="tab" data-tab="admin" id="adminTab" style="display:none;">АДМИН</button>
+    </div></div>
 
     <div class="pages-container">
-        <!-- ГЛАВНАЯ -->
         <div class="page active-page" id="homePage">
             <div class="glass">
                 <h2>CRIMSON RP</h2>
-                <p>Строгий ролевой проект. Погрузись в мир криминала и власти.</p>
+                <p style="line-height: 1.5;">Строгий ролевой проект. Погрузись в мир криминала и власти.</p>
+                <div style="margin-top: 25px;">
+                    <h3 style="font-size: 18px; margin-bottom: 15px;">📖 О ПРОЕКТЕ</h3>
+                    <p style="color: rgba(255,255,255,0.7); line-height: 1.6;">Crimson RP — ролевой проект с уникальной экономикой и системой криминала.</p>
+                    <div class="creator-card"><span style="color: rgba(255,255,255,0.5);">👑 Создатель проекта:</span><span style="margin-left: 10px;">Advantage</span></div>
+                    <div class="creator-card"><span style="color: rgba(255,255,255,0.5);">💻 Создатель сайта:</span><span style="margin-left: 10px;">HoFiLiOn</span></div>
+                </div>
             </div>
         </div>
 
-        <!-- НОВОСТИ -->
         <div class="page" id="newsPage">
             <h2>НОВОСТИ</h2>
-            <div class="search-box">
-                <input type="text" class="search-input" id="searchInput" placeholder="🔍 Поиск... (введите АДМИНКА для входа)">
-            </div>
+            <div class="search-box"><input type="text" class="search-input" id="searchInput" placeholder="🔍 Поиск... (введите АДМИНКА для входа)"></div>
             <div class="tags-filter" id="tagsFilter"></div>
             <div class="news-grid" id="newsGrid"></div>
         </div>
 
-        <!-- МОЯ ЛЕНТА (по подписке) -->
-        <div class="page" id="myfeedPage">
-            <h2>МОЯ ЛЕНТА</h2>
-            <div class="tags-filter" id="subscribedTagsFilter"></div>
-            <div class="news-grid" id="myfeedGrid"></div>
-        </div>
+        <div class="page" id="myfeedPage"><h2>МОЯ ЛЕНТА</h2><div class="news-grid" id="myfeedGrid"></div></div>
+        <div class="page" id="favoritesPage"><h2>ИЗБРАННОЕ</h2><div class="news-grid" id="favoritesGrid"></div></div>
 
-        <!-- ИЗБРАННОЕ -->
-        <div class="page" id="favoritesPage">
-            <h2>ИЗБРАННОЕ</h2>
-            <div class="news-grid" id="favoritesGrid"></div>
-        </div>
-
-        <!-- НАСТРОЙКИ -->
         <div class="page" id="settingsPage">
             <div class="glass">
                 <h2>НАСТРОЙКИ</h2>
-                <div class="setting-item">
-                    <span>📏 Размер шрифта</span>
-                    <select id="fontSizeSelect">
-                        <option value="small">Маленький</option>
-                        <option value="medium" selected>Средний</option>
-                        <option value="large">Большой</option>
-                    </select>
-                </div>
-                <div class="setting-item">
-                    <span>✨ Анимации</span>
-                    <label><input type="checkbox" id="animationsToggle" checked> Включить</label>
-                </div>
-                <div class="setting-item">
-                    <span>📖 Режим чтения</span>
-                    <label><input type="checkbox" id="readModeToggle"> Включить</label>
-                </div>
-                <button class="btn" id="resetBtn" style="margin-top:20px;">Сбросить настройки</button>
+                <div class="setting-item"><span>💧 Жидкое стекло</span><div class="toggle-btn" id="glassToggle"><div class="toggle-slider"></div></div></div>
+                <div class="setting-item"><span>🌫️ Падающий пепел</span><div class="toggle-btn" id="ashToggle"><div class="toggle-slider"></div></div></div>
+                <div class="setting-item"><span>✨ Анимации</span><div class="toggle-btn" id="animationsToggle"><div class="toggle-slider"></div></div></div>
+                <div class="setting-item"><span>📏 Размер шрифта</span><select id="fontSizeSelect"><option value="small">Маленький</option><option value="medium" selected>Средний</option><option value="large">Большой</option></select></div>
+                <button class="btn" id="resetBtn" style="margin-top:20px;">Сбросить</button>
             </div>
         </div>
 
-        <!-- АДМИНКА -->
         <div class="page" id="adminPage">
             <div class="glass">
                 <h2>АДМИН-ПАНЕЛЬ</h2>
                 <input type="text" id="newsTitle" placeholder="Заголовок">
                 <textarea id="newsContent" rows="3" placeholder="Текст новости"></textarea>
                 <input type="text" id="newsTags" placeholder="Теги (через запятую)">
-                <div id="mediaInputs">
-                    <div style="display:flex; gap:10px; margin:10px 0;">
-                        <input type="file" accept="image/*,video/*" id="mediaFile" style="display:none;" multiple>
-                        <button class="btn" onclick="document.getElementById('mediaFile').click()">📎 Выбрать фото/видео</button>
-                    </div>
-                </div>
+                <p style="font-size:12px; color:rgba(255,255,255,0.5);">Максимум 5 файлов</p>
+                <input type="file" accept="image/*,video/*" id="mediaFile" multiple>
                 <div class="media-preview" id="mediaPreview"></div>
                 <button class="btn" onclick="addNews()">➕ Опубликовать</button>
             </div>
@@ -423,67 +264,118 @@
     let newsData = [];
     let currentSearch = '';
     let currentTagFilter = 'all';
-    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    let subscriptions = JSON.parse(localStorage.getItem('subscriptions') || '[]');
-    let readMode = localStorage.getItem('readMode') === 'true';
+    let favorites = [];
+    let subscriptions = [];
+    let userVotes = {};
+    let userId = localStorage.getItem('userId');
     let mediaFiles = [];
-
-    // Загрузка новостей
+    
+    if (!userId) { userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); localStorage.setItem('userId', userId); }
+    
     async function loadNews() {
         const res = await fetch('/api/news');
         newsData = await res.json();
-        renderTagsFilter();
-        filterAndDisplayNews();
-        renderAdminNews();
+        renderTags();
+        filterNews();
+        await loadFavorites();
+        await loadSubscriptions();
+        await loadVotes();
+        renderAdmin();
+    }
+    
+    async function loadFavorites() {
+        const res = await fetch('/api/user/favorites', { headers: { 'X-User-Id': userId } });
+        favorites = await res.json();
+        renderFavorites(); filterNews(); renderMyFeed();
+    }
+    
+    async function loadSubscriptions() {
+        const res = await fetch('/api/user/subscriptions', { headers: { 'X-User-Id': userId } });
+        subscriptions = await res.json();
         renderMyFeed();
-        renderFavorites();
     }
-
-    function renderTagsFilter() {
+    
+    async function loadVotes() {
+        for (let n of newsData) {
+            const res = await fetch(`/api/user/vote/${n.id}`, { headers: { 'X-User-Id': userId } });
+            const data = await res.json();
+            if (data.hasVoted) userVotes[n.id] = data.voteType;
+        }
+    }
+    
+    async function toggleFavorite(id) {
+        if (favorites.includes(id)) {
+            await fetch('/api/user/favorites', { method: 'DELETE', headers: { 'X-User-Id': userId, 'Content-Type': 'application/json' }, body: JSON.stringify({ news_id: id }) });
+            favorites = favorites.filter(f => f !== id);
+        } else {
+            await fetch('/api/user/favorites', { method: 'POST', headers: { 'X-User-Id': userId, 'Content-Type': 'application/json' }, body: JSON.stringify({ news_id: id }) });
+            favorites.push(id);
+        }
+        renderFavorites(); filterNews(); renderMyFeed();
+    }
+    
+    async function subscribeToTag(tag) {
+        if (subscriptions.includes(tag)) {
+            await fetch('/api/user/subscriptions', { method: 'DELETE', headers: { 'X-User-Id': userId, 'Content-Type': 'application/json' }, body: JSON.stringify({ tag }) });
+            subscriptions = subscriptions.filter(t => t !== tag);
+        } else {
+            await fetch('/api/user/subscriptions', { method: 'POST', headers: { 'X-User-Id': userId, 'Content-Type': 'application/json' }, body: JSON.stringify({ tag }) });
+            subscriptions.push(tag);
+        }
+        renderMyFeed();
+    }
+    
+    async function vote(id, type) {
+        if (userVotes[id]) { alert('Вы уже голосовали'); return; }
+        const res = await fetch(`/api/news/${id}/vote`, { method: 'POST', headers: { 'X-User-Id': userId, 'Content-Type': 'application/json' }, body: JSON.stringify({ type }) });
+        if (res.ok) { userVotes[id] = type; loadNews(); }
+        else { alert('Ошибка'); }
+    }
+    
+    async function addNews() {
+        const title = document.getElementById('newsTitle').value;
+        const content = document.getElementById('newsContent').value;
+        const tags = document.getElementById('newsTags').value;
+        if (!title || !content) { alert('Заполните поля'); return; }
+        await fetch('/api/news', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title, content, tags: tags ? tags.split(',').map(t=>t.trim()) : [], media: mediaFiles, secret: 'АДМИНКА' }) });
+        document.getElementById('newsTitle').value = ''; document.getElementById('newsContent').value = ''; document.getElementById('newsTags').value = '';
+        document.getElementById('mediaPreview').innerHTML = ''; mediaFiles = [];
+        loadNews();
+    }
+    
+    async function deleteNews(id) {
+        if (confirm('Удалить?')) {
+            await fetch(`/api/news/${id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ secret: 'АДМИНКА' }) });
+            loadNews();
+        }
+    }
+    
+    function renderTags() {
         const allTags = [...new Set(newsData.flatMap(n => n.tags || []))];
-        const container = document.getElementById('tagsFilter');
-        container.innerHTML = `<div class="tag-filter ${currentTagFilter === 'all' ? 'active' : ''}" onclick="setTagFilter('all')">Все</div>` +
-            allTags.map(t => `<div class="tag-filter ${currentTagFilter === t ? 'active' : ''}" onclick="setTagFilter('${t}')">${t}</div>`).join('');
+        document.getElementById('tagsFilter').innerHTML = `<div class="tag-filter ${currentTagFilter === 'all' ? 'active' : ''}" onclick="setTag('all')">Все</div>` +
+            allTags.map(t => `<div class="tag-filter ${currentTagFilter === t ? 'active' : ''}" onclick="setTag('${t}')">${t}</div>`).join('');
     }
-
-    function setTagFilter(tag) {
-        currentTagFilter = tag;
-        filterAndDisplayNews();
-        renderTagsFilter();
-    }
-
-    function filterAndDisplayNews() {
+    
+    function setTag(tag) { currentTagFilter = tag; filterNews(); renderTags(); }
+    
+    function filterNews() {
         let filtered = [...newsData];
-        if (currentSearch) {
-            const s = currentSearch.toLowerCase();
-            filtered = filtered.filter(n => n.title.toLowerCase().includes(s) || n.content.toLowerCase().includes(s));
-        }
-        if (currentTagFilter !== 'all') {
-            filtered = filtered.filter(n => n.tags && n.tags.includes(currentTagFilter));
-        }
+        if (currentSearch) filtered = filtered.filter(n => n.title.toLowerCase().includes(currentSearch) || n.content.toLowerCase().includes(currentSearch));
+        if (currentTagFilter !== 'all') filtered = filtered.filter(n => n.tags && n.tags.includes(currentTagFilter));
         displayNews(filtered, 'newsGrid');
     }
-
-    function displayNews(newsArray, containerId) {
+    
+    function displayNews(arr, containerId) {
         const container = document.getElementById(containerId);
-        if (!newsArray.length) { container.innerHTML = '<div class="glass">Новостей нет</div>'; return; }
-        
-        container.innerHTML = newsArray.map(n => `
-            <div class="news-card ${readMode ? 'read-mode' : ''}" data-id="${n.id}">
-                <div class="news-header">
-                    <div class="news-title">${escapeHtml(n.title)}</div>
-                    <button class="star-btn ${favorites.includes(n.id) ? 'active' : ''}" onclick="toggleFavorite(${n.id})">★</button>
-                </div>
+        if (!arr.length) { container.innerHTML = '<div class="glass">Новостей нет</div>'; return; }
+        container.innerHTML = arr.map(n => `
+            <div class="news-card">
+                <div class="news-header"><div class="news-title">${escapeHtml(n.title)}</div>
+                <button class="star-btn ${favorites.includes(n.id) ? 'active' : ''}" onclick="toggleFavorite(${n.id})">★</button></div>
                 <div class="news-date">${n.date}</div>
                 <div class="news-content">${escapeHtml(n.content)}</div>
-                <div class="news-media">
-                    ${(n.media || []).map(m => m.startsWith('data:video') ? 
-                        `<video controls src="${m}"></video>` : 
-                        `<img src="${m}" loading="lazy">`).join('')}
-                </div>
-                <div class="news-tags">
-                    ${(n.tags || []).map(t => `<span class="news-tag" onclick="subscribeToTag('${t}')">#${t}</span>`).join('')}
-                </div>
+                <div class="news-media">${(n.media || []).map(m => m.startsWith('data:video') ? `<video controls src="${m}"></video>` : `<img src="${m}">`).join('')}</div>
+                <div class="news-tags">${(n.tags || []).map(t => `<span class="news-tag" onclick="subscribeToTag('${t}')">#${t}</span>`).join('')}</div>
                 <div class="news-votes">
                     <button class="vote-btn" onclick="vote(${n.id}, 'like')">👍 ${n.likes || 0}</button>
                     <button class="vote-btn" onclick="vote(${n.id}, 'dislike')">👎 ${n.dislikes || 0}</button>
@@ -491,168 +383,78 @@
             </div>
         `).join('');
     }
-
-    function renderMyFeed() {
-        const subscribedNews = newsData.filter(n => n.tags && n.tags.some(t => subscriptions.includes(t)));
-        displayNews(subscribedNews, 'myfeedGrid');
-    }
-
-    function renderFavorites() {
-        const favNews = newsData.filter(n => favorites.includes(n.id));
-        displayNews(favNews, 'favoritesGrid');
-    }
-
-    function toggleFavorite(id) {
-        if (favorites.includes(id)) {
-            favorites = favorites.filter(f => f !== id);
-        } else {
-            favorites.push(id);
-        }
-        localStorage.setItem('favorites', JSON.stringify(favorites));
-        renderFavorites();
-        filterAndDisplayNews();
-        renderMyFeed();
-    }
-
-    function subscribeToTag(tag) {
-        if (subscriptions.includes(tag)) {
-            subscriptions = subscriptions.filter(t => t !== tag);
-        } else {
-            subscriptions.push(tag);
-        }
-        localStorage.setItem('subscriptions', JSON.stringify(subscriptions));
-        renderMyFeed();
-        alert(subscriptions.includes(tag) ? `Вы подписались на #${tag}` : `Отписка от #${tag}`);
-    }
-
-    async function vote(id, type) {
-        await fetch(`/api/news/${id}/vote`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ type })
-        });
-        loadNews();
-    }
-
-    // АДМИНКА
+    
+    function renderMyFeed() { const subscribedNews = newsData.filter(n => n.tags && n.tags.some(t => subscriptions.includes(t))); displayNews(subscribedNews, 'myfeedGrid'); }
+    function renderFavorites() { const favNews = newsData.filter(n => favorites.includes(n.id)); displayNews(favNews, 'favoritesGrid'); }
+    function renderAdmin() { document.getElementById('adminNewsList').innerHTML = newsData.map(n => `<div class="admin-news-item"><strong>${escapeHtml(n.title)}</strong><div style="font-size:11px; opacity:0.6;">${n.date}</div><button class="delete-btn" onclick="deleteNews(${n.id})">Удалить</button></div>`).join(''); }
+    
     document.getElementById('mediaFile').addEventListener('change', function(e) {
         const files = Array.from(e.target.files);
+        if (mediaFiles.length + files.length > 5) { alert('Максимум 5 файлов'); return; }
         const preview = document.getElementById('mediaPreview');
-        
         files.forEach(file => {
             const reader = new FileReader();
-            reader.onload = function(ev) {
+            reader.onload = ev => {
                 mediaFiles.push(ev.target.result);
-                const div = document.createElement('div');
-                div.className = 'media-preview-item';
-                if (file.type.startsWith('image/')) {
-                    div.innerHTML = `<img src="${ev.target.result}"><div class="remove-media" onclick="this.parentElement.remove(); mediaFiles = mediaFiles.filter(m => m !== '${ev.target.result}')">✖</div>`;
-                } else {
-                    div.innerHTML = `<video src="${ev.target.result}"></video><div class="remove-media" onclick="this.parentElement.remove()">✖</div>`;
-                }
+                const div = document.createElement('div'); div.className = 'media-preview-item';
+                div.innerHTML = `<img src="${ev.target.result}"><div class="remove-media" onclick="this.parentElement.remove(); mediaFiles = mediaFiles.filter(m => m !== '${ev.target.result}')">✖</div>`;
                 preview.appendChild(div);
             };
             reader.readAsDataURL(file);
         });
     });
-
-    async function addNews() {
-        const title = document.getElementById('newsTitle').value;
-        const content = document.getElementById('newsContent').value;
-        const tags = document.getElementById('newsTags').value;
-        
-        if (!title || !content) { alert('Заполните поля'); return; }
-        
-        await fetch('/api/news', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, content, tags, media: mediaFiles, secret: 'АДМИНКА' })
-        });
-        
-        document.getElementById('newsTitle').value = '';
-        document.getElementById('newsContent').value = '';
-        document.getElementById('newsTags').value = '';
-        document.getElementById('mediaPreview').innerHTML = '';
-        mediaFiles = [];
-        loadNews();
-        alert('Новость добавлена');
-    }
-
-    async function deleteNews(id) {
-        if (confirm('Удалить?')) {
-            await fetch(`/api/news/${id}`, { method: 'DELETE' });
-            loadNews();
+    
+    document.getElementById('searchInput').addEventListener('input', (e) => { currentSearch = e.target.value.toLowerCase(); filterNews(); if (currentSearch === 'админка') { document.getElementById('adminTab').style.display = 'inline-block'; alert('Админ-панель разблокирована!'); } });
+    
+    // ПЕПЕЛ
+    function createAsh() {
+        const container = document.getElementById('ashContainer');
+        for (let i = 0; i < 60; i++) {
+            const ash = document.createElement('div'); ash.className = 'ash-particle';
+            ash.style.width = (Math.random() * 4 + 2) + 'px'; ash.style.height = ash.style.width;
+            ash.style.left = Math.random() * 100 + '%'; ash.style.animationDuration = Math.random() * 5 + 4 + 's';
+            ash.style.animationDelay = Math.random() * 10 + 's'; container.appendChild(ash);
         }
     }
-
-    function renderAdminNews() {
-        const container = document.getElementById('adminNewsList');
-        container.innerHTML = newsData.map(n => `
-            <div class="admin-news-item">
-                <strong>${escapeHtml(n.title)}</strong>
-                <div style="font-size:11px; color:rgba(255,255,255,0.5);">${n.date}</div>
-                <button class="delete-btn" onclick="deleteNews(${n.id})">Удалить</button>
-            </div>
-        `).join('');
-    }
-
-    // ПОИСК + АДМИНКА
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-        currentSearch = e.target.value;
-        filterAndDisplayNews();
-        if (currentSearch === 'АДМИНКА') {
-            document.getElementById('adminTab').style.display = 'inline-block';
-            alert('Админ-панель разблокирована!');
-        }
-    });
-
+    createAsh();
+    
     // НАСТРОЙКИ
     function loadSettings() {
+        const glass = localStorage.getItem('glassEnabled') !== 'false';
+        document.getElementById('glassToggle').classList.toggle('active', glass);
+        document.getElementById('liquidGlass').classList.toggle('hidden', !glass);
+        const ash = localStorage.getItem('ashEnabled') !== 'false';
+        document.getElementById('ashToggle').classList.toggle('active', ash);
+        document.getElementById('ashContainer').classList.toggle('hidden', !ash);
+        const animations = localStorage.getItem('animationsEnabled') !== 'false';
+        document.getElementById('animationsToggle').classList.toggle('active', animations);
+        document.body.classList.toggle('no-animations', !animations);
         const fontSize = localStorage.getItem('fontSize') || 'medium';
         document.getElementById('fontSizeSelect').value = fontSize;
         document.body.classList.remove('font-small', 'font-medium', 'font-large');
         document.body.classList.add(`font-${fontSize}`);
-        
-        const animations = localStorage.getItem('animations') !== 'disabled';
-        document.getElementById('animationsToggle').checked = animations;
-        document.body.classList.toggle('no-animations', !animations);
-        
-        readMode = localStorage.getItem('readMode') === 'true';
-        document.getElementById('readModeToggle').checked = readMode;
     }
-
-    function saveSettings() {
-        localStorage.setItem('fontSize', document.getElementById('fontSizeSelect').value);
-        localStorage.setItem('animations', document.getElementById('animationsToggle').checked ? 'enabled' : 'disabled');
-        localStorage.setItem('readMode', document.getElementById('readModeToggle').checked);
-        loadSettings();
-        filterAndDisplayNews();
-        renderMyFeed();
-        renderFavorites();
-    }
-
-    document.getElementById('fontSizeSelect').addEventListener('change', saveSettings);
-    document.getElementById('animationsToggle').addEventListener('change', saveSettings);
-    document.getElementById('readModeToggle').addEventListener('change', saveSettings);
-    document.getElementById('resetBtn').addEventListener('click', () => { localStorage.clear(); loadSettings(); });
-
-    // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
+    function saveSetting(setting, value) { localStorage.setItem(setting, value); loadSettings(); }
+    document.getElementById('glassToggle').onclick = () => saveSetting('glassEnabled', !document.getElementById('glassToggle').classList.contains('active'));
+    document.getElementById('ashToggle').onclick = () => saveSetting('ashEnabled', !document.getElementById('ashToggle').classList.contains('active'));
+    document.getElementById('animationsToggle').onclick = () => saveSetting('animationsEnabled', !document.getElementById('animationsToggle').classList.contains('active'));
+    document.getElementById('fontSizeSelect').onchange = (e) => saveSetting('fontSize', e.target.value);
+    document.getElementById('resetBtn').onclick = () => { localStorage.clear(); loadSettings(); };
+    
+    // ВКЛАДКИ
     function switchTab(tabId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
         document.getElementById(tabId + 'Page').classList.add('active-page');
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
-        if (tabId === 'news') loadNews();
+        if (tabId === 'news') filterNews();
         if (tabId === 'myfeed') renderMyFeed();
         if (tabId === 'favorites') renderFavorites();
     }
-
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.onclick = () => switchTab(tab.dataset.tab);
-    });
-
+    document.querySelectorAll('.tab').forEach(tab => { tab.onclick = () => switchTab(tab.dataset.tab); });
+    
     function escapeHtml(str) { return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
-
+    
     loadSettings();
     loadNews();
 </script>
