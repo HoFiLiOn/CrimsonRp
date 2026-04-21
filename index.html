@@ -2,702 +2,857 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRIMSON RP</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>CRIMSON RP · Role Play Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        /* ПЕРЕМЕННЫЕ КАСТОМИЗАЦИИ */
-        :root {
-            --bg-color: #0a0a0a;
-            --text-color: #ffffff;
-            --accent-color: #e31b23;
-            --accent-hover: #ff4d4d;
-            --card-bg: rgba(20,20,20,0.7);
-            --card-border: rgba(255,255,255,0.1);
-            --card-radius: 20px;
-            --card-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            --glass-bg: rgba(255,255,255,0.04);
-            --glass-blur: 20px;
-            --tab-bg: rgba(255,255,255,0.05);
-            --tab-active-bg: #ffffff;
-            --tab-active-color: #000000;
-            --font-family: 'Inter', sans-serif;
-            --title-font: 'Bebas Neue', sans-serif;
-            --animation-speed: 0.3s;
-            --blob-opacity: 0.5;
-            --blur-intensity: 80px;
-            --peach-opacity: 0.6;
-            --border-width: 1px;
-            --hover-scale: 1.02;
-            --card-translate: 8px;
-        }
-        
-        /* СТИЛЬ 1: КЛАССИКА */
-        body.style-classic { --card-radius: 8px; --card-shadow: none; --glass-blur: 0px; --card-bg: #111; }
-        
-        /* СТИЛЬ 2: НЕОН */
-        body.style-neon { --accent-color: #00ff00; --card-border: 0 0 5px #00ff00; --card-shadow: 0 0 10px rgba(0,255,0,0.3); }
-        
-        /* СТИЛЬ 3: КИБЕРПАНК */
-        body.style-cyber { --accent-color: #ff00ff; --font-family: 'Fira Code', monospace; --title-font: 'Orbitron', sans-serif; --card-radius: 0px; }
-        
-        /* СТИЛЬ 4: МИНИМАЛИЗМ */
-        body.style-minimal { --card-bg: #111; --glass-blur: 0px; --card-radius: 4px; --card-shadow: none; --tab-bg: #111; }
-        
-        /* СТИЛЬ 5: ПРЕМИУМ */
-        body.style-premium { --accent-color: #ffd700; --font-family: 'Playfair Display', serif; --card-shadow: 0 8px 30px rgba(0,0,0,0.5); --card-radius: 28px; }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
-            font-family: var(--font-family);
-            background: var(--bg-color);
-            color: var(--text-color);
-            min-height: 100vh;
-            transition: all var(--animation-speed);
+            font-family: 'Inter', sans-serif;
+            background: #050505;
+            color: #e0e0e0;
+            height: 100vh;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            --bg-primary: #050505;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #e0e0e0;
+            --text-secondary: rgba(255,255,255,0.6);
+            --accent-color: #8B0000;
+            --border-color: rgba(255,255,255,0.06);
+            --card-bg: rgba(15,15,15,0.7);
+            --tab-active-bg: rgba(255,255,255,0.9);
+            --tab-active-text: #000;
+            --shadow-sm: 0 8px 20px -6px rgba(0,0,0,0.6);
+            --shadow-md: 0 15px 35px -10px rgba(0,0,0,0.7);
+            --shadow-inset: 0 0 0 0.5px rgba(255,255,255,0.03) inset;
         }
         
-        /* ЖИДКОЕ СТЕКЛО */
-        .liquid-glass {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
-            background: var(--bg-color);
-            transition: opacity 0.3s;
-        }
-        .liquid-glass.hidden { opacity: 0; }
-        .color-layer {
-            position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
-            background: radial-gradient(circle at 30% 40%, rgba(30,30,30,0.5), transparent),
-                        radial-gradient(circle at 70% 60%, rgba(50,50,50,0.3), transparent);
-            animation: slowShift 20s ease-in-out infinite;
-        }
-        @keyframes slowShift {
-            0% { transform: translate(0,0) rotate(0deg); }
-            33% { transform: translate(3%,2%) rotate(2deg); }
-            66% { transform: translate(-2%,4%) rotate(-1deg); }
-            100% { transform: translate(0,0) rotate(0deg); }
-        }
-        .blob {
-            position: absolute; border-radius: 50%; filter: blur(var(--blur-intensity)); opacity: var(--blob-opacity);
-            animation: floatBlob 18s ease-in-out infinite;
-        }
-        .blob:nth-child(1) { width: 500px; height: 500px; background: var(--accent-color); top: -150px; left: -150px; }
-        .blob:nth-child(2) { width: 600px; height: 600px; background: var(--accent-color); bottom: -200px; right: -200px; animation-delay: -6s; }
-        .blob:nth-child(3) { width: 450px; height: 450px; background: var(--accent-color); top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: -12s; }
-        @keyframes floatBlob {
-            0%,100% { transform: translate(0,0) scale(1); }
-            33% { transform: translate(40px,-30px) scale(1.1); }
-            66% { transform: translate(-30px,40px) scale(0.95); }
-        }
-        
-        /* ПЕПЕЛ */
-        .ash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; overflow: hidden; }
-        .ash.hidden { display: none; }
-        .ash-particle {
-            position: absolute; background: rgba(255,255,255,0.6); border-radius: 50%;
-            animation: fall linear infinite;
-        }
-        @keyframes fall {
-            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0.7; }
-            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
-        }
-        
-        .glass-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2;
-            backdrop-filter: blur(var(--glass-blur)) brightness(0.7);
+        .ash-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(30,30,35,0.4) 0%, rgba(5,5,5,0.85) 100%);
+            z-index: -1;
             pointer-events: none;
         }
-        .glass-overlay.hidden { backdrop-filter: none; }
-        
-        .container { position: relative; z-index: 3; max-width: 800px; margin: 0 auto; padding: 16px; min-height: 100vh; }
-        
-        /* ВКЛАДКИ */
-        .tabs-wrapper { overflow-x: auto; white-space: nowrap; margin-bottom: 20px; }
-        .tabs { display: inline-flex; gap: 8px; background: var(--tab-bg); backdrop-filter: blur(20px); border-radius: 60px; padding: 6px; }
-        .tab {
-            display: inline-block; padding: 10px 24px; font-size: 14px; font-weight: 600;
-            background: transparent; border: none; color: rgba(255,255,255,0.5);
-            cursor: pointer; border-radius: 50px; transition: all var(--animation-speed);
-        }
-        .tab:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
-        .tab.active { background: var(--tab-active-bg); color: var(--tab-active-color); transform: scale(1.02); }
-        
-        .page { display: none; animation: fadeIn var(--animation-speed); }
-        .page.active-page { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* КАРТОЧКИ */
-        .glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border-radius: var(--card-radius);
-            padding: 24px;
-            border: var(--border-width) solid var(--card-border);
-            margin-bottom: 16px;
-            transition: all var(--animation-speed);
-            box-shadow: var(--card-shadow);
-        }
-        .glass:hover { transform: translateY(-3px); border-color: var(--accent-color); }
-        
-        h2 {
-            font-family: var(--title-font);
-            font-size: 32px;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            color: var(--accent-color);
+        .noise-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjciIG51bU9jdGF2ZXM9IjMiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgjZikiIG9wYWNpdHk9IjAuMDMiLz48L3N2Zz4=');
+            background-repeat: repeat;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: -1;
         }
         
-        h3 { font-size: 18px; margin-bottom: 15px; color: var(--text-color); }
-        
-        /* ПОИСК */
-        .search-input {
-            width: 100%; padding: 14px 18px; background: rgba(255,255,255,0.05);
-            border: var(--border-width) solid var(--card-border); border-radius: 60px; color: var(--text-color);
-            font-size: 14px; transition: all var(--animation-speed);
+        .bg-custom { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-size: cover; 
+            background-position: center; 
+            z-index: -2; 
+            opacity: 0.25;
+            transition: opacity 0.3s ease;
         }
-        .search-input:focus { outline: none; border-color: var(--accent-color); background: rgba(255,255,255,0.1); }
-        
-        /* ТЕГИ */
-        .tags-filter { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-        .tag-filter {
-            padding: 6px 14px; background: rgba(255,255,255,0.05); border-radius: 40px;
-            font-size: 12px; cursor: pointer; transition: all var(--animation-speed);
-            border: var(--border-width) solid transparent;
+        .bg-gradient { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: radial-gradient(circle at 30% 40%, #1a1a1f 0%, #030303 100%);
+            z-index: -3;
         }
-        .tag-filter:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); border-color: var(--accent-color); }
-        .tag-filter.active { background: var(--accent-color); color: #fff; }
         
-        /* НОВОСТИ */
-        .news-grid { display: flex; flex-direction: column; gap: 16px; }
-        .news-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: var(--card-radius);
+        * {
+            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        
+        /* МОДАЛЬНЫЕ ОКНА */
+        .modal-overlay, .changelog-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(12px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-overlay.active, .changelog-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-container {
+            width: 90%;
+            max-width: 480px;
+            max-height: 85vh;
+            background: rgba(12,12,15,0.95);
+            backdrop-filter: blur(24px);
+            border-radius: 32px;
+            border: 0.5px solid rgba(255,255,255,0.08);
+            box-shadow: var(--shadow-md), var(--shadow-inset);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: scale(0.96);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .modal-overlay.active .modal-container, .changelog-modal-overlay.active .modal-container {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 20px;
+            border-bottom: 0.5px solid rgba(255,255,255,0.08);
+        }
+        .modal-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #aaa 80%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .modal-close:hover { background: rgba(255,255,255,0.12); transform: rotate(90deg); }
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
             padding: 20px;
-            border: var(--border-width) solid var(--card-border);
-            transition: all var(--animation-speed);
-            box-shadow: var(--card-shadow);
+            scrollbar-width: thin;
         }
-        .news-card:hover { transform: translateX(var(--card-translate)); border-color: var(--accent-color); background: rgba(30,30,30,0.6); }
-        
-        .news-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px; }
-        .news-title { font-size: 20px; font-weight: 700; color: var(--accent-color); }
-        .star-btn {
-            background: none; border: none; color: rgba(255,255,255,0.3); font-size: 24px;
-            cursor: pointer; transition: all var(--animation-speed);
+        .modal-body::-webkit-scrollbar { width: 4px; }
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 0.5px solid rgba(255,255,255,0.08);
+            display: flex;
+            gap: 12px;
         }
-        .star-btn:hover { transform: scale(1.2); color: #ffcc00; }
-        .star-btn.active { color: #ffcc00; }
-        
-        .news-date { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
-        .news-content { color: var(--text-color); line-height: 1.6; opacity: 0.9; }
-        .news-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
-        .news-tag {
-            padding: 4px 12px; background: rgba(255,255,255,0.08); border-radius: 40px;
-            font-size: 11px; cursor: pointer; transition: all var(--animation-speed);
-            border: var(--border-width) solid transparent;
-        }
-        .news-tag:hover { background: var(--accent-color); transform: translateY(-2px); }
-        
-        .news-votes { display: flex; gap: 15px; margin-top: 12px; }
-        .vote-btn {
-            background: none; border: none; color: rgba(255,255,255,0.5);
-            cursor: pointer; display: flex; align-items: center; gap: 6px;
-            transition: all var(--animation-speed); padding: 5px 10px;
+        .modal-footer button {
+            flex: 1;
+            padding: 12px;
             border-radius: 40px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
         }
-        .vote-btn:hover { color: var(--accent-color); transform: scale(1.05); background: rgba(255,255,255,0.05); }
-        .vote-btn.disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-reset {
+            background: rgba(255,255,255,0.05);
+            color: #ff6b6b;
+            border: 0.5px solid rgba(255,107,107,0.3);
+        }
+        .btn-reset:hover { background: rgba(255,107,107,0.15); transform: scale(1.02); }
+        .btn-close-modal {
+            background: var(--accent-color);
+            color: white;
+        }
+        .btn-close-modal:hover { filter: brightness(1.1); transform: scale(1.02); }
         
-        /* АДМИНКА */
-        input, textarea {
-            width: 100%; padding: 12px; margin: 8px 0;
-            background: rgba(255,255,255,0.05); border: var(--border-width) solid var(--card-border);
-            border-radius: 16px; color: var(--text-color);
+        .settings-section { margin-bottom: 28px; }
+        .settings-section h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-secondary); margin-bottom: 16px; font-weight: 600; }
+        .setting-item { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .setting-item label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500; }
+        .setting-item input[type="range"] { width: 100%; height: 4px; border-radius: 4px; background: rgba(255,255,255,0.15); }
+        .setting-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent-color); }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; }
+        .music-controls { display: flex; gap: 12px; margin-top: 12px; }
+        .music-btn, .custom-file-label {
+            background: rgba(255,255,255,0.06);
+            border: 0.5px solid rgba(255,255,255,0.1);
+            padding: 8px 16px;
+            border-radius: 30px;
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
         }
-        .btn {
-            padding: 12px 24px; background: var(--accent-color); color: #fff;
-            border: none; border-radius: 60px; font-weight: 600; cursor: pointer;
-            transition: all var(--animation-speed);
-        }
-        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
-        .delete-btn { background: rgba(150,0,0,0.8); margin-top: 10px; }
+        .music-btn:hover, .custom-file-label:hover { background: rgba(255,255,255,0.12); transform: scale(1.02); }
+        .custom-file-upload { position: relative; display: inline-block; width: 100%; margin-top: 8px; }
+        .custom-file-upload input { display: none; }
         
-        .admin-news-item {
-            background: var(--card-bg); padding: 16px; margin-bottom: 12px;
-            border-radius: var(--card-radius); border: var(--border-width) solid var(--card-border);
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255,255,255,0.15);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .container { max-width: 500px; margin: 0 auto; padding: 16px; height: 100vh; display: flex; flex-direction: column; position: relative; z-index: 2; }
+        .header { margin-bottom: 16px; }
+        .title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .title-group {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .header h1 { font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #fff, #9ca3af); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -0.5px; }
+        .version-badge {
+            font-size: 11px;
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.05);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .settings-btn { font-size: 28px; cursor: pointer; background: none; border: none; color: var(--text-primary); padding: 8px; line-height: 1; transition: all 0.2s; }
+        .settings-btn:hover { opacity: 0.7; transform: rotate(90deg); }
+        
+        .changelog-header-btn {
+            background: rgba(255,255,255,0.05);
+            border: 0.5px solid var(--border-color);
+            padding: 6px 14px;
+            border-radius: 30px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .changelog-header-btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-1px); }
+        
+        .tabs { display: flex; gap: 6px; background: rgba(10,10,12,0.6); backdrop-filter: blur(20px); border-radius: 60px; padding: 6px; margin-bottom: 20px; border: 0.5px solid var(--border-color); overflow-x: auto; scrollbar-width: none; box-shadow: var(--shadow-sm), var(--shadow-inset); }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab { flex: 1; padding: 10px 12px; text-align: center; font-size: 11px; font-weight: 600; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; border-radius: 50px; transition: all 0.3s; white-space: nowrap; }
+        .tab:hover { background: rgba(255,255,255,0.08); transform: translateY(-1px); }
+        .tab.active { background: var(--tab-active-bg); color: var(--tab-active-text); box-shadow: var(--shadow-sm); }
+        
+        .pages-container { flex: 1; overflow-y: auto; scrollbar-width: none; }
+        .pages-container::-webkit-scrollbar { display: none; }
+        .page { display: none; animation: fadeInUp 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
+        .page.active-page { display: block; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .glass { background: rgba(12,12,15,0.7); backdrop-filter: blur(20px); border-radius: 28px; padding: 24px; border: 0.5px solid rgba(255,255,255,0.06); box-shadow: var(--shadow-md), var(--shadow-inset); margin-bottom: 16px; transition: transform 0.25s, box-shadow 0.25s; }
+        .glass:hover { transform: translateY(-3px); box-shadow: var(--shadow-md), 0 20px 40px -12px rgba(0,0,0,0.6); }
+        h2 { font-size: 22px; font-weight: 600; margin-bottom: 16px; background: linear-gradient(135deg, #fff, #ccc); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        h3 { font-size: 16px; font-weight: 600; margin: 20px 0 12px; color: var(--text-primary); }
+        p, li, .rule-desc, .job-item, .news-text, .tg-desc, .changelog-list li, .modal-body, .setting-item label, .version-badge, .sub-text { font-size: 14px; line-height: 1.5; }
+        
+        .hero-stats { text-align: center; padding: 20px 0 16px; }
+        .main-counter { font-size: 80px; font-weight: 800; background: linear-gradient(135deg, #fff, #ffd700, #ff8c00); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1; letter-spacing: -2px; }
+        .main-label { font-size: 16px; text-transform: uppercase; letter-spacing: 3px; color: var(--text-secondary); margin-top: 8px; }
+        .sub-text { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 6px; }
+        .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 24px; }
+        .feature-item { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); padding: 18px 12px; border-radius: 24px; text-align: center; border: 0.5px solid rgba(255,255,255,0.06); transition: all 0.25s; }
+        .feature-item:hover { transform: translateY(-5px); background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.12); }
+        .feature-title { font-weight: 700; margin-bottom: 6px; font-size: 16px; }
+        .feature-desc { font-size: 12px; color: var(--text-secondary); }
+        
+        .news-centered { display: flex; justify-content: center; padding: 10px 0; }
+        .news-card { background: rgba(12,12,15,0.7); backdrop-filter: blur(15px); border-radius: 28px; width: 100%; max-width: 400px; border: 0.5px solid rgba(255,255,255,0.06); overflow: hidden; box-shadow: var(--shadow-md); transition: transform 0.25s; }
+        .news-card:hover { transform: translateY(-4px); }
+        .gallery-container { position: relative; width: 100%; height: 220px; overflow: hidden; cursor: pointer; }
+        .news-main-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .news-main-img:hover { transform: scale(1.02); }
+        .news-content { padding: 20px; }
+        .news-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+        .news-text { line-height: 1.6; }
+        
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.96);
+            backdrop-filter: blur(16px);
+            z-index: 4000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+        .lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+        .lightbox-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+        .lightbox-img {
+            max-width: 90vw;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8);
+        }
+        .lightbox-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 28px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .lightbox-close:hover { transform: rotate(90deg); background: rgba(255,255,255,0.2); }
+        
+        .tg-links { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+        .tg-link { display: flex; align-items: center; gap: 14px; padding: 16px; background: rgba(0,136,204,0.08); border-radius: 24px; text-decoration: none; border: 0.5px solid rgba(0,136,204,0.3); transition: all 0.25s; backdrop-filter: blur(4px); }
+        .tg-link:hover { background: rgba(0,136,204,0.15); transform: translateX(6px); }
+        .tg-icon img { width: 28px; height: 28px; filter: brightness(0) saturate(100%) invert(47%) sepia(91%) saturate(1578%) hue-rotate(174deg) brightness(95%) contrast(94%); transition: transform 0.2s; }
+        .tg-link:hover .tg-icon img { transform: scale(1.05); }
+        .tg-info { flex: 1; }
+        .tg-name { font-weight: 700; margin-bottom: 2px; color: #0088cc; font-size: 16px; }
+        .tg-desc { font-size: 12px; color: var(--text-secondary); }
+        
+        .rule-item { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); transition: all 0.2s; }
+        .rule-item:hover { background: rgba(255,255,255,0.02); padding-left: 8px; }
+        .rule-title { font-weight: 700; margin-bottom: 4px; color: var(--text-primary); }
+        .rule-desc { line-height: 1.5; }
+        .job-category { margin: 20px 0 10px; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px; color: var(--text-primary); }
+        .job-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .job-item { padding: 8px 0; display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.06); transition: all 0.2s; }
+        .job-item:hover { padding-left: 6px; background: rgba(255,255,255,0.02); }
+        .vip-feature { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); transition: all 0.2s; }
+        .vip-feature:hover { padding-left: 8px; background: rgba(255,255,255,0.02); }
+        .price-tag { font-size: 32px; font-weight: 700; margin: 16px 0 8px; background: linear-gradient(135deg, #ffd700, #ff8c00); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        
+        .changelog-list { list-style: none; padding-left: 0; }
+        .changelog-list li { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: flex-start; gap: 12px; }
+        .changelog-list li strong { color: var(--text-primary); min-width: 70px; font-weight: 700; }
+        .changelog-list li span { flex: 1; }
+        .changelog-version-tag {
+            background: linear-gradient(135deg, #8B0000, #cc0000);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            display: inline-block;
+            margin-bottom: 16px;
         }
         
-        /* НАСТРОЙКИ КАСТОМИЗАЦИИ */
-        .settings-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;
-        }
-        .setting-group {
-            background: var(--card-bg); border-radius: var(--card-radius); padding: 16px;
-            border: var(--border-width) solid var(--card-border);
-        }
-        .setting-group label { display: block; margin-bottom: 8px; font-size: 13px; opacity: 0.7; }
-        .setting-group input, .setting-group select {
-            width: 100%; padding: 10px; background: rgba(255,255,255,0.05);
-            border: var(--border-width) solid var(--card-border); border-radius: 12px; color: var(--text-color);
-        }
-        .color-preview {
-            width: 40px; height: 40px; border-radius: 8px; margin-top: 8px;
-            border: var(--border-width) solid var(--card-border);
-        }
-        .style-badge {
-            display: inline-block; padding: 8px 16px; background: rgba(255,255,255,0.1);
-            border-radius: 40px; cursor: pointer; margin: 4px; transition: all 0.2s;
-        }
-        .style-badge:hover { background: var(--accent-color); transform: translateY(-2px); }
-        .style-badge.active { background: var(--accent-color); }
+        .rules-scroll { max-height: 55vh; overflow-y: auto; padding-right: 4px; }
+        .rules-scroll::-webkit-scrollbar { width: 3px; }
+        .rules-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        .rules-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
         
-        .creator-card {
-            background: var(--card-bg); border-radius: var(--card-radius); padding: 16px;
-            margin-top: 16px; border: var(--border-width) solid var(--card-border);
-            transition: all var(--animation-speed);
-        }
-        .creator-card:hover { transform: translateX(5px); border-color: var(--accent-color); }
-        
-        footer { text-align: center; padding: 30px; color: rgba(255,255,255,0.3); font-size: 12px; margin-top: 20px; }
-        
-        @media (max-width: 600px) {
-            .container { padding: 12px; }
-            .tab { padding: 8px 16px; font-size: 12px; }
-            .settings-grid { grid-template-columns: 1fr; }
-        }
+        footer { text-align: center; padding: 16px; margin-top: 8px; color: var(--text-secondary); font-size: 11px; opacity: 0.6; letter-spacing: 1px; }
     </style>
 </head>
 <body>
+    <div class="bg-gradient"></div>
+    <div class="bg-custom" id="bgCustom"></div>
+    <div class="ash-overlay"></div>
+    <div class="noise-texture"></div>
+    <audio id="bgMusic" loop preload="auto"></audio>
 
-<div class="liquid-glass" id="liquidGlass"><div class="color-layer"></div><div class="blob"></div><div class="blob"></div><div class="blob"></div></div>
-<div class="ash" id="ashContainer"></div>
-<div class="glass-overlay" id="glassOverlay"></div>
-
-<div class="container">
-    <div class="tabs-wrapper"><div class="tabs">
-        <button class="tab active" data-tab="home">ГЛАВНАЯ</button>
-        <button class="tab" data-tab="news">НОВОСТИ</button>
-        <button class="tab" data-tab="myfeed">МОЯ ЛЕНТА</button>
-        <button class="tab" data-tab="favorites">ИЗБРАННОЕ</button>
-        <button class="tab" data-tab="customize">КАСТОМИЗАЦИЯ</button>
-        <button class="tab" data-tab="admin" id="adminTab" style="display:none;">АДМИН</button>
-    </div></div>
-
-    <div class="pages-container">
-        <!-- ГЛАВНАЯ -->
-        <div class="page active-page" id="homePage">
-            <div class="glass">
-                <h2>CRIMSON RP</h2>
-                <p style="line-height: 1.6; font-size: 16px;">Строгий ролевой проект. Погрузись в мир криминала и власти. Каждый твой выбор имеет значение.</p>
-                <div class="creator-card">
-                    <span style="opacity: 0.6;">👑 Создатель проекта:</span>
-                    <span style="font-weight: 600; margin-left: 10px;">Advantage</span>
+    <div class="container">
+        <div class="header">
+            <div class="title-row">
+                <div class="title-group">
+                    <h1>CRIMSON RP</h1>
+                    <span class="version-badge">v1.0.5</span>
                 </div>
-                <div class="creator-card">
-                    <span style="opacity: 0.6;">💻 Создатель сайта:</span>
-                    <span style="font-weight: 600; margin-left: 10px;">HoFiLiOn</span>
-                </div>
+                <button class="settings-btn" id="settingsBtn">⋮</button>
             </div>
+            <button class="changelog-header-btn" id="changelogHeaderBtn">📋 список изменений</button>
         </div>
 
-        <!-- НОВОСТИ -->
-        <div class="page" id="newsPage">
-            <h2>НОВОСТИ</h2>
-            <div class="search-box"><input type="text" class="search-input" id="searchInput" placeholder="🔍 Поиск... (введите АДМИНКА для входа)"></div>
-            <div class="tags-filter" id="tagsFilter"></div>
-            <div class="news-grid" id="newsGrid"></div>
+        <div class="tabs" id="tabsContainer">
+            <button class="tab active" data-tab="home">ГЛАВНАЯ</button>
+            <button class="tab" data-tab="news">НОВОСТИ</button>
+            <button class="tab" data-tab="rules">ПРАВИЛА</button>
+            <button class="tab" data-tab="vip">VIP</button>
+            <button class="tab" data-tab="jobs">РАБОТЫ</button>
+            <button class="tab" data-tab="about">О НАС</button>
         </div>
 
-        <div class="page" id="myfeedPage"><h2>МОЯ ЛЕНТА</h2><div class="news-grid" id="myfeedGrid"></div></div>
-        <div class="page" id="favoritesPage"><h2>ИЗБРАННОЕ</h2><div class="news-grid" id="favoritesGrid"></div></div>
-
-        <!-- КАСТОМИЗАЦИЯ -->
-        <div class="page" id="customizePage">
-            <h2>КАСТОМИЗАЦИЯ ДИЗАЙНА</h2>
-            
-            <div class="settings-grid">
-                <div class="setting-group">
-                    <label>🎨 ГОТОВЫЕ СТИЛИ</label>
-                    <div>
-                        <span class="style-badge" onclick="applyStyle('classic')">КЛАССИКА</span>
-                        <span class="style-badge" onclick="applyStyle('neon')">НЕОН</span>
-                        <span class="style-badge" onclick="applyStyle('cyber')">КИБЕРПАНК</span>
-                        <span class="style-badge" onclick="applyStyle('minimal')">МИНИМАЛИЗМ</span>
-                        <span class="style-badge" onclick="applyStyle('premium')">ПРЕМИУМ</span>
+        <div class="pages-container" id="pagesContainer">
+            <!-- ГЛАВНАЯ -->
+            <div class="page active-page" id="homePage">
+                <div class="glass">
+                    <div class="hero-stats">
+                        <div class="main-counter">90+</div>
+                        <div class="main-label">АКТИВНЫХ ИГРОКОВ</div>
+                        <div class="sub-text">ежедневно в ролевом процессе</div>
+                    </div>
+                    <p style="text-align: center; margin-top: 8px;">CRIMSON RP — строгий ролевой проект. Погрузись в мир криминала, власти и интриг.</p>
+                    <div class="features-grid">
+                        <div class="feature-item"><div class="feature-title">Экономика</div><div class="feature-desc">Сбалансированная</div></div>
+                        <div class="feature-item"><div class="feature-title">Криминал</div><div class="feature-desc">Банды и мафии</div></div>
+                        <div class="feature-item"><div class="feature-title">Закон</div><div class="feature-desc">Полиция и мэрия</div></div>
+                        <div class="feature-item"><div class="feature-title">Недвижимость</div><div class="feature-desc">Дома и бизнесы</div></div>
                     </div>
                 </div>
-                
-                <div class="setting-group">
-                    <label>🎨 Основной цвет</label>
-                    <input type="color" id="accentColor" value="#e31b23">
-                </div>
-                <div class="setting-group">
-                    <label>🌑 Цвет фона</label>
-                    <input type="color" id="bgColor" value="#0a0a0a">
-                </div>
-                <div class="setting-group">
-                    <label>📝 Цвет текста</label>
-                    <input type="color" id="textColor" value="#ffffff">
-                </div>
-                <div class="setting-group">
-                    <label>🃏 Цвет карточек</label>
-                    <input type="color" id="cardBg" value="#1a1a1a">
-                </div>
-                
-                <div class="setting-group">
-                    <label>🔘 Скругление карточек (px)</label>
-                    <input type="range" id="cardRadius" min="0" max="40" value="20">
-                    <span id="cardRadiusVal">20px</span>
-                </div>
-                <div class="setting-group">
-                    <label>📦 Тень карточек</label>
-                    <select id="cardShadow">
-                        <option value="none">Нет</option>
-                        <option value="0 4px 15px rgba(0,0,0,0.3)">Лёгкая</option>
-                        <option value="0 8px 30px rgba(0,0,0,0.5)">Средняя</option>
-                        <option value="0 15px 40px rgba(0,0,0,0.7)">Сильная</option>
-                    </select>
-                </div>
-                <div class="setting-group">
-                    <label>💨 Прозрачность карточек</label>
-                    <input type="range" id="cardOpacity" min="0.3" max="1" step="0.05" value="0.7">
-                </div>
-                
-                <div class="setting-group">
-                    <label>🔤 Шрифт текста</label>
-                    <select id="fontFamily">
-                        <option value="'Inter', sans-serif">Inter</option>
-                        <option value="'Montserrat', sans-serif">Montserrat</option>
-                        <option value="'Fira Code', monospace">Fira Code</option>
-                        <option value="'Rajdhani', sans-serif">Rajdhani</option>
-                    </select>
-                </div>
-                <div class="setting-group">
-                    <label>✨ Шрифт заголовков</label>
-                    <select id="titleFont">
-                        <option value="'Bebas Neue', sans-serif">Bebas Neue</option>
-                        <option value="'Playfair Display', serif">Playfair Display</option>
-                        <option value="'Orbitron', sans-serif">Orbitron</option>
-                        <option value="'Inter', sans-serif">Inter</option>
-                    </select>
-                </div>
-                
-                <div class="setting-group">
-                    <label>⚡ Скорость анимаций</label>
-                    <input type="range" id="animSpeed" min="0.1" max="0.8" step="0.05" value="0.3">
-                    <span id="animSpeedVal">0.3s</span>
-                </div>
-                <div class="setting-group">
-                    <label>💎 Стекло (размытие фона, px)</label>
-                    <input type="range" id="glassBlur" min="0" max="30" value="20">
-                    <span id="glassBlurVal">20px</span>
-                </div>
-                <div class="setting-group">
-                    <label>🌀 Размытие блобов (px)</label>
-                    <input type="range" id="blurIntensity" min="30" max="150" value="80">
-                </div>
-                <div class="setting-group">
-                    <label>🎯 Прозрачность блобов</label>
-                    <input type="range" id="blobOpacity" min="0" max="1" step="0.05" value="0.5">
-                </div>
-                <div class="setting-group">
-                    <label>📏 Сдвиг карточки при ховере (px)</label>
-                    <input type="range" id="cardTranslate" min="0" max="20" value="8">
-                </div>
-                <div class="setting-group">
-                    <label>🔲 Толщина границ (px)</label>
-                    <input type="range" id="borderWidth" min="0" max="5" value="1">
-                </div>
-                
-                <div class="setting-group">
-                    <label>🌫️ Падающий пепел</label>
-                    <select id="ashToggle">
-                        <option value="on">Включён</option>
-                        <option value="off">Выключен</option>
-                    </select>
-                </div>
-                <div class="setting-group">
-                    <label>💧 Жидкое стекло</label>
-                    <select id="liquidToggle">
-                        <option value="on">Включено</option>
-                        <option value="off">Выключено</option>
-                    </select>
-                </div>
             </div>
-            <button class="btn" id="resetCustomBtn" style="margin-top: 20px; background: #555;">Сбросить настройки</button>
-        </div>
 
-        <!-- АДМИНКА -->
-        <div class="page" id="adminPage">
-            <div class="glass">
-                <h2>АДМИН-ПАНЕЛЬ</h2>
-                <input type="text" id="newsTitle" placeholder="Заголовок">
-                <textarea id="newsContent" rows="3" placeholder="Текст новости"></textarea>
-                <input type="text" id="newsTags" placeholder="Теги (через запятую)">
-                <button class="btn" onclick="addNews()">➕ Опубликовать</button>
+            <!-- НОВОСТИ -->
+            <div class="page" id="newsPage">
+                <div class="news-centered">
+                    <div class="news-card">
+                        <div class="gallery-container" id="newsGalleryImg" onclick="openLightbox()">
+                            <img class="news-main-img" id="newsImage" src="https://s10.iimage.su/s/21/gxKlEW1xN5LYTGqzYIdWVnM5fEiR0tZ9jg6IwU0vk.jpg" alt="CRIMSON RP новость" onerror="this.src='https://picsum.photos/400/220?random=1'">
+                        </div>
+                        <div class="news-content">
+                            <div class="news-title">🚨 САЙТ CRIMSON RP ЗАПУЩЕН!</div>
+                            <div class="news-text">Мы долго этого ждали, и этот момент настал! Наш новый дом в сети теперь открыт для каждого из вас. Теперь взаимодействие с сервером стало еще проще, быстрее и удобнее.<br><br>Мы рады представить наш официальный сайт. Современный интерфейс, удобная навигация и полный контроль над игровым процессом.<br><br><strong>Что тебя ждет на сайте?</strong><br>✅ Новости и обновления — узнавай обо всем первым!<br>✅ База знаний — всё, что нужно новичку и профи, в одном месте.<br><br>Удачи тебе, друг 🏁</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <h3 style="margin:20px 0 10px;">Управление новостями</h3>
-            <div id="adminNewsList"></div>
+
+            <!-- ПРАВИЛА (ПОЛНЫЕ) -->
+            <div class="page" id="rulesPage">
+                <div class="glass">
+                    <h2>📜 ПРАВИЛА ROLE PLAY</h2>
+                    <p>Соблюдайте данные правила для поддержания атмосферы и комфортной игры всех участников RP процесса.</p>
+                    <div class="rules-scroll">
+                        <div class="rule-item"><div class="rule-title">1.0 RP (Roleplay)</div><div class="rule-desc">Игра по ролям. Вы обязаны действовать в соответствии с характером, биографией и возможностями вашего персонажа.</div></div>
+                        <div class="rule-item"><div class="rule-title">1.1 NITRP (No Intent To Role Play)</div><div class="rule-desc">Нахождение на сервере без цели участия в РП-процессе (бесцельный бег, помехи другим, игнорирование атмосферы).</div></div>
+                        <div class="rule-item"><div class="rule-title">1.2 SK (Spawn Kill)</div><div class="rule-desc">Убийство или нанесение урона персонажу на месте его появления (спавна), будь то в IC или OOC контексте.</div></div>
+                        <div class="rule-item"><div class="rule-title">1.3 TK (Team Kill)</div><div class="rule-desc">Убийство членов своей фракции, банды или организации без веской РП-причины. Исключение: РП-предательство, приказ лидера (с веской причиной), устранение «крысы» внутри организации.</div></div>
+                        <div class="rule-item"><div class="rule-title">1.4 MG (Meta Gaming)</div><div class="rule-desc">Использование OOC информации (из Telegram, чата, стримов) в игровом процессе (IC). Ваш персонаж не может знать того, чего он не узнал лично в игре.</div></div>
+                        <div class="rule-item"><div class="rule-title">1.5 DM (Death Match)</div><div class="rule-desc">Убийство другого игрока без наличия на то обоснованной IC причины и предварительной РП-отыгровки конфликта.</div></div>
+                        <div class="rule-item"><div class="rule-title">1.6 BH (Bunny Hop)</div><div class="rule-desc">Передвижение прыжками для ускорения, что является нереалистичным поведением.</div></div>
+                        <div class="rule-item"><div class="rule-title">1.7 ЕПП / ЕПТ (Езда по полям / тротуарам)</div><div class="rule-desc">Использование транспорта в местах, не предназначенных для этого (если это не внедорожник или нет РП-ситуации погони). Разрешено при наличии РП-обоснования (неисправность тормозов, состояние опьянения, уход от погони на спецтехнике).</div></div>
+                        <div class="rule-item"><div class="rule-title">1.8 NLR (New Life Rule)</div><div class="rule-desc">Правило «Новой жизни». После смерти персонажа вы обязаны создать нового персонажа.</div></div>
+                        <div class="rule-item"><div class="rule-title">2.0 PG (Power Gaming)</div><div class="rule-desc">Преувеличение физических возможностей (нападение с кулаками на автомат, драка 1 против 4, игнорирование тяжелых ранений).</div></div>
+                        <div class="rule-item"><div class="rule-title">2.1 FeRP (Fear Role Play)</div><div class="rule-desc">Отсутствие страха за жизнь персонажа. Вы обязаны отыгрывать испуг, если на вас наставили пушку или угрожают расправой. Исключение — персонажи с подтвержденными психическими отклонениями в биографии или под действием препаратов (нужны док-ва).</div></div>
+                        <div class="rule-item"><div class="rule-title">2.2 LRP (Leaving Role Play)</div><div class="rule-desc">Выход из игры/запуска во время РП-ситуации (ареста, допроса, ограбления), чтобы избежать последствий, полностью запрещено. Если у вас были срочные причины, выходить разрешается.</div></div>
+                        <div class="rule-item"><div class="rule-title">2.3 RK (Revenge Kill)</div><div class="rule-desc">Убийство игрока в отместку за то, что он убил вас ранее.</div></div>
+                        <div class="rule-item"><div class="rule-title">2.4 IC-Conflict</div><div class="rule-desc">Любые агрессивные действия должны начинаться с РП-диалога или явной РП-провокации. Запрещено начинать стрельбу «молча».</div></div>
+                        
+                        <h3>🚗 ОБЩИЕ ПРАВИЛА ДОРОЖНОГО ДВИЖЕНИЯ (ОПДД)</h3>
+                        <div class="rule-item"><div class="rule-title">П 1.1.1. Принцип Взаимного Уважения</div><div class="rule-desc">Каждый участник дорожного движения обязан относиться к другим участникам с уважением и предвидеть их возможные действия, избегая агрессивного и провокационного поведения.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 1.1.2. Проактивная Оценка Рисков</div><div class="rule-desc">Водитель обязан постоянно оценивать дорожную ситуацию, идентифицировать потенциальные опасности и предпринимать действия для их предотвращения.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 1.1.3. Запрет Управления в Состоянии Утомления</div><div class="rule-desc">Управление транспортным средством запрещено при любой степени утомления, которая может снизить внимание, скорость реакции или способность адекватно оценивать дорожную ситуацию. Водитель обязан самостоятельно прекратить движение и отдохнуть.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 1.1.4. Ответственность за Техническое Состояние</div><div class="rule-desc">Водитель несет полную ответственность за надлежащее техническое состояние своего транспортного средства перед выездом и во время движения.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 1.1.5. Культура Дорожного Поведения</div><div class="rule-desc">Водитель обязан избегать любых действий, которые могут быть расценены как некультурные, мешающие или раздражающие других участников движения.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 2.1.1. Адаптивная Скорость</div><div class="rule-desc">Скорость движения должна быть выбрана не только в соответствии с установленными знаками, но и с учетом конкретных дорожных, погодных условий, видимости, плотности потока и состояния транспортного средства.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 2.1.2. Запрет Необоснованно Низкой Скорости</div><div class="rule-desc">Движение с необоснованно низкой скоростью, создающее помехи для нормального движения других транспортных средств, запрещено.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 3.1.1. Сохранение Полосы Движения</div><div class="rule-desc">Движение должно осуществляться строго по центру выбранной полосы движения, избегая необоснованных отклонений.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 3.1.2. Обеспечение Проходимости Перекрестков</div><div class="rule-desc">Запрещается выезжать на перекресток или пересечение проезжих частей, если впереди образовался затор, который вынудит водителя остановиться и создать препятствие для движения транспортных средств в поперечном направлении.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 3.1.3. Принцип "Пространственного Резерва"</div><div class="rule-desc">Водитель обязан поддерживать достаточную дистанцию до впереди идущего транспортного средства и боковой интервал до соседних транспортных средств.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 3.1.4. Опережение без Угрозы</div><div class="rule-desc">При опережении водитель обязан убедиться, что его маневр не создаст угрозы или помехи для опережаемого транспортного средства.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 4.1.1. Безусловный Приоритет Уязвимых Участников при Повороте</div><div class="rule-desc">При повороте направо или налево водитель обязан уступить дорогу всем пешеходам и велосипедистам, пересекающим проезжую часть дороги, на которую он поворачивает.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 4.1.2. Правило Поворота с Полным Обзором</div><div class="rule-desc">Перед осуществлением поворота, особенно направо, водитель обязан убедиться в отсутствии помех в "слепых зонах", внимательно осмотрев пространство рядом с автомобилем и в зеркалах.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 4.1.3. Планирование Маневра Заранее</div><div class="rule-desc">Все маневры (повороты, перестроения, остановка) должны быть спланированы и начаты заблаговременно, с обязательным использованием соответствующих световых сигналов поворота.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 5.1.1. Запрет Создания Препятствий</div><div class="rule-desc">Запрещается остановка или стоянка транспортного средства в местах, где оно может создать препятствие для движения других транспортных средств, пешеходов, доступа к зданиям, парковкам, или перекрыть обзор дорожных знаков и светофоров.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 5.1.2. Парковка Строго по Разметке</div><div class="rule-desc">При наличии разметки парковочного места, транспортное средство должно быть расположено строго в пределах этой разметки, не занимая более одного места и не создавая неудобств для соседних парковочных мест.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 5.1.3. Действия При Вынужденной Остановке</div><div class="rule-desc">В случае вынужденной остановки водитель обязан немедленно включить аварийную световую сигнализацию и, если позволяет обстановка, установить знак аварийной остановки для предупреждения других участников движения.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 6.1.1. Защитная Дистанция до Уязвимых Участников</div><div class="rule-desc">При движении рядом с пешеходами, велосипедистами или другими уязвимыми участниками дорожного движения, водитель обязан сохранять увеличенный боковой интервал (не менее 1,5 метра).</div></div>
+                        <div class="rule-item"><div class="rule-title">П 6.1.2. Целевое Использование Звукового Сигнала</div><div class="rule-desc">Звуковой сигнал может быть использован исключительно для предотвращения дорожно-транспортного происшествия или для привлечения внимания в случае крайней необходимости.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 6.1.3. Запрет Ослепления</div><div class="rule-desc">Запрещается использовать дальний свет фар или другие яркие источники света таким образом, чтобы ослеплять водителей встречных или попутных транспортных средств, а также пешеходов.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 7.1.1. Абсолютный Запрет на Использование Мобильных Устройств</div><div class="rule-desc">Использование мобильных телефонов, смартфонов, планшетов и других портативных устройств, требующих взаимодействия руками, во время движения категорически запрещено.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 7.1.2. Минимизация Внутренних Отвлечений</div><div class="rule-desc">Водитель обязан минимизировать любые внутренние отвлечения (разговоры с пассажирами, еда, напитки, поиск предметов, настройка радио и т.д.), которые могут отвлечь внимание от дорожной ситуации.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 8.1.1. Принцип Адаптации к Погодным Условиям</div><div class="rule-desc">В условиях дождя, снега, тумана, гололеда или любой другой непогоды водитель обязан значительно снизить скорость, увеличить дистанцию, усилить внимание и использовать соответствующее освещение.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 8.1.2. Безусловный Приоритет Экстренных Служб</div><div class="rule-desc">При приближении транспортных средств оперативных служб (скорая помощь, полиция, пожарная охрана) с включенными проблесковыми маячками и специальными звуковыми сигналами, водитель обязан немедленно уступить им дорогу.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 8.1.3. Обеспечение Видимости Номеров и Световых Приборов</div><div class="rule-desc">В любое время суток и при любых погодных условиях все государственные регистрационные знаки и световые приборы транспортного средства должны быть чистыми и хорошо различимыми.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 8.1.4. Экологическая Ответственность Водителя</div><div class="rule-desc">Запрещается выбрасывать мусор, окурки или любые другие предметы из транспортного средства на проезжую часть или обочину.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 8.1.5. Взаимодействие с Автоматизированными ТС</div><div class="rule-desc">Водитель обязан относиться к автоматизированным транспортным средствам (беспилотникам) как к обычным участникам движения, ожидая от них соблюдения всех правил и обеспечивая им необходимый пространственный резерв для корректной работы их систем.</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIP -->
+            <div class="page" id="vipPage">
+                <div class="glass">
+                    <h2>💎 VIP STATUS</h2>
+                    <p>Эксклюзивный статус для тех, кто ценит комфорт и превосходство.</p>
+                    <div class="price-tag">20.000.000₽</div>
+                    <p>Стоимость VIP-статуса</p>
+                    <h3>🔖 ЧТО ВХОДИТ</h3>
+                    <div class="vip-feature"><div style="font-size:32px;">🏎️</div><div><div class="vip-title">Lamborghini Gallardo</div><div class="vip-desc">Легендарный суперкар</div></div></div>
+                    <div class="vip-feature"><div style="font-size:32px;">🏠</div><div><div class="vip-title">Дом на побережье</div><div class="vip-desc">Дубровка, собственное хозяйство</div></div></div>
+                    <div class="vip-feature"><div style="font-size:32px;">💳</div><div><div class="vip-title">Premium-карта</div><div class="vip-desc">Скидка 15% на всё</div></div></div>
+                    <div class="vip-feature"><div style="font-size:32px;">🎁</div><div><div class="vip-title">3 прокрута кейсов</div><div class="vip-desc">Ежедневно</div></div></div>
+                    <p style="margin-top:20px;">По поводу покупки — на форум.</p>
+                </div>
+            </div>
+
+            <!-- РАБОТЫ (ПОЛНЫЕ) -->
+            <div class="page" id="jobsPage">
+                <div class="glass">
+                    <h2>💼 ВСЕ РАБОТЫ</h2>
+                    <p>Вскоре список работ будет пополняться.</p>
+                    
+                    <div class="job-category">🏛️ Армия</div>
+                    <div class="job-grid">
+                        <div class="job-item"><span>Призывник</span><span>10.000₽</span></div>
+                        <div class="job-item"><span>Разведчик</span><span>30.000₽</span></div>
+                        <div class="job-item"><span>Связист</span><span>35.000₽</span></div>
+                        <div class="job-item"><span>Пограничник</span><span>40.000₽</span></div>
+                        <div class="job-item"><span>Десантник</span><span>38.000₽</span></div>
+                        <div class="job-item"><span>Артиллерист</span><span>40.000₽</span></div>
+                        <div class="job-item"><span>Штурмовик</span><span>30.500₽</span></div>
+                        <div class="job-item"><span>Зенитчик</span><span>39.000₽</span></div>
+                        <div class="job-item"><span>Военный лётчик</span><span>42.000₽</span></div>
+                        <div class="job-item"><span>Военный переводчик</span><span>30.000₽</span></div>
+                        <div class="job-item"><span>Морпех</span><span>34.000₽</span></div>
+                        <div class="job-item"><span>Сапёр</span><span>38.000₽</span></div>
+                        <div class="job-item"><span>Мехвод</span><span>30.000₽</span></div>
+                        <div class="job-item"><span>Ком. Войск</span><span>50.000₽ (2 рп)</span></div>
+                    </div>
+                    
+                    <div class="job-category">🏦 Банк</div>
+                    <div class="job-grid">
+                        <div class="job-item"><span>Банкир</span><span>30.000₽</span></div>
+                        <div class="job-item"><span>Инкассатор</span><span>19.000₽</span></div>
+                        <div class="job-item"><span>Кредитор</span><span>28.000₽</span></div>
+                    </div>
+                    
+                    <div class="job-category">👔 Гражданские профессии</div>
+                    <div class="job-grid">
+                        <div class="job-item"><span>Дворник</span><span>4.000₽</span></div>
+                        <div class="job-item"><span>Водитель автобуса</span><span>8.000₽</span></div>
+                        <div class="job-item"><span>Почтальон</span><span>12.000₽</span></div>
+                        <div class="job-item"><span>Грузчик</span><span>5.000₽</span></div>
+                        <div class="job-item"><span>Дальнобойщик</span><span>15.000₽</span></div>
+                        <div class="job-item"><span>Металлург</span><span>18.000₽</span></div>
+                        <div class="job-item"><span>Курьер</span><span>16.000₽</span></div>
+                        <div class="job-item"><span>Водитель такси</span><span>цена заказа</span></div>
+                        <div class="job-item"><span>Охранник</span><span>20.000₽</span></div>
+                        <div class="job-item"><span>Шахтёр</span><span>21.000₽</span></div>
+                        <div class="job-item"><span>Лесоруб</span><span>16.000₽</span></div>
+                        <div class="job-item"><span>Рыболов</span><span>16.500₽</span></div>
+                        <div class="job-item"><span>Работник фермы</span><span>17.000₽</span></div>
+                        <div class="job-item"><span>Эвакуаторщик</span><span>19.000₽</span></div>
+                        <div class="job-item"><span>Продавец</span><span>18.000₽</span></div>
+                        <div class="job-item"><span>Заправщик</span><span>16.000₽</span></div>
+                        <div class="job-item"><span>Газовщик</span><span>19.500₽</span></div>
+                        <div class="job-item"><span>Риелтор</span><span>% от продажи</span></div>
+                        <div class="job-item"><span>Водолаз</span><span>17.000₽</span></div>
+                        <div class="job-item"><span>Электрик</span><span>27.000₽</span></div>
+                        <div class="job-item"><span>Строитель</span><span>25.000₽</span></div>
+                        <div class="job-item"><span>Археолог</span><span>26.000₽</span></div>
+                        <div class="job-item"><span>Механик</span><span>торг</span></div>
+                        <div class="job-item"><span>Заводчанин</span><span>15.000₽</span></div>
+                    </div>
+                    
+                    <div class="job-category">⚖️ Юриспруденция</div>
+                    <div class="job-grid">
+                        <div class="job-item"><span>Судья</span><span>60.000₽ (заседание)</span></div>
+                        <div class="job-item"><span>Прокурор</span><span>55.000₽ (заседание)</span></div>
+                        <div class="job-item"><span>Адвокат</span><span>цена заказа</span></div>
+                        <div class="job-item"><span>Нотариус</span><span>27.000₽</span></div>
+                    </div>
+                    
+                    <div class="job-category">✈️ Аэропорт</div>
+                    <div class="job-grid">
+                        <div class="job-item"><span>Кассир</span><span>16.000₽</span></div>
+                        <div class="job-item"><span>Пилот</span><span>24.000₽</span></div>
+                        <div class="job-item"><span>Зам. пилота</span><span>22.000₽</span></div>
+                    </div>
+                    
+                    <div class="job-category">📰 СМИ</div>
+                    <div class="job-grid"><div class="job-item"><span>Журналист</span><span>25.000₽</span></div></div>
+                    
+                    <div class="job-category">🚒 Пожарно-Спасательная Служба</div>
+                    <div class="job-grid">
+                        <div class="job-item"><span>Водитель ПМ</span><span>29.000₽</span></div>
+                        <div class="job-item"><span>Пожарник</span><span>36.000₽</span></div>
+                    </div>
+                    
+                    <div class="job-category">🚑 Медицина</div>
+                    <div class="job-grid">
+                        <div class="job-item"><span>Водитель КСП</span><span>20.000₽</span></div>
+                        <div class="job-item"><span>Фельдшер</span><span>21.000₽</span></div>
+                        <div class="job-item"><span>Травматолог</span><span>22.000₽</span></div>
+                        <div class="job-item"><span>Психиатр</span><span>27.000₽</span></div>
+                        <div class="job-item"><span>Терапевт</span><span>25.000₽</span></div>
+                        <div class="job-item"><span>Хирург</span><span>35.000₽</span></div>
+                        <div class="job-item"><span>Нарколог</span><span>33.000₽</span></div>
+                        <div class="job-item"><span>Реаниматолог</span><span>29.000₽</span></div>
+                    </div>
+                    
+                    <div class="job-category">👮 Полиция</div>
+                    <div class="job-grid">
+                        <div class="job-item"><span>Оперативник</span><span>20.000₽</span></div>
+                        <div class="job-item"><span>Участковый</span><span>25.000₽</span></div>
+                        <div class="job-item"><span>Следователь</span><span>28.000₽</span></div>
+                        <div class="job-item"><span>Сотрудник ДПС</span><span>24.000₽</span></div>
+                        <div class="job-item"><span>Киберполицейский</span><span>38.000₽</span></div>
+                        <div class="job-item"><span>Водная полиция</span><span>34.000₽</span></div>
+                        <div class="job-item"><span>Спецназовец</span><span>60.000₽</span></div>
+                    </div>
+                    
+                    <div class="job-category">🏛️ Гос. работы</div>
+                    <div class="job-grid"><div class="job-item"><span>Мэр</span><span>1.000.000₽</span></div></div>
+                    
+                    <div class="job-category">🛢️ Другие профессии</div>
+                    <div class="job-grid"><div class="job-item"><span>Нефтяник</span><span>от 100.000₽ (выкачка)</span></div></div>
+                </div>
+            </div>
+
+            <!-- О НАС -->
+            <div class="page" id="aboutPage">
+                <div class="glass">
+                    <h2>📌 О ПРОЕКТЕ</h2>
+                    <p><strong>CRIMSON RP</strong> — ролевой проект. Мы строим живое сообщество.</p>
+                    <div class="tg-links">
+                        <a href="https://t.me/+uKqXQ1aKmn4zMzVi" class="tg-link"><div class="tg-icon"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111644.png"></div><div class="tg-info"><div class="tg-name">Чат сообщества</div><div class="tg-desc">Общение, помощь, обсуждения</div></div></a>
+                        <a href="https://t.me/+gfN7uGgDoCphMjUy" class="tg-link"><div class="tg-icon"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111644.png"></div><div class="tg-info"><div class="tg-name">Новостной канал</div><div class="tg-desc">Анонсы и события</div></div></a>
+                        <a href="https://t.me/+V9pRXLb3TNRhOTcy" class="tg-link"><div class="tg-icon"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111644.png"></div><div class="tg-info"><div class="tg-name">Форум / Покупки</div><div class="tg-desc">VIP, услуги, вопросы</div></div></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>© 2026 CRIMSON RP · версия 1.0.5 | выключить музыку можно в настройках</footer>
+    </div>
+
+    <!-- ЛАЙТБОКС -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <div class="lightbox-content" onclick="event.stopPropagation()">
+            <img class="lightbox-img" id="lightboxImg" src="">
+            <div class="lightbox-close" onclick="closeLightbox()">✕</div>
         </div>
     </div>
-    <footer>© 2026 CRIMSON RP — Role Play Project</footer>
-</div>
 
-<script>
-    let newsData = [];
-    let currentSearch = '';
-    let currentTagFilter = 'all';
-    let favorites = [];
-    let subscriptions = [];
-    let userVotes = {};
-    let userId = localStorage.getItem('userId');
-    
-    if (!userId) { userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); localStorage.setItem('userId', userId); }
-    
-    // ========== API ==========
-    async function loadNews() {
-        const res = await fetch('/api/news');
-        newsData = await res.json();
-        renderTags();
-        filterNews();
-        await loadFavorites();
-        await loadSubscriptions();
-        await loadVotes();
-        renderAdmin();
-    }
-    
-    async function loadFavorites() {
-        const res = await fetch('/api/user/favorites', { headers: { 'X-User-Id': userId } });
-        favorites = await res.json();
-        renderFavorites(); filterNews(); renderMyFeed();
-    }
-    
-    async function loadSubscriptions() {
-        const res = await fetch('/api/user/subscriptions', { headers: { 'X-User-Id': userId } });
-        subscriptions = await res.json();
-        renderMyFeed();
-    }
-    
-    async function loadVotes() {
-        for (let n of newsData) {
-            const res = await fetch(`/api/user/vote/${n.id}`, { headers: { 'X-User-Id': userId } });
-            const data = await res.json();
-            if (data.hasVoted) userVotes[n.id] = data.voteType;
-        }
-    }
-    
-    async function toggleFavorite(id) {
-        if (favorites.includes(id)) {
-            await fetch('/api/user/favorites', { method: 'DELETE', headers: { 'X-User-Id': userId, 'Content-Type': 'application/json' }, body: JSON.stringify({ news_id: id }) });
-            favorites = favorites.filter(f => f !== id);
-        } else {
-            await fetch('/api/user/favorites', { method: 'POST', headers: { 'X-User-Id': userId, 'Content-Type': 'application/json' }, body: JSON.stringify({ news_id: id }) });
-            favorites.push(id);
-        }
-        renderFavorites(); filterNews(); renderMyFeed();
-    }
-    
-    async function subscribeToTag(tag) {
-        if (subscriptions.includes(tag)) {
-            await fetch('/api/user/subscriptions', { method: 'DELETE', headers: { 'X-User-Id': userId, 'Content-Type': 'application/json' }, body: JSON.stringify({ tag }) });
-            subscriptions = subscriptions.filter(t => t !== tag);
-        } else {
-            await fetch('/api/user/subscriptions', { method: 'POST', headers: { 'X-User-Id': userId, 'Content-Type': 'application/json' }, body: JSON.stringify({ tag }) });
-            subscriptions.push(tag);
-        }
-        renderMyFeed();
-    }
-    
-    async function vote(id, type) {
-        if (userVotes[id]) { alert('Вы уже голосовали'); return; }
-        const res = await fetch(`/api/news/${id}/vote`, { method: 'POST', headers: { 'X-User-Id': userId, 'Content-Type': 'application/json' }, body: JSON.stringify({ type }) });
-        if (res.ok) { userVotes[id] = type; loadNews(); }
-        else { alert('Ошибка'); }
-    }
-    
-    async function addNews() {
-        const title = document.getElementById('newsTitle').value.trim();
-        const content = document.getElementById('newsContent').value.trim();
-        const tags = document.getElementById('newsTags').value;
-        if (!title || !content) { alert('Заполните поля'); return; }
-        const res = await fetch('/api/news', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ 
-            title, content, tags: tags ? tags.split(',').map(t=>t.trim()) : [], secret: 'АДМИНКА' 
-        }) });
-        if (res.ok) {
-            document.getElementById('newsTitle').value = ''; document.getElementById('newsContent').value = ''; document.getElementById('newsTags').value = '';
-            loadNews(); alert('Новость добавлена!');
-        } else { alert('Ошибка'); }
-    }
-    
-    async function deleteNews(id) {
-        if (confirm('Удалить?')) {
-            await fetch(`/api/news/${id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ secret: 'АДМИНКА' }) });
-            loadNews();
-        }
-    }
-    
-    function renderTags() {
-        const allTags = [...new Set(newsData.flatMap(n => n.tags || []))];
-        document.getElementById('tagsFilter').innerHTML = `<div class="tag-filter ${currentTagFilter === 'all' ? 'active' : ''}" onclick="setTag('all')">Все</div>` +
-            allTags.map(t => `<div class="tag-filter ${currentTagFilter === t ? 'active' : ''}" onclick="setTag('${t}')">${t}</div>`).join('');
-    }
-    
-    function setTag(tag) { currentTagFilter = tag; filterNews(); renderTags(); }
-    
-    function filterNews() {
-        let filtered = [...newsData];
-        if (currentSearch) filtered = filtered.filter(n => n.title.toLowerCase().includes(currentSearch) || n.content.toLowerCase().includes(currentSearch));
-        if (currentTagFilter !== 'all') filtered = filtered.filter(n => n.tags && n.tags.includes(currentTagFilter));
-        displayNews(filtered, 'newsGrid');
-    }
-    
-    function displayNews(arr, containerId) {
-        const container = document.getElementById(containerId);
-        if (!arr.length) { container.innerHTML = '<div class="glass">Новостей нет</div>'; return; }
-        container.innerHTML = arr.map(n => `
-            <div class="news-card">
-                <div class="news-header"><div class="news-title">${escapeHtml(n.title)}</div>
-                <button class="star-btn ${favorites.includes(n.id) ? 'active' : ''}" onclick="toggleFavorite(${n.id})">★</button></div>
-                <div class="news-date">${n.date}</div>
-                <div class="news-content">${escapeHtml(n.content)}</div>
-                <div class="news-tags">${(n.tags || []).map(t => `<span class="news-tag" onclick="subscribeToTag('${t}')">#${t}</span>`).join('')}</div>
-                <div class="news-votes">
-                    <button class="vote-btn ${userVotes[n.id] ? 'disabled' : ''}" onclick="vote(${n.id}, 'like')">👍 ${n.likes || 0}</button>
-                    <button class="vote-btn ${userVotes[n.id] ? 'disabled' : ''}" onclick="vote(${n.id}, 'dislike')">👎 ${n.dislikes || 0}</button>
-                </div>
+    <!-- МОДАЛКА НАСТРОЕК -->
+    <div id="settingsModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>⚙️ НАСТРОЙКИ</h2>
+                <div class="modal-close" id="closeModalBtn">✕</div>
             </div>
-        `).join('');
-    }
-    
-    function renderMyFeed() { const subscribedNews = newsData.filter(n => n.tags && n.tags.some(t => subscriptions.includes(t))); displayNews(subscribedNews, 'myfeedGrid'); }
-    function renderFavorites() { const favNews = newsData.filter(n => favorites.includes(n.id)); displayNews(favNews, 'favoritesGrid'); }
-    function renderAdmin() { document.getElementById('adminNewsList').innerHTML = newsData.map(n => `<div class="admin-news-item"><strong>${escapeHtml(n.title)}</strong><div style="font-size:11px; opacity:0.6;">${n.date}</div><button class="delete-btn" onclick="deleteNews(${n.id})">Удалить</button></div>`).join(''); }
-    
-    document.getElementById('searchInput').addEventListener('input', (e) => { currentSearch = e.target.value.toLowerCase(); filterNews(); if (currentSearch === 'админка') { document.getElementById('adminTab').style.display = 'inline-block'; alert('Админ-панель разблокирована!'); } });
-    
-    // ========== ПЕПЕЛ ==========
-    function createAsh() {
-        const container = document.getElementById('ashContainer');
-        for (let i = 0; i < 60; i++) {
-            const ash = document.createElement('div'); ash.className = 'ash-particle';
-            ash.style.width = (Math.random() * 4 + 2) + 'px'; ash.style.height = ash.style.width;
-            ash.style.left = Math.random() * 100 + '%'; ash.style.animationDuration = Math.random() * 5 + 4 + 's';
-            ash.style.animationDelay = Math.random() * 10 + 's'; container.appendChild(ash);
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button class="btn-reset" id="resetSettingsBtn">СБРОСИТЬ ВСЁ</button>
+                <button class="btn-close-modal" id="applyCloseBtn">ЗАКРЫТЬ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА СПИСКА ИЗМЕНЕНИЙ -->
+    <div id="changelogModal" class="changelog-modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>📋 СПИСОК ИЗМЕНЕНИЙ</h2>
+                <div class="modal-close" id="closeChangelogBtn">✕</div>
+            </div>
+            <div class="modal-body">
+                <div class="changelog-version-tag">Версия 1.0.5</div>
+                <ul class="changelog-list">
+                    <li><strong>✨ НОВОЕ</strong><span>Запущен официальный сайт CRIMSON RP</span></li>
+                    <li><strong>🎵 МУЗЫКА</strong><span>Добавлен фоновый плеер с 5 треками и автоматическим переключением</span></li>
+                    <li><strong>📜 ПРАВИЛА</strong><span>Полные правила RP (1.0-2.4) и ОПДД (27 пунктов)</span></li>
+                    <li><strong>💼 РАБОТЫ</strong><span>Все профессии проекта: армия, банк, гражданские, юриспруденция, аэропорт, СМИ, МЧС, медицина, полиция, гос. работы, нефтяник</span></li>
+                    <li><strong>🖼️ ГАЛЕРЕЯ</strong><span>Просмотр новостных фото в лайтбоксе с затемнением</span></li>
+                    <li><strong>⚙️ НАСТРОЙКИ</strong><span>Регулировка громкости, фоновое изображение, размер шрифта (адаптирован для всех элементов)</span></li>
+                    <li><strong>🎨 ДИЗАЙН</strong><span>Эффект жидкого стекла, пепельный фон, плавные анимации и тени</span></li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-close-modal" id="closeChangelogApplyBtn">ЗАКРЫТЬ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // МУЗЫКА С АВТОПЕРЕКЛЮЧЕНИЕМ + ОБРАБОТКА ОШИБОК
+        const userTracks = [
+            "https://videotourl.com/audio/1776773135234-2f337560-23a9-4c7d-b4eb-2d5f12b95acc.mp3",
+            "https://videotourl.com/audio/1776772963454-0e08f48e-88fe-4034-8a7e-2c92e73514ce.mp3",
+            "https://videotourl.com/audio/1776772835949-62c6e9bd-ef97-4380-8bba-b684315c6938.mp3",
+            "https://videotourl.com/audio/1776772777711-559e1db2-dffb-4f3f-97c2-34644a594240.mp3",
+            "https://videotourl.com/audio/1776772742813-a2bc6dd2-2f10-4b66-a63e-be8f90b91dd8.mp3"
+        ];
+        let activePlaylist = [...userTracks];
+        let currentTrack = 0;
+        const audio = document.getElementById('bgMusic');
+        let musicEnabled = true;
+        
+        function loadTrack(index) {
+            if(activePlaylist.length) {
+                audio.src = activePlaylist[index % activePlaylist.length];
+                audio.load();
+            }
         }
-    }
-    createAsh();
-    
-    // ========== КАСТОМИЗАЦИЯ ==========
-    function applyStyle(style) {
-        document.body.classList.remove('style-classic', 'style-neon', 'style-cyber', 'style-minimal', 'style-premium');
-        if (style !== 'default') document.body.classList.add(`style-${style}`);
-        if (style === 'classic') { document.getElementById('cardRadius').value = '8'; document.getElementById('glassBlur').value = '0'; document.getElementById('cardShadow').value = 'none'; }
-        if (style === 'neon') { document.getElementById('accentColor').value = '#00ff00'; document.getElementById('cardShadow').value = '0 0 10px rgba(0,255,0,0.3)'; }
-        if (style === 'cyber') { document.getElementById('accentColor').value = '#ff00ff'; document.getElementById('fontFamily').value = "'Fira Code', monospace"; document.getElementById('titleFont').value = "'Orbitron', sans-serif"; document.getElementById('cardRadius').value = '0'; }
-        if (style === 'minimal') { document.getElementById('cardRadius').value = '4'; document.getElementById('glassBlur').value = '0'; document.getElementById('cardShadow').value = 'none'; document.getElementById('cardOpacity').value = '1'; }
-        if (style === 'premium') { document.getElementById('accentColor').value = '#ffd700'; document.getElementById('fontFamily').value = "'Playfair Display', serif"; document.getElementById('cardRadius').value = '28'; document.getElementById('cardShadow').value = '0 8px 30px rgba(0,0,0,0.5)'; }
-        applyCustomization();
-    }
-    
-    function applyCustomization() {
-        document.documentElement.style.setProperty('--accent-color', document.getElementById('accentColor').value);
-        document.documentElement.style.setProperty('--bg-color', document.getElementById('bgColor').value);
-        document.documentElement.style.setProperty('--text-color', document.getElementById('textColor').value);
-        document.documentElement.style.setProperty('--card-bg', document.getElementById('cardBg').value + document.getElementById('cardOpacity').value);
-        document.documentElement.style.setProperty('--card-radius', document.getElementById('cardRadius').value + 'px');
-        document.documentElement.style.setProperty('--card-shadow', document.getElementById('cardShadow').value);
-        document.documentElement.style.setProperty('--font-family', document.getElementById('fontFamily').value);
-        document.documentElement.style.setProperty('--title-font', document.getElementById('titleFont').value);
-        document.documentElement.style.setProperty('--animation-speed', document.getElementById('animSpeed').value + 's');
-        document.documentElement.style.setProperty('--glass-blur', document.getElementById('glassBlur').value + 'px');
-        document.documentElement.style.setProperty('--blur-intensity', document.getElementById('blurIntensity').value + 'px');
-        document.documentElement.style.setProperty('--blob-opacity', document.getElementById('blobOpacity').value);
-        document.documentElement.style.setProperty('--card-translate', document.getElementById('cardTranslate').value + 'px');
-        document.documentElement.style.setProperty('--border-width', document.getElementById('borderWidth').value + 'px');
+        function playMusic() {
+            if(musicEnabled && audio.src) audio.play().catch(e => console.log("Авто-плей заблокирован"));
+        }
+        function nextTrack() {
+            if(activePlaylist.length) {
+                currentTrack = (currentTrack + 1) % activePlaylist.length;
+                loadTrack(currentTrack);
+                playMusic();
+            }
+        }
         
-        const ashOn = document.getElementById('ashToggle').value === 'on';
-        document.getElementById('ashContainer').classList.toggle('hidden', !ashOn);
-        const liquidOn = document.getElementById('liquidToggle').value === 'on';
-        document.getElementById('liquidGlass').classList.toggle('hidden', !liquidOn);
+        // Автоматическое переключение по окончании трека
+        audio.addEventListener('ended', () => { nextTrack(); });
+        // Если трек не загрузился — переключаем на следующий
+        audio.addEventListener('error', () => { nextTrack(); });
         
-        localStorage.setItem('accentColor', document.getElementById('accentColor').value);
-        localStorage.setItem('bgColor', document.getElementById('bgColor').value);
-        localStorage.setItem('textColor', document.getElementById('textColor').value);
-        localStorage.setItem('cardBg', document.getElementById('cardBg').value);
-        localStorage.setItem('cardRadius', document.getElementById('cardRadius').value);
-        localStorage.setItem('cardShadow', document.getElementById('cardShadow').value);
-        localStorage.setItem('cardOpacity', document.getElementById('cardOpacity').value);
-        localStorage.setItem('fontFamily', document.getElementById('fontFamily').value);
-        localStorage.setItem('titleFont', document.getElementById('titleFont').value);
-        localStorage.setItem('animSpeed', document.getElementById('animSpeed').value);
-        localStorage.setItem('glassBlur', document.getElementById('glassBlur').value);
-        localStorage.setItem('blurIntensity', document.getElementById('blurIntensity').value);
-        localStorage.setItem('blobOpacity', document.getElementById('blobOpacity').value);
-        localStorage.setItem('cardTranslate', document.getElementById('cardTranslate').value);
-        localStorage.setItem('borderWidth', document.getElementById('borderWidth').value);
-        localStorage.setItem('ashToggle', document.getElementById('ashToggle').value);
-        localStorage.setItem('liquidToggle', document.getElementById('liquidToggle').value);
-    }
-    
-    function loadCustomization() {
-        document.getElementById('accentColor').value = localStorage.getItem('accentColor') || '#e31b23';
-        document.getElementById('bgColor').value = localStorage.getItem('bgColor') || '#0a0a0a';
-        document.getElementById('textColor').value = localStorage.getItem('textColor') || '#ffffff';
-        document.getElementById('cardBg').value = localStorage.getItem('cardBg') || '#1a1a1a';
-        document.getElementById('cardRadius').value = localStorage.getItem('cardRadius') || '20';
-        document.getElementById('cardRadiusVal').innerText = document.getElementById('cardRadius').value + 'px';
-        document.getElementById('cardShadow').value = localStorage.getItem('cardShadow') || '0 4px 15px rgba(0,0,0,0.3)';
-        document.getElementById('cardOpacity').value = localStorage.getItem('cardOpacity') || '0.7';
-        document.getElementById('fontFamily').value = localStorage.getItem('fontFamily') || "'Inter', sans-serif";
-        document.getElementById('titleFont').value = localStorage.getItem('titleFont') || "'Bebas Neue', sans-serif";
-        document.getElementById('animSpeed').value = localStorage.getItem('animSpeed') || '0.3';
-        document.getElementById('animSpeedVal').innerText = document.getElementById('animSpeed').value + 's';
-        document.getElementById('glassBlur').value = localStorage.getItem('glassBlur') || '20';
-        document.getElementById('glassBlurVal').innerText = document.getElementById('glassBlur').value + 'px';
-        document.getElementById('blurIntensity').value = localStorage.getItem('blurIntensity') || '80';
-        document.getElementById('blobOpacity').value = localStorage.getItem('blobOpacity') || '0.5';
-        document.getElementById('cardTranslate').value = localStorage.getItem('cardTranslate') || '8';
-        document.getElementById('borderWidth').value = localStorage.getItem('borderWidth') || '1';
-        document.getElementById('ashToggle').value = localStorage.getItem('ashToggle') || 'on';
-        document.getElementById('liquidToggle').value = localStorage.getItem('liquidToggle') || 'on';
-        applyCustomization();
-    }
-    
-    document.getElementById('accentColor').addEventListener('input', applyCustomization);
-    document.getElementById('bgColor').addEventListener('input', applyCustomization);
-    document.getElementById('textColor').addEventListener('input', applyCustomization);
-    document.getElementById('cardBg').addEventListener('input', applyCustomization);
-    document.getElementById('cardRadius').addEventListener('input', () => { document.getElementById('cardRadiusVal').innerText = document.getElementById('cardRadius').value + 'px'; applyCustomization(); });
-    document.getElementById('cardShadow').addEventListener('change', applyCustomization);
-    document.getElementById('cardOpacity').addEventListener('input', applyCustomization);
-    document.getElementById('fontFamily').addEventListener('change', applyCustomization);
-    document.getElementById('titleFont').addEventListener('change', applyCustomization);
-    document.getElementById('animSpeed').addEventListener('input', () => { document.getElementById('animSpeedVal').innerText = document.getElementById('animSpeed').value + 's'; applyCustomization(); });
-    document.getElementById('glassBlur').addEventListener('input', () => { document.getElementById('glassBlurVal').innerText = document.getElementById('glassBlur').value + 'px'; applyCustomization(); });
-    document.getElementById('blurIntensity').addEventListener('input', applyCustomization);
-    document.getElementById('blobOpacity').addEventListener('input', applyCustomization);
-    document.getElementById('cardTranslate').addEventListener('input', applyCustomization);
-    document.getElementById('borderWidth').addEventListener('input', applyCustomization);
-    document.getElementById('ashToggle').addEventListener('change', applyCustomization);
-    document.getElementById('liquidToggle').addEventListener('change', applyCustomization);
-    document.getElementById('resetCustomBtn').addEventListener('click', () => { localStorage.clear(); loadCustomization(); });
-    
-    // ВКЛАДКИ
-    function switchTab(tabId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-        document.getElementById(tabId + 'Page').classList.add('active-page');
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
-        if (tabId === 'news') filterNews();
-        if (tabId === 'myfeed') renderMyFeed();
-        if (tabId === 'favorites') renderFavorites();
-    }
-    document.querySelectorAll('.tab').forEach(tab => { tab.onclick = () => switchTab(tab.dataset.tab); });
-    
-    function escapeHtml(str) { return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
-    
-    loadCustomization();
-    loadNews();
-</script>
+        document.body.addEventListener('click', () => {
+            if(audio.paused && musicEnabled && activePlaylist.length) {
+                loadTrack(currentTrack);
+                playMusic();
+            }
+        }, { once: true });
+        
+        // ЛАЙТБОКС
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const newsImage = document.getElementById('newsImage');
+        window.openLightbox = function() { if (newsImage && newsImage.src) { lightboxImg.src = newsImage.src; lightbox.classList.add('active'); } }
+        window.closeLightbox = function() { lightbox.classList.remove('active'); }
+        
+        // ВКЛАДКИ
+        const tabs = document.querySelectorAll('.tab');
+        const pages = document.querySelectorAll('.page');
+        function switchTab(tabId) { pages.forEach(p => p.classList.remove('active-page')); document.getElementById(tabId + 'Page')?.classList.add('active-page'); tabs.forEach(t => t.classList.remove('active')); document.querySelector(`.tab[data-tab="${tabId}"]`)?.classList.add('active'); }
+        tabs.forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
+        
+        // МОДАЛКА НАСТРОЕК
+        const modal = document.getElementById('settingsModal');
+        const modalBody = document.getElementById('modalBody');
+        const settingsBtn = document.getElementById('settingsBtn');
+        
+        function buildModalContent() {
+            modalBody.innerHTML = `
+                <div class="settings-section"><h3>🎵 МУЗЫКА</h3>
+                    <div class="setting-item"><label>Громкость</label><input type="range" id="modalVolume" min="0" max="1" step="0.05" value="${audio.volume}"></div>
+                    <div class="setting-item"><div class="setting-row"><label>Включить музыку</label><input type="checkbox" id="modalMusicToggle" ${musicEnabled ? 'checked' : ''}></div></div>
+                    <div class="music-controls"><button class="music-btn" id="modalNextTrack">Следующий трек</button></div>
+                    <div class="custom-file-upload"><label class="custom-file-label" for="modalCustomMusic">📁 Загрузить свою музыку</label><input type="file" id="modalCustomMusic" accept="audio/*"></div></div>
+                <div class="settings-section"><h3>🖼️ ФОН</h3>
+                    <div class="setting-item"><div class="setting-row"><label>Включить фоновое изображение</label><input type="checkbox" id="modalBgToggle"></div></div>
+                    <div id="modalBgSettings" style="display:none;"><div class="setting-item"><input type="text" id="modalBgUrl" placeholder="URL изображения" style="width:100%; padding:10px; border-radius:16px; background:rgba(255,255,255,0.05); border:0.5px solid rgba(255,255,255,0.1); color:#fff;"></div>
+                    <div class="setting-item"><input type="file" id="modalBgFile" accept="image/*" style="display:none;"><button id="modalChooseBg" class="music-btn" style="width:100%;">📁 Выбрать файл</button></div></div>
+                    <div class="setting-item"><label>Прозрачность фона</label><input type="range" id="modalBgOpacity" min="0" max="0.5" step="0.05" value="0.25"></div></div>
+                <div class="settings-section"><h3>📱 ИНТЕРФЕЙС</h3>
+                    <div class="setting-item"><label>Размер шрифта</label><input type="range" id="modalFontSize" min="12" max="20" value="14"></div></div>
+            `;
+            const vol = document.getElementById('modalVolume');
+            const musicToggle = document.getElementById('modalMusicToggle');
+            const nextBtn = document.getElementById('modalNextTrack');
+            const customMusic = document.getElementById('modalCustomMusic');
+            vol.addEventListener('input', e => audio.volume = parseFloat(e.target.value));
+            musicToggle.addEventListener('change', e => { musicEnabled = e.target.checked; if(musicEnabled && activePlaylist.length) { loadTrack(currentTrack); playMusic(); } else audio.pause(); });
+            nextBtn.addEventListener('click', nextTrack);
+            customMusic.addEventListener('change', e => { if(e.target.files[0]) { const url = URL.createObjectURL(e.target.files[0]); activePlaylist.unshift(url); currentTrack = 0; loadTrack(0); playMusic(); } });
+            
+            const bgToggle = document.getElementById('modalBgToggle');
+            const bgSettingsDiv = document.getElementById('modalBgSettings');
+            const bgCustom = document.getElementById('bgCustom');
+            bgToggle.addEventListener('change', e => { bgSettingsDiv.style.display = e.target.checked ? 'block' : 'none'; if(!e.target.checked) { bgCustom.style.backgroundImage = ''; } localStorage.setItem('bgEnabled', e.target.checked); });
+            document.getElementById('modalChooseBg')?.addEventListener('click', () => document.getElementById('modalBgFile').click());
+            document.getElementById('modalBgFile')?.addEventListener('change', e => { if(e.target.files[0]) { const r = new FileReader(); r.onload = ev => { bgCustom.style.backgroundImage = `url(${ev.target.result})`; localStorage.setItem('bgImage', ev.target.result); }; r.readAsDataURL(e.target.files[0]); } });
+            const opSlider = document.getElementById('modalBgOpacity');
+            opSlider.addEventListener('input', e => { bgCustom.style.opacity = e.target.value; localStorage.setItem('bgOpacity', e.target.value); });
+            
+            // АДАПТАЦИЯ РАЗМЕРА ШРИФТА ДЛЯ ВСЕХ ЭЛЕМЕНТОВ
+            const fontSizeSlider = document.getElementById('modalFontSize');
+            const applyFontSize = (value) => {
+                const size = value + 'px';
+                const elements = document.querySelectorAll('body, p, .rule-desc, .vip-desc, .job-item, .news-text, .setting-item label, .tab, .tg-desc, .changelog-list li, .modal-body, .version-badge, .sub-text, .feature-desc, .rule-title, .job-category, .vip-title, .price-tag, .tg-name, footer, .changelog-version-tag, .modal-header h2, h3');
+                elements.forEach(el => el.style.fontSize = size);
+                // отдельно для заголовков h2 и h1 не трогаем, оставляем оригинальные размеры
+            };
+            fontSizeSlider.addEventListener('input', e => { applyFontSize(e.target.value); localStorage.setItem('fontSize', e.target.value); });
+            
+            if(localStorage.getItem('bgEnabled') === 'true') { bgToggle.checked = true; bgSettingsDiv.style.display = 'block'; }
+            if(localStorage.getItem('bgImage')) bgCustom.style.backgroundImage = `url(${localStorage.getItem('bgImage')})`;
+            if(localStorage.getItem('bgOpacity')) opSlider.value = localStorage.getItem('bgOpacity');
+            if(localStorage.getItem('fontSize')) fontSizeSlider.value = localStorage.getItem('fontSize');
+        }
+        
+        function showLoading(cb) {
+            const overlay = document.createElement('div'); overlay.className = 'loading-overlay'; overlay.innerHTML = '<div class="loading-spinner"></div>'; document.body.appendChild(overlay);
+            setTimeout(() => overlay.classList.add('active'), 10);
+            setTimeout(() => { overlay.remove(); cb(); }, 500);
+        }
+        
+        settingsBtn.addEventListener('click', () => { showLoading(() => { buildModalContent(); modal.classList.add('active'); }); });
+        function closeModal() { modal.classList.remove('active'); }
+        document.getElementById('closeModalBtn')?.addEventListener('click', closeModal);
+        document.getElementById('applyCloseBtn')?.addEventListener('click', closeModal);
+        document.getElementById('resetSettingsBtn')?.addEventListener('click', () => { localStorage.clear(); location.reload(); });
+        
+        // МОДАЛКА СПИСКА ИЗМЕНЕНИЙ
+        const changelogModal = document.getElementById('changelogModal');
+        const changelogHeaderBtn = document.getElementById('changelogHeaderBtn');
+        function openChangelog() { changelogModal.classList.add('active'); }
+        function closeChangelog() { changelogModal.classList.remove('active'); }
+        changelogHeaderBtn.addEventListener('click', openChangelog);
+        document.getElementById('closeChangelogBtn')?.addEventListener('click', closeChangelog);
+        document.getElementById('closeChangelogApplyBtn')?.addEventListener('click', closeChangelog);
+        
+        audio.volume = 0.3;
+        if(activePlaylist.length) loadTrack(0);
+    </script>
 </body>
 </html>
