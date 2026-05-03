@@ -1054,57 +1054,35 @@
             color: #fff;
             cursor: pointer;
         }
-        .profile-header {
+        .name-input-area {
             display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 24px;
+            gap: 10px;
+            margin-bottom: 16px;
         }
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
+        .name-input-area input {
+            flex: 1;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            color: #fff;
+            font-size: 14px;
+        }
+        .name-input-area button {
+            padding: 12px 20px;
             background: #333;
+            border: none;
+            border-radius: 16px;
+            color: #fff;
             cursor: pointer;
         }
-        .profile-name {
-            font-size: 22px;
-            font-weight: 700;
-            color: #fff;
-        }
-        .no-account {
-            text-align: center;
-            padding: 40px 20px;
-        }
-        .btn-primary {
-            background: #333;
-            color: #fff;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 40px;
-            cursor: pointer;
-        }
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 6px 12px;
-            border-radius: 40px;
-        }
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .logout-btn {
-            background: none;
-            border: none;
+        .current-user {
+            font-size: 12px;
             color: #aaa;
-            font-size: 18px;
-            cursor: pointer;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
         }
     </style>
 </head>
@@ -1120,21 +1098,11 @@
             <div class="title-row">
                 <div class="title-group">
                     <h1 id="mainTitle">CRIMSON RP</h1>
-                    <span class="version-badge">v1.3.0</span>
+                    <span class="version-badge">v1.4.0</span>
                 </div>
                 <button class="settings-btn" id="settingsBtn">⋮</button>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <button class="changelog-header-btn" id="changelogHeaderBtn">📋 список изменений</button>
-                <div id="userPanel" style="display: none;">
-                    <div class="user-info">
-                        <img id="userAvatar" class="user-avatar" src="">
-                        <span id="userName" class="user-name"></span>
-                        <button id="logoutBtn" class="logout-btn">🚪</button>
-                    </div>
-                </div>
-                <button id="showAuthBtn" class="tab" style="background: rgba(255,255,255,0.1); padding: 6px 16px;">🔐 Войти</button>
-            </div>
+            <button class="changelog-header-btn" id="changelogHeaderBtn">📋 список изменений</button>
         </div>
 
         <div class="tabs" id="tabsContainer">
@@ -1145,7 +1113,6 @@
             <button class="tab" data-tab="jobs">РАБОТЫ</button>
             <button class="tab" data-tab="dossier">ДОСЬЕ</button>
             <button class="tab" data-tab="chat">ЧАТ</button>
-            <button class="tab" data-tab="profile">ПРОФИЛЬ</button>
             <button class="tab" data-tab="about">О НАС</button>
         </div>
 
@@ -1177,14 +1144,13 @@
                             <img src="https://s10.iimage.su/s/28/gd2a0qCxaOhMI3JbFfYAtWED17z1PKnob6Ap6ggus.jpg" alt="Обновление 2" onclick="openLightbox(this.src)">
                         </div>
                         <div class="news-content">
-                            <div class="news-title">🔥 CRIMSON RP: НОВАЯ ВКЛАДКА «ДОСЬЕ» И ОБНОВЛЕНИЯ!</div>
+                            <div class="news-title">🔥 CRIMSON RP: ОБНОВЛЕНИЕ ЧАТА!</div>
                             <div class="news-text">
-                                Мы продолжаем развивать сайт! Теперь у нас есть вкладка «ДОСЬЕ» — база данных с криминальными делами преступников нашего проекта.<br><br>
-                                <strong>Что нового в версии 1.3.0?</strong><br>
-                                ✅ Вкладка «ДОСЬЕ» — 7 громких дел<br>
-                                ✅ Чат с Supabase — регистрация, вход, общение<br>
-                                ✅ Профили пользователей — смена аватара и имени<br>
-                                ✅ Улучшен дизайн карточек<br>
+                                Чат теперь работает без регистрации! Просто введи имя и общайся с другими игроками. Сообщения сохраняются в облаке и видны всем.<br><br>
+                                <strong>Что нового в версии 1.4.0?</strong><br>
+                                ✅ Чат без авторизации — введи имя и пиши<br>
+                                ✅ Сообщения сохраняются в Supabase<br>
+                                ✅ Реальный чат с обновлением в реальном времени<br>
                                 Следите за обновлениями! 🚔
                             </div>
                         </div>
@@ -1198,7 +1164,7 @@
                 </div>
             </div>
 
-            <!-- ПРАВИЛА (полные) -->
+            <!-- ПРАВИЛА -->
             <div class="page" id="rulesPage">
                 <div class="glass">
                     <h2>📜 ПРАВИЛА ROLE PLAY</h2>
@@ -1295,19 +1261,14 @@
                 <div class="glass">
                     <h2>💬 ОБЩИЙ ЧАТ</h2>
                     <div id="chatMessages" class="chat-messages"></div>
-                    <div class="chat-input-area">
-                        <input type="text" id="chatInput" placeholder="Введите сообщение..." maxlength="500">
-                        <button id="sendBtn">📤</button>
+                    <div class="current-user" id="currentUserDisplay">👤 Текущее имя: <span id="currentUserName">Не указано</span></div>
+                    <div class="name-input-area">
+                        <input type="text" id="userNameInput" placeholder="Введите ваше имя..." maxlength="30">
+                        <button id="setNameBtn">Установить имя</button>
                     </div>
-                </div>
-            </div>
-
-            <!-- ПРОФИЛЬ -->
-            <div class="page" id="profilePage">
-                <div class="glass" id="profileContent">
-                    <div class="no-account">
-                        <p>Войдите, чтобы увидеть свой профиль</p>
-                        <button id="profileAuthBtn" class="btn-primary">🔐 Войти / Зарегистрироваться</button>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="Введите сообщение..." maxlength="500" disabled>
+                        <button id="sendBtn" disabled>📤</button>
                     </div>
                 </div>
             </div>
@@ -1325,7 +1286,7 @@
                 </div>
             </div>
         </div>
-        <footer>© 2026 CRIMSON RP · версия 1.3.0</footer>
+        <footer>© 2026 CRIMSON RP · версия 1.4.0</footer>
     </div>
 
     <button class="scroll-top-btn" id="scrollTopBtn">↑</button>
@@ -1334,21 +1295,6 @@
         <div class="lightbox-content" onclick="event.stopPropagation()">
             <img class="lightbox-img" id="lightboxImg" src="">
             <div class="lightbox-close" onclick="closeLightbox()">✕</div>
-        </div>
-    </div>
-
-    <div id="authModal" class="modal-overlay">
-        <div class="modal-container">
-            <div class="modal-header"><h2>🔐 АВТОРИЗАЦИЯ</h2><div class="modal-close" id="closeAuthBtn">✕</div></div>
-            <div class="modal-body">
-                <input type="email" id="authEmail" placeholder="Email" style="margin-bottom:12px; width:100%; padding:12px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15); border-radius:16px; color:#fff;">
-                <input type="password" id="authPassword" placeholder="Пароль" style="margin-bottom:12px; width:100%; padding:12px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15); border-radius:16px; color:#fff;">
-                <div style="display:flex; gap:12px;">
-                    <button id="loginBtn" class="btn-primary" style="flex:1;">Войти</button>
-                    <button id="registerBtn" class="btn-primary" style="flex:1; background:#555;">Регистрация</button>
-                </div>
-                <button id="googleLoginBtn" style="width:100%; margin-top:12px; padding:12px; background:#4285F4; border:none; border-radius:16px; color:#fff; cursor:pointer;">🔐 Войти через Google</button>
-            </div>
         </div>
     </div>
 
@@ -1364,14 +1310,11 @@
         <div class="modal-container">
             <div class="modal-header"><h2>📋 СПИСОК ИЗМЕНЕНИЙ</h2><div class="modal-close" id="closeChangelogBtn">✕</div></div>
             <div class="modal-body">
-                <div class="changelog-version-tag">Версия 1.3.0</div>
+                <div class="changelog-version-tag">Версия 1.4.0</div>
                 <ul class="changelog-list">
-                    <li><strong>✨ НОВОЕ</strong><span>Вкладка «ДОСЬЕ» — 7 громких уголовных дел</span></li>
-                    <li><strong>💬 ЧАТ</strong><span>Чат с Supabase — регистрация, вход, общение</span></li>
-                    <li><strong>👤 ПРОФИЛИ</strong><span>Профили пользователей, смена аватара и имени</span></li>
-                    <li><strong>🖼️ ГАЛЕРЕЯ</strong><span>Две фотографии в новости, просмотр в лайтбоксе</span></li>
-                    <li><strong>📰 НОВОСТИ</strong><span>Свежие новости отображаются сверху</span></li>
-                    <li><strong>⚙️ НАСТРОЙКИ</strong><span>Уменьшенная анимация, компактный режим</span></li>
+                    <li><strong>💬 ЧАТ</strong><span>Чат без регистрации — введи имя и общайся</span></li>
+                    <li><strong>📡 РЕАЛЬНЫЙ ЧАТ</strong><span>Сообщения сохраняются в Supabase, обновляются в реальном времени</span></li>
+                    <li><strong>👤 ПРОСТОТА</strong><span>Не нужен email, пароль, подтверждение</span></li>
                     <li><strong>📜 ПРАВИЛА</strong><span>Полные правила RP и все 27 пунктов ПДД</span></li>
                     <li><strong>💼 РАБОТЫ</strong><span>Полный список профессий</span></li>
                 </ul>
@@ -1382,70 +1325,36 @@
 
     <script>
         // ========== SUPABASE НАСТРОЙКИ ==========
-        const SUPABASE_URL = "https://jscauqkgsvzrunhopnur.supabase.co";
+        const SUPABASE_URL = "https://jscauqkgsvzrunhopnur.supabase.co/rest/v1/";
         const SUPABASE_ANON_KEY = "81ff99ca-3f2c-43a6-a988-d32112b25f2f";
 
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let currentUser = null;
-        let currentProfile = null;
+        
+        let currentUserName = localStorage.getItem('chatUserName') || '';
+        let chatEnabled = false;
 
         // DOM элементы
-        const authModal = document.getElementById('authModal');
-        const showAuthBtn = document.getElementById('showAuthBtn');
-        const userPanel = document.getElementById('userPanel');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const userNameSpan = document.getElementById('userName');
-        const userAvatarImg = document.getElementById('userAvatar');
-        const profileContent = document.getElementById('profileContent');
         const chatMessagesDiv = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
         const sendBtn = document.getElementById('sendBtn');
+        const userNameInput = document.getElementById('userNameInput');
+        const setNameBtn = document.getElementById('setNameBtn');
+        const currentUserNameSpan = document.getElementById('currentUserName');
 
-        async function checkSession() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                currentUser = session.user;
-                await loadProfile();
-                updateUIForAuth(true);
-                loadMessages();
-                startMessagesSubscription();
-            } else {
-                updateUIForAuth(false);
-            }
-        }
-
-        async function loadProfile() {
-            const { data, error } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
-            if (data) {
-                currentProfile = data;
-                userNameSpan.textContent = data.username || currentUser.email.split('@')[0];
-                userAvatarImg.src = data.avatar_url || 'https://via.placeholder.com/32?text=👤';
-            }
-        }
-
-        function updateUIForAuth(isAuth) {
-            if (isAuth) {
-                userPanel.style.display = 'flex';
-                showAuthBtn.style.display = 'none';
-            } else {
-                userPanel.style.display = 'none';
-                showAuthBtn.style.display = 'block';
-                currentUser = null;
-                currentProfile = null;
-                if (chatMessagesDiv) chatMessagesDiv.innerHTML = '<div style="text-align:center; padding:20px; color:#aaa;">Войдите, чтобы участвовать в чате</div>';
-                if (profileContent) profileContent.innerHTML = `<div class="no-account"><p>Войдите, чтобы увидеть свой профиль</p><button id="profileAuthBtn" class="btn-primary">🔐 Войти / Зарегистрироваться</button></div>`;
-                document.getElementById('profileAuthBtn')?.addEventListener('click', () => authModal.classList.add('active'));
-            }
-        }
-
+        // Загрузка сообщений
         async function loadMessages() {
-            const { data, error } = await supabase.from('messages').select('*, profiles(username, avatar_url)').order('created_at', { ascending: true }).limit(100);
+            const { data, error } = await supabase
+                .from('messages')
+                .select('*')
+                .order('created_at', { ascending: true })
+                .limit(100);
+            
             if (data) {
                 chatMessagesDiv.innerHTML = data.map(msg => `
                     <div class="chat-message">
-                        <img class="chat-message-avatar" src="${msg.profiles?.avatar_url || 'https://via.placeholder.com/36?text=👤'}" onerror="this.src='https://via.placeholder.com/36?text=👤'">
+                        <div class="chat-message-avatar" style="background: #444; display: flex; align-items: center; justify-content: center; font-size: 18px;">👤</div>
                         <div class="chat-message-content">
-                            <div class="chat-message-name">${escapeHtml(msg.profiles?.username || 'Пользователь')}</div>
+                            <div class="chat-message-name">${escapeHtml(msg.user_name || 'Аноним')}</div>
                             <div class="chat-message-text">${escapeHtml(msg.text)}</div>
                             <div class="chat-message-time">${new Date(msg.created_at).toLocaleTimeString()}</div>
                         </div>
@@ -1455,96 +1364,72 @@
             }
         }
 
+        // Отправка сообщения
         async function sendMessage() {
-            if (!currentUser) { authModal.classList.add('active'); return; }
+            if (!chatEnabled || !chatInput.value.trim()) return;
+            
             const text = chatInput.value.trim();
-            if (!text) return;
-            const { error } = await supabase.from('messages').insert({ user_id: currentUser.id, text });
-            if (!error) chatInput.value = '';
+            const { error } = await supabase.from('messages').insert({
+                user_name: currentUserName,
+                text: text
+            });
+            
+            if (!error) {
+                chatInput.value = '';
+            } else {
+                console.error('Ошибка отправки:', error);
+            }
         }
 
+        // Установка имени
+        function setUserName() {
+            const newName = userNameInput.value.trim();
+            if (newName) {
+                currentUserName = newName;
+                localStorage.setItem('chatUserName', currentUserName);
+                currentUserNameSpan.textContent = currentUserName;
+                chatEnabled = true;
+                chatInput.disabled = false;
+                sendBtn.disabled = false;
+                userNameInput.disabled = true;
+                setNameBtn.disabled = true;
+                userNameInput.style.opacity = '0.5';
+                setNameBtn.style.opacity = '0.5';
+            }
+        }
+
+        // Подписка на новые сообщения
         function startMessagesSubscription() {
-            supabase.channel('messages-channel').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => loadMessages()).subscribe();
+            supabase
+                .channel('messages-channel')
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => loadMessages())
+                .subscribe();
         }
 
-        async function register() {
-            const email = document.getElementById('authEmail').value;
-            const password = document.getElementById('authPassword').value;
-            const { error } = await supabase.auth.signUp({ email, password });
-            if (error) alert(error.message);
-            else alert('Регистрация успешна! Подтвердите email (проверьте почту)');
+        function escapeHtml(str) { 
+            return str?.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]) || ''; 
         }
 
-        async function login() {
-            const email = document.getElementById('authEmail').value;
-            const password = document.getElementById('authPassword').value;
-            const { error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) alert(error.message);
-            else {
-                authModal.classList.remove('active');
-                await checkSession();
-            }
+        // Восстановление имени при загрузке
+        if (currentUserName) {
+            currentUserNameSpan.textContent = currentUserName;
+            chatEnabled = true;
+            chatInput.disabled = false;
+            sendBtn.disabled = false;
+            userNameInput.value = currentUserName;
+            userNameInput.disabled = true;
+            setNameBtn.disabled = true;
+            userNameInput.style.opacity = '0.5';
+            setNameBtn.style.opacity = '0.5';
+        } else {
+            currentUserNameSpan.textContent = 'Не указано';
         }
 
-        async function googleLogin() {
-            const { error } = await supabase.auth.signInWithOAuth({
-                provider: 'google',
-                options: { redirectTo: window.location.origin }
-            });
-            if (error) alert(error.message);
-        }
-
-        async function logout() {
-            await supabase.auth.signOut();
-            currentUser = null;
-            updateUIForAuth(false);
-        }
-
-        async function updateProfile(username, avatarUrl) {
-            if (!currentUser) return;
-            const { error } = await supabase.from('profiles').update({ username, avatar_url: avatarUrl }).eq('id', currentUser.id);
-            if (!error) await loadProfile();
-        }
-
-        async function renderProfilePage() {
-            if (!currentUser) {
-                profileContent.innerHTML = `<div class="no-account"><p>Войдите, чтобы увидеть свой профиль</p><button id="profileAuthBtn" class="btn-primary">🔐 Войти / Зарегистрироваться</button></div>`;
-                document.getElementById('profileAuthBtn')?.addEventListener('click', () => authModal.classList.add('active'));
-                return;
-            }
-            await loadProfile();
-            profileContent.innerHTML = `
-                <div class="profile-header">
-                    <img id="profileAvatar" class="profile-avatar" src="${currentProfile?.avatar_url || 'https://via.placeholder.com/80?text=👤'}" onclick="document.getElementById('avatarInput').click()">
-                    <div class="profile-info">
-                        <div class="profile-name">${escapeHtml(currentProfile?.username || currentUser.email.split('@')[0])}</div>
-                        <div class="profile-role">Роль: ${currentProfile?.role || 'Пользователь'}</div>
-                    </div>
-                </div>
-                <input type="text" id="editUsername" placeholder="Новое имя" value="${escapeHtml(currentProfile?.username || '')}" style="margin-bottom:12px; width:100%; padding:12px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15); border-radius:16px; color:#fff;">
-                <input type="file" id="avatarInput" accept="image/*" style="display:none;">
-                <button id="saveProfileBtn" class="btn-primary" style="width:100%; margin-top:8px;">Сохранить</button>
-            `;
-            document.getElementById('saveProfileBtn')?.addEventListener('click', async () => {
-                const newUsername = document.getElementById('editUsername').value;
-                const fileInput = document.getElementById('avatarInput');
-                let avatarUrl = currentProfile?.avatar_url;
-                if (fileInput.files.length > 0) {
-                    const file = fileInput.files[0];
-                    const fileName = `${Date.now()}_${file.name}`;
-                    const { error } = await supabase.storage.from('avatars').upload(fileName, file);
-                    if (!error) {
-                        const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(fileName);
-                        avatarUrl = urlData.publicUrl;
-                    }
-                }
-                await updateProfile(newUsername, avatarUrl);
-                await renderProfilePage();
-            });
-            document.getElementById('profileAvatar')?.addEventListener('click', () => document.getElementById('avatarInput').click());
-        }
-
-        function escapeHtml(str) { return str?.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]) || ''; }
+        // Обработчики
+        setNameBtn.addEventListener('click', setUserName);
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+        userNameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') setUserName(); });
 
         // ТАБЫ
         const tabs = document.querySelectorAll('.tab');
@@ -1556,8 +1441,6 @@
             tabs.forEach(t => t.classList.remove('active'));
             const activeTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
             if (activeTab) activeTab.classList.add('active');
-            if (tabId === 'profile') renderProfilePage();
-            if (tabId === 'chat' && currentUser) loadMessages();
         }
         tabs.forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
 
@@ -1567,20 +1450,20 @@
         pagesContainer.addEventListener('scroll', () => scrollBtn.classList.toggle('visible', pagesContainer.scrollTop > 300));
         scrollBtn.addEventListener('click', () => pagesContainer.scrollTo({ top: 0, behavior: 'smooth' }));
 
-        // Обработчики
-        showAuthBtn.addEventListener('click', () => authModal.classList.add('active'));
-        document.getElementById('closeAuthBtn')?.addEventListener('click', () => authModal.classList.remove('active'));
-        document.getElementById('loginBtn')?.addEventListener('click', login);
-        document.getElementById('registerBtn')?.addEventListener('click', register);
-        document.getElementById('googleLoginBtn')?.addEventListener('click', googleLogin);
-        logoutBtn?.addEventListener('click', logout);
-        sendBtn?.addEventListener('click', sendMessage);
-        chatInput?.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
+        // ЛАЙТБОКС
+        window.openLightbox = function(src) { 
+            const img = document.getElementById('lightboxImg');
+            img.src = src; 
+            document.getElementById('lightbox').classList.add('active'); 
+        };
+        window.closeLightbox = () => document.getElementById('lightbox').classList.remove('active');
 
         // НАСТРОЙКИ (упрощённые)
         const modal = document.getElementById('settingsModal');
         const modalBody = document.getElementById('modalBody');
         const settingsBtn = document.getElementById('settingsBtn');
+        let devClicks = 0;
+        
         function buildModal() {
             modalBody.innerHTML = `
                 <div class="settings-section"><h3>🎵 МУЗЫКА</h3>
@@ -1594,7 +1477,6 @@
                     <div class="setting-item"><input type="file" id="modalBgFile" accept="image/*" style="display:none;"><button id="modalChooseBg" class="music-btn" style="width:100%;">📁 Выбрать файл</button></div></div>
                     <div class="setting-item"><label>Прозрачность</label><input type="range" id="modalBgOpacity" min="0" max="0.5" step="0.05" value="0.25"></div></div>
                 <div class="settings-section"><h3>📱 ИНТЕРФЕЙС</h3>
-                    <div class="setting-item"><label>Размер шрифта</label><input type="range" id="modalFontSize" min="12" max="20" value="14"></div>
                     <div class="setting-item"><div class="setting-row"><label>Уменьшенная анимация</label><input type="checkbox" id="modalReduceMotion"></div></div>
                     <div class="setting-item"><div class="setting-row"><label>Компактный режим</label><input type="checkbox" id="modalCompactMode"></div></div>
                 </div>
@@ -1612,25 +1494,25 @@
             document.getElementById('modalChooseBg')?.addEventListener('click', () => document.getElementById('modalBgFile').click());
             document.getElementById('modalBgFile')?.addEventListener('change', e => { if (e.target.files[0]) { const r = new FileReader(); r.onload = ev => { bgCustom.style.backgroundImage = `url(${ev.target.result})`; localStorage.setItem('bgImage', ev.target.result); }; r.readAsDataURL(e.target.files[0]); } });
             document.getElementById('modalBgOpacity')?.addEventListener('input', e => { bgCustom.style.opacity = e.target.value; localStorage.setItem('bgOpacity', e.target.value); });
-            document.getElementById('modalFontSize')?.addEventListener('input', e => { const s = e.target.value + 'px'; document.querySelectorAll('body, p, .rule-desc, .job-item, .news-text, .tab, .tg-desc, .changelog-list li, .modal-body, .version-badge, .sub-text').forEach(el => el.style.fontSize = s); localStorage.setItem('fontSize', e.target.value); });
             document.getElementById('modalReduceMotion')?.addEventListener('change', e => { document.body.classList.toggle('reduce-motion', e.target.checked); localStorage.setItem('reduceMotion', e.target.checked); });
             document.getElementById('modalCompactMode')?.addEventListener('change', e => { document.body.classList.toggle('compact', e.target.checked); localStorage.setItem('compactMode', e.target.checked); });
             document.getElementById('modalAccentColor')?.addEventListener('input', e => { document.body.style.setProperty('--accent-color', e.target.value); localStorage.setItem('accentColor', e.target.value); });
             if (localStorage.getItem('bgEnabled') === 'true') { bgToggle.checked = true; document.getElementById('modalBgSettings').style.display = 'block'; }
             if (localStorage.getItem('bgImage')) bgCustom.style.backgroundImage = `url(${localStorage.getItem('bgImage')})`;
             if (localStorage.getItem('bgOpacity')) document.getElementById('modalBgOpacity').value = localStorage.getItem('bgOpacity');
-            if (localStorage.getItem('fontSize')) document.getElementById('modalFontSize').value = localStorage.getItem('fontSize');
             if (localStorage.getItem('musicVol')) document.getElementById('modalVolume').value = localStorage.getItem('musicVol');
             if (localStorage.getItem('musicEnabled') === 'false') document.getElementById('modalMusicToggle').checked = false;
             if (localStorage.getItem('reduceMotion') === 'true') document.getElementById('modalReduceMotion').checked = true;
             if (localStorage.getItem('compactMode') === 'true') document.getElementById('modalCompactMode').checked = true;
             if (localStorage.getItem('accentColor')) document.getElementById('modalAccentColor').value = localStorage.getItem('accentColor');
         }
+        
         function showLoading(cb) {
             const ov = document.createElement('div'); ov.className = 'loading-overlay'; ov.innerHTML = '<div class="loading-spinner"></div>'; document.body.appendChild(ov);
             setTimeout(() => ov.classList.add('active'), 10);
             setTimeout(() => { ov.remove(); cb(); }, 500);
         }
+        
         settingsBtn.addEventListener('click', () => showLoading(() => { buildModal(); modal.classList.add('active'); }));
         document.getElementById('closeModalBtn')?.addEventListener('click', () => modal.classList.remove('active'));
         document.getElementById('applyCloseBtn')?.addEventListener('click', () => modal.classList.remove('active'));
@@ -1641,7 +1523,6 @@
         document.getElementById('closeChangelogBtn')?.addEventListener('click', () => changelogModal.classList.remove('active'));
         document.getElementById('closeChangelogApplyBtn')?.addEventListener('click', () => changelogModal.classList.remove('active'));
 
-        let devClicks = 0;
         document.getElementById('mainTitle').addEventListener('click', () => { devClicks++; if (devClicks >= 5) { const d = document.getElementById('devModalSettings'); if (d) d.style.display = 'block'; devClicks = 0; } setTimeout(() => devClicks = 0, 1000); });
 
         // МУЗЫКА
@@ -1665,15 +1546,9 @@
         audio.volume = 0.3;
         if (activePlaylist.length) loadTrack(0);
 
-        // ЛАЙТБОКС
-        window.openLightbox = function(src) { lightboxImg.src = src; lightbox.classList.add('active'); };
-        window.closeLightbox = () => lightbox.classList.remove('active');
-
-        checkSession();
-        (async () => {
-            const { error } = await supabase.storage.getBucket('avatars');
-            if (error && error.message.includes('not found')) await supabase.storage.createBucket('avatars', { public: true });
-        })();
+        // Загрузка чата
+        loadMessages();
+        startMessagesSubscription();
     </script>
 </body>
 </html>
