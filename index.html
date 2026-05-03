@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>CRIMSON RP · Role Play Project</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -95,13 +94,11 @@
         body.compact .glass {
             padding: 16px;
         }
-        body.compact .dossier-card {
-            margin-bottom: 12px;
-        }
 
         /* Модальные окна */
         .modal-overlay,
-        .changelog-modal-overlay {
+        .changelog-modal-overlay,
+        .help-modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -119,7 +116,8 @@
         }
 
         .modal-overlay.active,
-        .changelog-modal-overlay.active {
+        .changelog-modal-overlay.active,
+        .help-modal-overlay.active {
             opacity: 1;
             visibility: visible;
         }
@@ -142,7 +140,8 @@
         }
 
         .modal-overlay.active .modal-container,
-        .changelog-modal-overlay.active .modal-container {
+        .changelog-modal-overlay.active .modal-container,
+        .help-modal-overlay.active .modal-container {
             transform: scale(1);
             opacity: 1;
         }
@@ -158,10 +157,7 @@
         .modal-header h2 {
             font-size: 22px;
             font-weight: 700;
-            background: linear-gradient(135deg, #f5f5f5, #b0b0b0);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: #ffffff;
         }
 
         .modal-close {
@@ -383,10 +379,7 @@
         .header h1 {
             font-size: 26px;
             font-weight: 800;
-            background: linear-gradient(135deg, #f0f0f0, #b0b0b0);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: #ffffff;
             letter-spacing: -0.5px;
             cursor: pointer;
         }
@@ -543,10 +536,7 @@
             font-size: 24px;
             font-weight: 700;
             margin-bottom: 16px;
-            background: linear-gradient(135deg, #f5f5f5, #c0c0c0);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: #ffffff;
         }
 
         h3 {
@@ -556,7 +546,7 @@
             color: var(--text-primary);
         }
 
-        p, li, .rule-desc, .job-item, .news-text, .tg-desc, .changelog-list li, .modal-body, .setting-item label, .version-badge, .sub-text {
+        p, li, .rule-desc, .news-text, .tg-desc, .changelog-list li, .modal-body, .setting-item label, .version-badge, .sub-text {
             font-size: 14px;
             line-height: 1.5;
         }
@@ -626,7 +616,7 @@
             color: var(--text-secondary);
         }
 
-        /* НОВОСТИ */
+        /* НОВОСТИ: карусель */
         .news-grid {
             display: flex;
             flex-direction: column;
@@ -646,23 +636,71 @@
             transform: translateY(-5px);
             box-shadow: var(--shadow-md), var(--glow-border);
         }
-        .news-card .gallery-container {
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .carousel-slides {
             display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding: 10px;
-            scrollbar-width: thin;
+            transition: transform 0.4s ease;
         }
-        .news-card .gallery-container img {
-            width: 100%;
+        .carousel-slide {
             flex-shrink: 0;
-            border-radius: 24px;
-            object-fit: cover;
-            cursor: pointer;
-            transition: transform 0.2s;
+            width: 100%;
         }
-        .news-card .gallery-container img:hover {
-            transform: scale(1.02);
+        .carousel-slide img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+            cursor: pointer;
+        }
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            opacity: 0;
+            transition: 0.2s;
+            z-index: 2;
+        }
+        .carousel-container:hover .carousel-arrow {
+            opacity: 1;
+        }
+        .carousel-arrow-left {
+            left: 10px;
+        }
+        .carousel-arrow-right {
+            right: 10px;
+        }
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+        }
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .carousel-dot.active {
+            background: white;
+            width: 20px;
+            border-radius: 4px;
         }
         .news-content {
             padding: 20px;
@@ -671,6 +709,9 @@
             font-size: 19px;
             font-weight: 700;
             margin-bottom: 10px;
+        }
+        .news-text {
+            color: var(--text-secondary);
         }
 
         .lightbox {
@@ -820,10 +861,26 @@
         }
 
         .job-item {
-            padding: 8px 0;
-            display: flex;
-            justify-content: space-between;
+            padding: 10px 8px;
+            display: block;
             border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: 0.2s;
+            color: var(--text-primary);
+            text-align: center;
+        }
+        .job-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: scale(1.01);
+        }
+        .job-salary-text {
+            margin-top: 6px;
+            font-size: 13px;
+            color: var(--text-primary);
+            display: none;
+        }
+        .job-salary-text.show {
+            display: block;
         }
 
         /* VIP */
@@ -937,152 +994,57 @@
             color: var(--text-secondary);
             font-size: 11px;
             opacity: 0.6;
-        }
-
-        /* Досье карточки */
-        .dossier-card {
-            background: rgba(0, 0, 0, 0.6);
-            border-left: 4px solid var(--accent-color);
-            margin-bottom: 20px;
-            border-radius: 20px;
-            overflow: hidden;
-            transition: all 0.25s;
-        }
-        .dossier-card:hover {
-            transform: translateX(6px);
-            box-shadow: 0 10px 25px -10px rgba(0,0,0,0.5);
-            border-left-width: 6px;
-        }
-        .dossier-header {
-            background: rgba(30, 30, 40, 0.7);
-            padding: 14px 18px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-        }
-        .dossier-header h3 {
-            margin: 0;
-            font-size: 18px;
-            color: #fff;
-        }
-        .dossier-header .badge {
-            font-size: 12px;
-            color: var(--accent-color);
-            font-weight: 600;
-        }
-        .dossier-body {
-            padding: 16px 18px;
-        }
-        .dossier-row {
             display: flex;
-            margin-bottom: 8px;
-            font-size: 13px;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
         }
-        .dossier-label {
-            width: 110px;
-            font-weight: 600;
+        footer button {
+            background: none;
+            border: none;
             color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 11px;
+            opacity: 0.8;
+            transition: 0.2s;
         }
-        .dossier-value {
-            flex: 1;
-            color: #ddd;
-        }
-        .status-dead {
-            color: #ff6b6b;
-        }
-        .status-arrested {
-            color: #ffd966;
+        footer button:hover {
+            opacity: 1;
+            color: #fff;
         }
 
-        /* Чат */
-        .chat-messages {
-            height: 350px;
-            overflow-y: auto;
+        /* Досье: простой список */
+        .dossier-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .dossier-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+        }
+        .dossier-list strong {
+            color: #e0e0e0;
+        }
+
+        /* Справка */
+        .help-steps {
+            list-style: none;
+            padding-left: 0;
+        }
+        .help-steps li {
             margin-bottom: 16px;
-            padding-right: 8px;
+            padding-left: 24px;
+            position: relative;
         }
-        .chat-message {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 12px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 16px;
+        .help-steps li strong {
+            color: #00ffaa;
         }
-        .chat-message-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
-            background: #333;
-        }
-        .chat-message-content {
-            flex: 1;
-        }
-        .chat-message-name {
-            font-weight: 600;
-            color: #fff;
-            font-size: 13px;
-            margin-bottom: 4px;
-        }
-        .chat-message-text {
-            font-size: 14px;
-            color: #ccc;
-            word-break: break-word;
-        }
-        .chat-message-time {
-            font-size: 10px;
-            color: #666;
-            margin-top: 4px;
-        }
-        .chat-input-area {
-            display: flex;
-            gap: 10px;
-        }
-        .chat-input-area input {
-            flex: 1;
-            padding: 12px 16px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 16px;
-            color: #fff;
-            font-size: 14px;
-        }
-        .chat-input-area button {
-            padding: 12px 20px;
-            background: #333;
-            border: none;
-            border-radius: 16px;
-            color: #fff;
-            cursor: pointer;
-        }
-        .name-input-area {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .name-input-area input {
-            flex: 1;
-            padding: 12px 16px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 16px;
-            color: #fff;
-            font-size: 14px;
-        }
-        .name-input-area button {
-            padding: 12px 20px;
-            background: #333;
-            border: none;
-            border-radius: 16px;
-            color: #fff;
-            cursor: pointer;
-        }
-        .current-user {
-            font-size: 12px;
-            color: #aaa;
-            margin-bottom: 12px;
-            padding: 8px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
+        .help-steps li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
         }
     </style>
 </head>
@@ -1098,7 +1060,7 @@
             <div class="title-row">
                 <div class="title-group">
                     <h1 id="mainTitle">CRIMSON RP</h1>
-                    <span class="version-badge">v1.4.0</span>
+                    <span class="version-badge">v1.1.0</span>
                 </div>
                 <button class="settings-btn" id="settingsBtn">⋮</button>
             </div>
@@ -1112,7 +1074,6 @@
             <button class="tab" data-tab="vip">VIP</button>
             <button class="tab" data-tab="jobs">РАБОТЫ</button>
             <button class="tab" data-tab="dossier">ДОСЬЕ</button>
-            <button class="tab" data-tab="chat">ЧАТ</button>
             <button class="tab" data-tab="about">О НАС</button>
         </div>
 
@@ -1135,30 +1096,40 @@
                 </div>
             </div>
 
-            <!-- НОВОСТИ -->
+            <!-- НОВОСТИ (карусель) -->
             <div class="page" id="newsPage">
                 <div class="news-grid">
-                    <div class="news-card">
-                        <div class="gallery-container">
-                            <img src="https://s10.iimage.su/s/28/gSrZpIxx4a3lfHjQygJNHugV8RVzdzLU1w4X27wSP.jpg" alt="Обновление 1" onclick="openLightbox(this.src)">
-                            <img src="https://s10.iimage.su/s/28/gd2a0qCxaOhMI3JbFfYAtWED17z1PKnob6Ap6ggus.jpg" alt="Обновление 2" onclick="openLightbox(this.src)">
+                    <!-- НОВОСТЬ 1: Обновление (два фото) -->
+                    <div class="news-card" data-images='["https://s10.iimage.su/s/28/gSrZpIxx4a3lfHjQygJNHugV8RVzdzLU1w4X27wSP.jpg","https://s10.iimage.su/s/03/g6mRgHnx4vzaQJ7Es0O6opfh26QdHVPFkdBHW7TVV.jpg"]'>
+                        <div class="carousel-container">
+                            <div class="carousel-slides"></div>
+                            <div class="carousel-arrow carousel-arrow-left">‹</div>
+                            <div class="carousel-arrow carousel-arrow-right">›</div>
+                            <div class="carousel-dots"></div>
                         </div>
                         <div class="news-content">
-                            <div class="news-title">🔥 CRIMSON RP: ОБНОВЛЕНИЕ ЧАТА!</div>
+                            <div class="news-title">🔥 CRIMSON RP: НОВАЯ ВКЛАДКА «ДОСЬЕ»!</div>
                             <div class="news-text">
-                                Чат теперь работает без регистрации! Просто введи имя и общайся с другими игроками. Сообщения сохраняются в облаке и видны всем.<br><br>
-                                <strong>Что нового в версии 1.4.0?</strong><br>
-                                ✅ Чат без авторизации — введи имя и пиши<br>
-                                ✅ Сообщения сохраняются в Supabase<br>
-                                ✅ Реальный чат с обновлением в реальном времени<br>
+                                Теперь у нас есть вкладка «ДОСЬЕ» — база данных с криминальными делами преступников нашего проекта.<br><br>
+                                <strong>Что нового в версии v1.1.0?</strong><br>
+                                ✅ Улучшена галерея новостей<br>
+                                ✅ Зарплата в работах отображается под названием<br>
+                                ✅ Фото в новостях уменьшены, интерфейс стал чуть чище<br>
                                 Следите за обновлениями! 🚔
                             </div>
                         </div>
                     </div>
-                    <div class="news-card">
+                    <!-- НОВОСТЬ 2: Запуск сайта (одно фото) -->
+                    <div class="news-card" data-images='["https://s10.iimage.su/s/03/g2BARDrxcPZkHntVoItav83M8UArQ9zwpJotWOcce.jpg"]'>
+                        <div class="carousel-container">
+                            <div class="carousel-slides"></div>
+                            <div class="carousel-arrow carousel-arrow-left">‹</div>
+                            <div class="carousel-arrow carousel-arrow-right">›</div>
+                            <div class="carousel-dots"></div>
+                        </div>
                         <div class="news-content">
                             <div class="news-title">🚨 САЙТ CRIMSON RP ЗАПУЩЕН!</div>
-                            <div class="news-text">Мы долго этого ждали, и этот момент настал! Наш новый дом в сети теперь открыт для каждого из вас. Удачи тебе, друг 🏁</div>
+                            <div class="news-text">Мы долго этого ждали, и этот момент настал! Наш новый дом в сети открыт. Теперь взаимодействие с сервером стало еще проще, быстрее и удобнее.<br><br>Современный интерфейс, удобная навигация. Удачи тебе, друг 🏁</div>
                         </div>
                     </div>
                 </div>
@@ -1173,7 +1144,7 @@
                         <div class="rule-item"><div class="rule-title">1.0 RP (Roleplay)</div><div class="rule-desc">Игра по ролям. Действуйте согласно характеру, биографии и возможностям персонажа.</div></div>
                         <div class="rule-item"><div class="rule-title">1.1 NITRP</div><div class="rule-desc">Нахождение на сервере без цели участия в РП (бесцельный бег, помехи другим).</div></div>
                         <div class="rule-item"><div class="rule-title">1.2 SK (Spawn Kill)</div><div class="rule-desc">Убийство или урон на спавне, будь то в IC или OOC контексте.</div></div>
-                        <div class="rule-item"><div class="rule-title">1.3 TK (Team Kill)</div><div class="rule-desc">Убийство членов своей фракции без веской РП-причины.</div></div>
+                        <div class="rule-item"><div class="rule-title">1.3 TK (Team Kill)</div><div class="rule-desc">Убийство членов своей фракции без веской РП-причины. Исключение: РП-предательство, приказ лидера, устранение «крысы».</div></div>
                         <div class="rule-item"><div class="rule-title">1.4 MG (Meta Gaming)</div><div class="rule-desc">Использование OOC информации (Telegram, чат, стримы) в IC.</div></div>
                         <div class="rule-item"><div class="rule-title">1.5 DM (Death Match)</div><div class="rule-desc">Убийство без обоснованной IC причины и предварительного РП-конфликта.</div></div>
                         <div class="rule-item"><div class="rule-title">1.6 BH (Bunny Hop)</div><div class="rule-desc">Передвижение прыжками для ускорения — нереалистично.</div></div>
@@ -1184,16 +1155,36 @@
                         <div class="rule-item"><div class="rule-title">2.2 LRP (Leaving Role Play)</div><div class="rule-desc">Выход во время РП-ситуации (ареста, допроса) запрещён.</div></div>
                         <div class="rule-item"><div class="rule-title">2.3 RK (Revenge Kill)</div><div class="rule-desc">Убийство в отместку за то, что вас убили ранее.</div></div>
                         <div class="rule-item"><div class="rule-title">2.4 IC-Conflict</div><div class="rule-desc">Агрессия только после РП-диалога или провокации. Стрельба «молча» запрещена.</div></div>
+                        <div class="rule-item"><div class="rule-title">2.5 No LGBT</div><div class="rule-desc">Никакого гейство, феминизма и всякого бреда.</div></div>
                         
-                        <h3>🚗 ОБЩИЕ ПРАВИЛА ДОРОЖНОГО ДВИЖЕНИЯ (ОПДД)</h3>
-                        <div class="rule-item"><div class="rule-title">П 1.1.1-1.1.5</div><div class="rule-desc">Взаимное уважение, оценка рисков, запрет утомления, техсостояние, культура поведения.</div></div>
-                        <div class="rule-item"><div class="rule-title">П 2.1.1-2.1.2</div><div class="rule-desc">Адаптивная скорость, запрет необоснованно низкой скорости.</div></div>
-                        <div class="rule-item"><div class="rule-title">П 3.1.1-3.1.4</div><div class="rule-desc">Сохранение полосы, проходимость перекрёстков, пространственный резерв, опережение без угрозы.</div></div>
-                        <div class="rule-item"><div class="rule-title">П 4.1.1-4.1.3</div><div class="rule-desc">Приоритет уязвимых участников, поворот с обзором, планирование маневра.</div></div>
-                        <div class="rule-item"><div class="rule-title">П 5.1.1-5.1.3</div><div class="rule-desc">Запрет препятствий, парковка по разметке, действия при вынужденной остановке.</div></div>
-                        <div class="rule-item"><div class="rule-title">П 6.1.1-6.1.3</div><div class="rule-desc">Защитная дистанция (1,5 м), целевое использование звукового сигнала, запрет ослепления.</div></div>
-                        <div class="rule-item"><div class="rule-title">П 7.1.1-7.1.2</div><div class="rule-desc">Абсолютный запрет мобильных устройств, минимизация отвлечений.</div></div>
-                        <div class="rule-item"><div class="rule-title">П 8.1.1-8.1.5</div><div class="rule-desc">Адаптация к погоде, приоритет экстренных служб, чистота номеров, экологическая ответственность, взаимодействие с беспилотниками.</div></div>
+                        <h3>🚗 ОБЩИЕ ПРАВИЛА ДОРОЖНОГО ДВИЖЕНИЯ (ОПДД) — все 27 пунктов</h3>
+                        <div class="rule-item"><div class="rule-title">П 1.1.1. Принцип Взаимного Уважения</div><div class="rule-desc">Каждый участник дорожного движения обязан относиться к другим участникам с уважением и предвидеть их возможные действия, избегая агрессивного и провокационного поведения.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 1.1.2. Проактивная Оценка Рисков</div><div class="rule-desc">Водитель обязан постоянно оценивать дорожную ситуацию, идентифицировать потенциальные опасности и предпринимать действия для их предотвращения.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 1.1.3. Запрет Управления в Состоянии Утомления</div><div class="rule-desc">Управление транспортным средством запрещено при любой степени утомления, которая может снизить внимание, скорость реакции или способность адекватно оценивать дорожную ситуацию. Водитель обязан самостоятельно прекратить движение и отдохнуть.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 1.1.4. Ответственность за Техническое Состояние</div><div class="rule-desc">Водитель несет полную ответственность за надлежащее техническое состояние своего транспортного средства перед выездом и во время движения. Любая неисправность, влияющая на безопасность, должна быть устранена до начала движения.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 1.1.5. Культура Дорожного Поведения</div><div class="rule-desc">Водитель обязан избегать любых действий, которые могут быть расценены как некультурные, мешающие или раздражающие других участников движения (например, чрезмерное использование звукового сигнала без необходимости, резкие маневры без предупреждения).</div></div>
+                        <div class="rule-item"><div class="rule-title">П 2.1.1. Адаптивная Скорость</div><div class="rule-desc">Скорость движения должна быть выбрана не только в соответствии с установленными знаками, но и с учетом конкретных дорожных, погодных условий, видимости, плотности потока и состояния транспортного средства, обеспечивая возможность безопасной остановки в пределах видимости.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 2.1.2. Запрет Необоснованно Низкой Скорости</div><div class="rule-desc">Движение с необоснованно низкой скоростью, создающее помехи для нормального движения других транспортных средств, запрещено. В случае необходимости такого движения, водитель обязан принять вправо или пропустить поток, если это возможно и безопасно.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 3.1.1. Сохранение Полосы Движения</div><div class="rule-desc">Движение должно осуществляться строго по центру выбранной полосы движения, избегая необоснованных отклонений и "блужданий" между полосами.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 3.1.2. Обеспечение Проходимости Перекрестков</div><div class="rule-desc">Запрещается выезжать на перекресток или пересечение проезжих частей, если впереди образовался затор, который вынудит водителя остановиться и создать препятствие для движения транспортных средств в поперечном направлении.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 3.1.3. Принцип "Пространственного Резерва"</div><div class="rule-desc">Водитель обязан поддерживать достаточную дистанцию до впереди идущего транспортного средства и боковой интервал до соседних транспортных средств, а также до стационарных объектов, чтобы иметь пространство для безопасного маневра или остановки в случае непредвиденных обстоятельств.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 3.1.4. Опережение без Угрозы</div><div class="rule-desc">При опережении водитель обязан убедиться, что его маневр не создаст угрозы или помехи для опережаемого транспортного средства и не вынудит его изменить скорость или траекторию движения.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 4.1.1. Безусловный Приоритет Уязвимых Участников при Повороте</div><div class="rule-desc">При повороте направо или налево водитель обязан уступить дорогу всем пешеходам и велосипедистам, пересекающим проезжую часть дороги, на которую он поворачивает, независимо от наличия размеченного перехода.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 4.1.2. Правило Поворота с Полным Обзором</div><div class="rule-desc">Перед осуществлением поворота, особенно направо, водитель обязан убедиться в отсутствии помех в "слепых зонах", внимательно осмотрев пространство рядом с автомобилем и в зеркалах, чтобы не допустить столкновения с велосипедистами или мотоциклистами.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 4.1.3. Планирование Маневра Заранее</div><div class="rule-desc">Все маневры (повороты, перестроения, остановка) должны быть спланированы и начаты заблаговременно, с обязательным использованием соответствующих световых сигналов поворота.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 5.1.1. Запрет Создания Препятствий</div><div class="rule-desc">Запрещается остановка или стоянка транспортного средства в местах, где оно может создать препятствие для движения других транспортных средств, пешеходов, доступа к зданиям, парковкам, или перекрыть обзор дорожных знаков и светофоров.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 5.1.2. Парковка Строго по Разметке</div><div class="rule-desc">При наличии разметки парковочного места, транспортное средство должно быть расположено строго в пределах этой разметки, не занимая более одного места и не создавая неудобств для соседних парковочных мест.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 5.1.3. Действия При Вынужденной Остановке</div><div class="rule-desc">В случае вынужденной остановки водитель обязан немедленно включить аварийную световую сигнализацию и, если позволяет обстановка, установить знак аварийной остановки для предупреждения других участников движения.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 6.1.1. Защитная Дистанция до Уязвимых Участников</div><div class="rule-desc">При движении рядом с пешеходами, велосипедистами или другими уязвимыми участниками дорожного движения, водитель обязан сохранять увеличенный боковой интервал (не менее 1,5 метра), даже если это требует частичного выезда на соседнюю полосу.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 6.1.2. Целевое Использование Звукового Сигнала</div><div class="rule-desc">Звуковой сигнал может быть использован исключительно для предотвращения дорожно-транспортного происшествия или для привлечения внимания в случае крайней необходимости. Его использование для выражения недовольства, предупреждения о своем приближении без угрозы, или для приветствия запрещено.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 6.1.3. Запрет Ослепления</div><div class="rule-desc">Запрещается использовать дальний свет фар или другие яркие источники света таким образом, чтобы ослеплять водителей встречных или попутных транспортных средств, а также пешеходов.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 7.1.1. Абсолютный Запрет на Использование Мобильных Устройств</div><div class="rule-desc">Использование мобильных телефонов, смартфонов, планшетов и других портативных устройств, требующих взаимодействия руками, во время движения категорически запрещено.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 7.1.2. Минимизация Внутренних Отвлечений</div><div class="rule-desc">Водитель обязан минимизировать любые внутренние отвлечения (разговоры с пассажирами, еда, напитки, поиск предметов, настройка радио и т.д.), которые могут отвлечь внимание от дорожной ситуации.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 8.1.1. Принцип Адаптации к Погодным Условиям</div><div class="rule-desc">В условиях дождя, снега, тумана, гололеда или любой другой непогоды водитель обязан значительно снизить скорость, увеличить дистанцию, усилить внимание и использовать соответствующее освещение, адаптируя стиль вождения к измененным условиям.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 8.1.2. Безусловный Приоритет Экстренных Служб</div><div class="rule-desc">При приближении транспортных средств оперативных служб (скорая помощь, полиция, пожарная охрана) с включенными проблесковыми маячками и специальными звуковыми сигналами, водитель обязан немедленно уступить им дорогу, принять вправо или остановиться, обеспечив беспрепятственный проезд.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 8.1.3. Обеспечение Видимости Номеров и Световых Приборов</div><div class="rule-desc">В любое время суток и при любых погодных условиях все государственные регистрационные знаки и световые приборы транспортного средства должны быть чистыми и хорошо различимыми.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 8.1.4. Экологическая Ответственность Водителя</div><div class="rule-desc">Запрещается выбрасывать мусор, окурки или любые другие предметы из транспортного средства на проезжую часть или обочину.</div></div>
+                        <div class="rule-item"><div class="rule-title">П 8.1.5. Взаимодействие с Автоматизированными ТС</div><div class="rule-desc">Водитель обязан относиться к автоматизированным транспортным средствам (беспилотникам) как к обычным участникам движения, ожидая от них соблюдения всех правил и обеспечивая им необходимый пространственный резерв для корректной работы их систем.</div></div>
                     </div>
                 </div>
             </div>
@@ -1207,69 +1198,129 @@
                     <p>Стоимость VIP-статуса</p>
                     <h3>🔖 ЧТО ВХОДИТ</h3>
                     <div class="vip-feature"><div style="font-size:32px;">🏎️</div><div><div class="vip-title">Lamborghini Gallardo</div><div class="vip-desc">Легендарный суперкар</div></div></div>
-                    <div class="vip-feature"><div style="font-size:32px;">🏠</div><div><div class="vip-title">Дом на побережье</div><div class="vip-desc">Дубровка</div></div></div>
-                    <div class="vip-feature"><div style="font-size:32px;">💳</div><div><div class="vip-title">Premium-карта</div><div class="vip-desc">Скидка 15%</div></div></div>
+                    <div class="vip-feature"><div style="font-size:32px;">🏠</div><div><div class="vip-title">Дом на побережье</div><div class="vip-desc">Дубровка, собственное хозяйство</div></div></div>
+                    <div class="vip-feature"><div style="font-size:32px;">💳</div><div><div class="vip-title">Premium-карта</div><div class="vip-desc">Скидка 15% на всё</div></div></div>
                     <div class="vip-feature"><div style="font-size:32px;">🎁</div><div><div class="vip-title">3 прокрута кейсов</div><div class="vip-desc">Ежедневно</div></div></div>
+                    <p style="margin-top:20px;">По поводу покупки — на форум.</p>
                 </div>
             </div>
 
-            <!-- РАБОТЫ -->
+            <!-- РАБОТЫ (зарплата под названием, цвет как у названия) -->
             <div class="page" id="jobsPage">
                 <div class="glass">
                     <h2>💼 ВСЕ РАБОТЫ</h2>
-                    <div class="job-category">🏛️ Армия</div>
-                    <div class="job-grid"><div class="job-item"><span>Призывник</span><span>10.000₽</span></div><div class="job-item"><span>Разведчик</span><span>30.000₽</span></div><div class="job-item"><span>Связист</span><span>35.000₽</span></div><div class="job-item"><span>Пограничник</span><span>40.000₽</span></div><div class="job-item"><span>Десантник</span><span>38.000₽</span></div><div class="job-item"><span>Артиллерист</span><span>40.000₽</span></div><div class="job-item"><span>Штурмовик</span><span>30.500₽</span></div><div class="job-item"><span>Зенитчик</span><span>39.000₽</span></div><div class="job-item"><span>Военный лётчик</span><span>42.000₽</span></div><div class="job-item"><span>Морпех</span><span>34.000₽</span></div><div class="job-item"><span>Сапёр</span><span>38.000₽</span></div><div class="job-item"><span>Ком. Войск</span><span>50.000₽ (2 рп)</span></div></div>
-                    <div class="job-category">🏦 Банк</div>
-                    <div class="job-grid"><div class="job-item"><span>Банкир</span><span>30.000₽</span></div><div class="job-item"><span>Инкассатор</span><span>19.000₽</span></div><div class="job-item"><span>Кредитор</span><span>28.000₽</span></div></div>
-                    <div class="job-category">👔 Гражданские</div>
-                    <div class="job-grid"><div class="job-item"><span>Дворник</span><span>4.000₽</span></div><div class="job-item"><span>Водитель автобуса</span><span>8.000₽</span></div><div class="job-item"><span>Почтальон</span><span>12.000₽</span></div><div class="job-item"><span>Грузчик</span><span>5.000₽</span></div><div class="job-item"><span>Дальнобойщик</span><span>15.000₽</span></div><div class="job-item"><span>Металлург</span><span>18.000₽</span></div><div class="job-item"><span>Курьер</span><span>16.000₽</span></div><div class="job-item"><span>Водитель такси</span><span>заказ</span></div><div class="job-item"><span>Охранник</span><span>20.000₽</span></div><div class="job-item"><span>Шахтёр</span><span>21.000₽</span></div><div class="job-item"><span>Лесоруб</span><span>16.000₽</span></div><div class="job-item"><span>Рыболов</span><span>16.500₽</span></div><div class="job-item"><span>Работник фермы</span><span>17.000₽</span></div><div class="job-item"><span>Эвакуаторщик</span><span>19.000₽</span></div><div class="job-item"><span>Продавец</span><span>18.000₽</span></div><div class="job-item"><span>Заправщик</span><span>16.000₽</span></div><div class="job-item"><span>Газовщик</span><span>19.500₽</span></div><div class="job-item"><span>Риелтор</span><span>%</span></div><div class="job-item"><span>Водолаз</span><span>17.000₽</span></div><div class="job-item"><span>Электрик</span><span>27.000₽</span></div><div class="job-item"><span>Строитель</span><span>25.000₽</span></div><div class="job-item"><span>Археолог</span><span>26.000₽</span></div><div class="job-item"><span>Механик</span><span>торг</span></div><div class="job-item"><span>Заводчанин</span><span>15.000₽</span></div></div>
-                    <div class="job-category">⚖️ Юриспруденция</div>
-                    <div class="job-grid"><div class="job-item"><span>Судья</span><span>60.000₽</span></div><div class="job-item"><span>Прокурор</span><span>55.000₽</span></div><div class="job-item"><span>Адвокат</span><span>заказ</span></div><div class="job-item"><span>Нотариус</span><span>27.000₽</span></div></div>
-                    <div class="job-category">✈️ Аэропорт</div>
-                    <div class="job-grid"><div class="job-item"><span>Кассир</span><span>16.000₽</span></div><div class="job-item"><span>Пилот</span><span>24.000₽</span></div><div class="job-item"><span>Зам. пилота</span><span>22.000₽</span></div></div>
-                    <div class="job-category">📰 СМИ</div>
-                    <div class="job-grid"><div class="job-item"><span>Журналист</span><span>25.000₽</span></div></div>
-                    <div class="job-category">🚒 Пожарные</div>
-                    <div class="job-grid"><div class="job-item"><span>Водитель ПМ</span><span>29.000₽</span></div><div class="job-item"><span>Пожарник</span><span>36.000₽</span></div></div>
-                    <div class="job-category">🚑 Медицина</div>
-                    <div class="job-grid"><div class="job-item"><span>Водитель КСП</span><span>20.000₽</span></div><div class="job-item"><span>Фельдшер</span><span>21.000₽</span></div><div class="job-item"><span>Травматолог</span><span>22.000₽</span></div><div class="job-item"><span>Психиатр</span><span>27.000₽</span></div><div class="job-item"><span>Терапевт</span><span>25.000₽</span></div><div class="job-item"><span>Хирург</span><span>35.000₽</span></div><div class="job-item"><span>Нарколог</span><span>33.000₽</span></div><div class="job-item"><span>Реаниматолог</span><span>29.000₽</span></div></div>
-                    <div class="job-category">👮 Полиция</div>
-                    <div class="job-grid"><div class="job-item"><span>Оперативник</span><span>20.000₽</span></div><div class="job-item"><span>Участковый</span><span>25.000₽</span></div><div class="job-item"><span>Следователь</span><span>28.000₽</span></div><div class="job-item"><span>ДПС</span><span>24.000₽</span></div><div class="job-item"><span>Киберполиция</span><span>38.000₽</span></div><div class="job-item"><span>Водная полиция</span><span>34.000₽</span></div><div class="job-item"><span>Спецназовец</span><span>60.000₽</span></div></div>
-                    <div class="job-category">🏛️ Гос. работы</div>
-                    <div class="job-grid"><div class="job-item"><span>Мэр</span><span>1.000.000₽</span></div></div>
-                    <div class="job-category">🛢️ Другие</div>
-                    <div class="job-grid"><div class="job-item"><span>Нефтяник</span><span>от 100.000₽</span></div></div>
+                    <div id="jobsList">
+                        <div class="job-category">🏛️ Армия</div>
+                        <div class="job-grid">
+                            <div class="job-item" data-salary="10.000₽">Призывник</div>
+                            <div class="job-item" data-salary="30.000₽">Разведчик</div>
+                            <div class="job-item" data-salary="35.000₽">Связист</div>
+                            <div class="job-item" data-salary="40.000₽">Пограничник</div>
+                            <div class="job-item" data-salary="38.000₽">Десантник</div>
+                            <div class="job-item" data-salary="40.000₽">Артиллерист</div>
+                            <div class="job-item" data-salary="30.500₽">Штурмовик</div>
+                            <div class="job-item" data-salary="39.000₽">Зенитчик</div>
+                            <div class="job-item" data-salary="42.000₽">Военный лётчик</div>
+                            <div class="job-item" data-salary="34.000₽">Морпех</div>
+                            <div class="job-item" data-salary="38.000₽">Сапёр</div>
+                            <div class="job-item" data-salary="50.000₽ (2 рп)">Ком. Войск</div>
+                        </div>
+                        <div class="job-category">🏦 Банк</div>
+                        <div class="job-grid">
+                            <div class="job-item" data-salary="30.000₽">Банкир</div>
+                            <div class="job-item" data-salary="19.000₽">Инкассатор</div>
+                            <div class="job-item" data-salary="28.000₽">Кредитор</div>
+                        </div>
+                        <div class="job-category">👔 Гражданские</div>
+                        <div class="job-grid">
+                            <div class="job-item" data-salary="4.000₽">Дворник</div>
+                            <div class="job-item" data-salary="8.000₽">Водитель автобуса</div>
+                            <div class="job-item" data-salary="12.000₽">Почтальон</div>
+                            <div class="job-item" data-salary="5.000₽">Грузчик</div>
+                            <div class="job-item" data-salary="15.000₽">Дальнобойщик</div>
+                            <div class="job-item" data-salary="18.000₽">Металлург</div>
+                            <div class="job-item" data-salary="16.000₽">Курьер</div>
+                            <div class="job-item" data-salary="цена заказа">Водитель такси</div>
+                            <div class="job-item" data-salary="20.000₽">Охранник</div>
+                            <div class="job-item" data-salary="21.000₽">Шахтёр</div>
+                            <div class="job-item" data-salary="16.000₽">Лесоруб</div>
+                            <div class="job-item" data-salary="16.500₽">Рыболов</div>
+                            <div class="job-item" data-salary="17.000₽">Работник фермы</div>
+                            <div class="job-item" data-salary="19.000₽">Эвакуаторщик</div>
+                            <div class="job-item" data-salary="18.000₽">Продавец</div>
+                            <div class="job-item" data-salary="16.000₽">Заправщик</div>
+                            <div class="job-item" data-salary="19.500₽">Газовщик</div>
+                            <div class="job-item" data-salary="%">Риелтор</div>
+                            <div class="job-item" data-salary="17.000₽">Водолаз</div>
+                            <div class="job-item" data-salary="27.000₽">Электрик</div>
+                            <div class="job-item" data-salary="25.000₽">Строитель</div>
+                            <div class="job-item" data-salary="26.000₽">Археолог</div>
+                            <div class="job-item" data-salary="торг">Механик</div>
+                            <div class="job-item" data-salary="15.000₽">Заводчанин</div>
+                        </div>
+                        <div class="job-category">⚖️ Юриспруденция</div>
+                        <div class="job-grid">
+                            <div class="job-item" data-salary="60.000₽ (заседание)">Судья</div>
+                            <div class="job-item" data-salary="55.000₽ (заседание)">Прокурор</div>
+                            <div class="job-item" data-salary="цена заказа">Адвокат</div>
+                            <div class="job-item" data-salary="27.000₽">Нотариус</div>
+                        </div>
+                        <div class="job-category">✈️ Аэропорт</div>
+                        <div class="job-grid">
+                            <div class="job-item" data-salary="16.000₽">Кассир</div>
+                            <div class="job-item" data-salary="24.000₽">Пилот</div>
+                            <div class="job-item" data-salary="22.000₽">Зам. пилота</div>
+                        </div>
+                        <div class="job-category">📰 СМИ</div>
+                        <div class="job-grid"><div class="job-item" data-salary="25.000₽">Журналист</div></div>
+                        <div class="job-category">🚒 Пожарные</div>
+                        <div class="job-grid">
+                            <div class="job-item" data-salary="29.000₽">Водитель ПМ</div>
+                            <div class="job-item" data-salary="36.000₽">Пожарник</div>
+                        </div>
+                        <div class="job-category">🚑 Медицина</div>
+                        <div class="job-grid">
+                            <div class="job-item" data-salary="20.000₽">Водитель КСП</div>
+                            <div class="job-item" data-salary="21.000₽">Фельдшер</div>
+                            <div class="job-item" data-salary="22.000₽">Травматолог</div>
+                            <div class="job-item" data-salary="27.000₽">Психиатр</div>
+                            <div class="job-item" data-salary="25.000₽">Терапевт</div>
+                            <div class="job-item" data-salary="35.000₽">Хирург</div>
+                            <div class="job-item" data-salary="33.000₽">Нарколог</div>
+                            <div class="job-item" data-salary="29.000₽">Реаниматолог</div>
+                        </div>
+                        <div class="job-category">👮 Полиция</div>
+                        <div class="job-grid">
+                            <div class="job-item" data-salary="20.000₽">Оперативник</div>
+                            <div class="job-item" data-salary="25.000₽">Участковый</div>
+                            <div class="job-item" data-salary="28.000₽">Следователь</div>
+                            <div class="job-item" data-salary="24.000₽">ДПС</div>
+                            <div class="job-item" data-salary="38.000₽">Киберполиция</div>
+                            <div class="job-item" data-salary="34.000₽">Водная полиция</div>
+                            <div class="job-item" data-salary="60.000₽">Спецназовец</div>
+                        </div>
+                        <div class="job-category">🏛️ Гос. работы</div>
+                        <div class="job-grid"><div class="job-item" data-salary="1.000.000₽">Мэр</div></div>
+                        <div class="job-category">🛢️ Другие</div>
+                        <div class="job-grid"><div class="job-item" data-salary="от 100.000₽">Нефтяник</div></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- ДОСЬЕ -->
+            <!-- ДОСЬЕ (простой список) -->
             <div class="page" id="dossierPage">
                 <div class="glass">
                     <h2>📂 БАЗА ДОСЬЕ</h2>
                     <p>Конфиденциальная информация. Преступления и их фигуранты.</p>
-                    <div class="dossier-card"><div class="dossier-header"><h3>▌ДЕЛО №1 ▌</h3><div class="badge">«KR Амонгасик»</div></div><div class="dossier-body"><div class="dossier-row"><span class="dossier-label">ФИО:</span><span>Неизвестно</span></div><div class="dossier-row"><span class="dossier-label">Возраст:</span><span>≈30 лет</span></div><div class="dossier-row"><span class="dossier-label">Преступление:</span><span>Убийство Министра Обороны РФ, нападение на ФСБ. Самооборона.</span></div><div class="dossier-row"><span class="dossier-label">Статус:</span><span class="status-arrested">Задержан</span></div><div class="dossier-row"><span class="dossier-label">Срок:</span><span>3 года + исправительные работы</span></div></div></div>
-                    <div class="dossier-card"><div class="dossier-header"><h3>▌ДЕЛО №2 ▌</h3><div class="badge">Богданов Андрей Юрьевич</div></div><div class="dossier-body"><div class="dossier-row"><span class="dossier-label">Возраст:</span><span>25 лет</span></div><div class="dossier-row"><span class="dossier-label">Преступление:</span><span>Убийство 4 человек в квартире (топор/нож).</span></div><div class="dossier-row"><span class="dossier-label">Статус:</span><span class="status-arrested">Задержан</span></div><div class="dossier-row"><span class="dossier-label">Срок:</span><span>Пожизненно</span></div></div></div>
-                    <div class="dossier-card"><div class="dossier-header"><h3>▌ДЕЛО №3 ▌</h3><div class="badge">Александр Дарион Алексеевич</div></div><div class="dossier-body"><div class="dossier-row"><span class="dossier-label">Возраст:</span><span>30–35 лет</span></div><div class="dossier-row"><span class="dossier-label">Преступление:</span><span>Наркотики, убийство дилера, нападение на СК. Раскаялся.</span></div><div class="dossier-row"><span class="dossier-label">Статус:</span><span class="status-arrested">Задержан</span></div><div class="dossier-row"><span class="dossier-label">Срок:</span><span>30 лет</span></div></div></div>
-                    <div class="dossier-card"><div class="dossier-header"><h3>▌ДЕЛО №4 ▌</h3><div class="badge">«ЛжеВиктор I»</div></div><div class="dossier-body"><div class="dossier-row"><span class="dossier-label">Возраст:</span><span>36 лет</span></div><div class="dossier-row"><span class="dossier-label">Преступление:</span><span>Выдавал себя за Министра Обороны, нападение на МВД, убил 5-6 человек.</span></div><div class="dossier-row"><span class="dossier-label">Статус:</span><span class="status-dead">Мёртв</span></div></div></div>
-                    <div class="dossier-card"><div class="dossier-header"><h3>▌ДЕЛО №5 ▌</h3><div class="badge">Исламов Михаил Михайлович</div></div><div class="dossier-body"><div class="dossier-row"><span class="dossier-label">Возраст:</span><span>22 года</span></div><div class="dossier-row"><span class="dossier-label">Преступление:</span><span>Убийство на ул. Армейская, сопротивление, взрыв мусорки.</span></div><div class="dossier-row"><span class="dossier-label">Статус:</span><span class="status-dead">Мёртв</span></div></div></div>
-                    <div class="dossier-card"><div class="dossier-header"><h3>▌ДЕЛО №7 ▌</h3><div class="badge">Пахомов Андрей Юрьевич</div></div><div class="dossier-body"><div class="dossier-row"><span class="dossier-label">Возраст:</span><span>49 лет</span></div><div class="dossier-row"><span class="dossier-label">Преступление:</span><span>Покушение на МВД, нападение на скорую, убийство сотрудника СМП.</span></div><div class="dossier-row"><span class="dossier-label">Статус:</span><span class="status-dead">Мёртв</span></div></div></div>
-                </div>
-            </div>
-
-            <!-- ЧАТ -->
-            <div class="page" id="chatPage">
-                <div class="glass">
-                    <h2>💬 ОБЩИЙ ЧАТ</h2>
-                    <div id="chatMessages" class="chat-messages"></div>
-                    <div class="current-user" id="currentUserDisplay">👤 Текущее имя: <span id="currentUserName">Не указано</span></div>
-                    <div class="name-input-area">
-                        <input type="text" id="userNameInput" placeholder="Введите ваше имя..." maxlength="30">
-                        <button id="setNameBtn">Установить имя</button>
-                    </div>
-                    <div class="chat-input-area">
-                        <input type="text" id="chatInput" placeholder="Введите сообщение..." maxlength="500" disabled>
-                        <button id="sendBtn" disabled>📤</button>
-                    </div>
+                    <ul class="dossier-list">
+                        <li><strong>▌ДЕЛО №1</strong> – «KR Амонгасик»: убийство Министра Обороны РФ. <span>Задержан, 3 года + исправительные работы.</span></li>
+                        <li><strong>▌ДЕЛО №2</strong> – Богданов Андрей Юрьевич: убийство 4 человек. <span>Пожизненно.</span></li>
+                        <li><strong>▌ДЕЛО №3</strong> – Александр Дарион Алексеевич: наркотики, убийство дилера. <span>30 лет.</span></li>
+                        <li><strong>▌ДЕЛО №4</strong> – «ЛжеВиктор I»: нападение на МВД, убил 5-6 человек. <span>Мёртв.</span></li>
+                        <li><strong>▌ДЕЛО №5</strong> – Исламов Михаил: убийство на ул. Армейская. <span>Мёртв.</span></li>
+                        <li><strong>▌ДЕЛО №7</strong> – Пахомов Андрей: покушение на МВД, нападение на скорую. <span>Мёртв.</span></li>
+                    </ul>
+                    <p style="font-size: 12px; color: #777; margin-top: 16px; text-align: center;">📜 База данных обновлена. Некоторые имена изменены в интересах следствия.</p>
                 </div>
             </div>
 
@@ -1279,14 +1330,17 @@
                     <h2>📌 О ПРОЕКТЕ</h2>
                     <p><strong>CRIMSON RP</strong> — ролевой проект. Строгая атмосфера, живое сообщество.</p>
                     <div class="tg-links">
-                        <a href="https://t.me/+uKqXQ1aKmn4zMzVi" class="tg-link"><div class="tg-icon"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111644.png"></div><div class="tg-info"><div class="tg-name">Чат сообщества</div><div class="tg-desc">Общение, помощь</div></div></a>
-                        <a href="https://t.me/+gfN7uGgDoCphMjUy" class="tg-link"><div class="tg-icon"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111644.png"></div><div class="tg-info"><div class="tg-name">Новостной канал</div><div class="tg-desc">Анонсы</div></div></a>
-                        <a href="https://t.me/+V9pRXLb3TNRhOTcy" class="tg-link"><div class="tg-icon"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111644.png"></div><div class="tg-info"><div class="tg-name">Форум / Покупки</div><div class="tg-desc">VIP, услуги</div></div></a>
+                        <a href="https://t.me/+uKqXQ1aKmn4zMzVi" class="tg-link"><div class="tg-icon"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111644.png"></div><div class="tg-info"><div class="tg-name">Чат сообщества</div><div class="tg-desc">Общение, помощь, обсуждения</div></div></a>
+                        <a href="https://t.me/+gfN7uGgDoCphMjUy" class="tg-link"><div class="tg-icon"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111644.png"></div><div class="tg-info"><div class="tg-name">Новостной канал</div><div class="tg-desc">Анонсы и события</div></div></a>
+                        <a href="https://t.me/+V9pRXLb3TNRhOTcy" class="tg-link"><div class="tg-icon"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111644.png"></div><div class="tg-info"><div class="tg-name">Форум / Покупки</div><div class="tg-desc">VIP, услуги, вопросы</div></div></a>
                     </div>
                 </div>
             </div>
         </div>
-        <footer>© 2026 CRIMSON RP · версия 1.4.0</footer>
+        <footer>
+            <span>© 2026 CRIMSON RP · версия v1.1.0</span>
+            <button id="helpBtn">📘 Справка</button>
+        </footer>
     </div>
 
     <button class="scroll-top-btn" id="scrollTopBtn">↑</button>
@@ -1295,6 +1349,31 @@
         <div class="lightbox-content" onclick="event.stopPropagation()">
             <img class="lightbox-img" id="lightboxImg" src="">
             <div class="lightbox-close" onclick="closeLightbox()">✕</div>
+        </div>
+    </div>
+
+    <!-- Модальное окно справки -->
+    <div id="helpModal" class="help-modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>📘 СПРАВКА НОВИЧКА</h2>
+                <div class="modal-close" id="closeHelpBtn">✕</div>
+            </div>
+            <div class="modal-body">
+                <p>Добро пожаловать! Чтобы стать полноценным участником общества и получить доступ ко всем возможностям (работа, транспорт, финансы), вам необходимо последовательно пройти 6 этапов первичной регистрации.</p>
+                <ul class="help-steps">
+                    <li><strong>Этап 1. Регистрация личности (Паспортный стол)</strong><br>Первым шагом является юридическое закрепление вашего персонажа в системе. Перейдите в тему «Паспортный стол». Заполните анкету персонажа: Фамилия и Имя, дата рождения, место рождения и краткая биография. Данные из паспорта будут использоваться во всех остальных документах.</li>
+                    <li><strong>Этап 2. Получение медицинского заключения (Медицинские услуги)</strong><br>Для работы и вождения автомобиля необходимо подтвердить состояние здоровья. Оставьте заявку на оформление медицинской книжки. После одобрения заявки врачом, в вашем профиле появится отметка о наличии действующей медкнижки.</li>
+                    <li><strong>Этап 3. Открытие банковского счета (Сбербанк)</strong><br>Все финансовые операции, получение зарплаты и оплата штрафов проходят через банковскую систему. Подайте заявление на открытие лицевого счета и выпуск дебетовой банковской карты. Сохраните номер своего счета.</li>
+                    <li><strong>Этап 4. Лицензирование водителя (РП-процесс)</strong><br>Управление транспортным средством без лицензии карается законом. Обратитесь в Центр Лицензирования. Обучение проходит в формате Role Play: теория (тест на знание ПДД) и практика (отыгровка вождения с инструктором).</li>
+                    <li><strong>Этап 5. Подтверждение квалификации (Образование)</strong><br>Для продвижения по карьерной лестнице и доступа к специализированным профессиям требуется диплом. Выберите профиль обучения, изучите материалы и сдайте квалификационный экзамен.</li>
+                    <li><strong>Этап 6. Трудоустройство (Выбор работы)</strong><br>Ознакомьтесь со списком вакансий, выберите работу, напишите заявление на прием, прикрепив ссылки на паспорт, медкнижку и диплом. Дождитесь ответа от руководителя организации.</li>
+                </ul>
+                <p><strong>Совет для новичков:</strong> Соблюдайте последовательность. Не пытайтесь устроиться на работу, не имея паспорта или медкнижки, такая заявка будет автоматически отклонена. Удачи в развитии вашего персонажа!</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-close-modal" id="closeHelpApplyBtn">ЗАКРЫТЬ</button>
+            </div>
         </div>
     </div>
 
@@ -1310,13 +1389,13 @@
         <div class="modal-container">
             <div class="modal-header"><h2>📋 СПИСОК ИЗМЕНЕНИЙ</h2><div class="modal-close" id="closeChangelogBtn">✕</div></div>
             <div class="modal-body">
-                <div class="changelog-version-tag">Версия 1.4.0</div>
+                <div class="changelog-version-tag">Версия v1.1.0</div>
                 <ul class="changelog-list">
-                    <li><strong>💬 ЧАТ</strong><span>Чат без регистрации — введи имя и общайся</span></li>
-                    <li><strong>📡 РЕАЛЬНЫЙ ЧАТ</strong><span>Сообщения сохраняются в Supabase, обновляются в реальном времени</span></li>
-                    <li><strong>👤 ПРОСТОТА</strong><span>Не нужен email, пароль, подтверждение</span></li>
-                    <li><strong>📜 ПРАВИЛА</strong><span>Полные правила RP и все 27 пунктов ПДД</span></li>
-                    <li><strong>💼 РАБОТЫ</strong><span>Полный список профессий</span></li>
+                    <li><strong>🖼️ НОВОСТИ</strong><span>Карусель со стрелками и точками, фото уменьшены</span></li>
+                    <li><strong>📂 ДОСЬЕ</strong><span>Переделано в компактный список без карточек</span></li>
+                    <li><strong>💼 РАБОТЫ</strong><span>Зарплата появляется под названием, цвет как у названия</span></li>
+                    <li><strong>🎨 ДИЗАЙН</strong><span>Улучшена читаемость, сохранены все стили</span></li>
+                    <li><strong>📜 ПРАВИЛА</strong><span>Все правила RP и 27 пунктов ПДД</span></li>
                 </ul>
             </div>
             <div class="modal-footer"><button class="btn-close-modal" id="closeChangelogApplyBtn">ЗАКРЫТЬ</button></div>
@@ -1324,112 +1403,111 @@
     </div>
 
     <script>
-        // ========== SUPABASE НАСТРОЙКИ ==========
-        const SUPABASE_URL = "https://jscauqkgsvzrunhopnur.supabase.co/rest/v1/";
-        const SUPABASE_ANON_KEY = "81ff99ca-3f2c-43a6-a988-d32112b25f2f";
+        // МУЗЫКА
+        const userTracks = [
+            "https://videotourl.com/audio/1776773135234-2f337560-23a9-4c7d-b4eb-2d5f12b95acc.mp3",
+            "https://videotourl.com/audio/1776772963454-0e08f48e-88fe-4034-8a7e-2c92e73514ce.mp3"
+        ];
+        let activePlaylist = [...userTracks];
+        let currentTrack = 0;
+        const audio = document.getElementById('bgMusic');
+        let musicEnabled = true;
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        let currentUserName = localStorage.getItem('chatUserName') || '';
-        let chatEnabled = false;
+        function loadTrack(i) { if (activePlaylist.length) { audio.src = activePlaylist[i % activePlaylist.length]; audio.load(); } }
+        function playMusic() { if (musicEnabled && audio.src) audio.play().catch(e => {}); }
+        function nextTrack() { if (activePlaylist.length) { currentTrack = (currentTrack + 1) % activePlaylist.length; loadTrack(currentTrack); playMusic(); } }
+        audio.addEventListener('ended', nextTrack);
+        audio.addEventListener('error', nextTrack);
+        document.body.addEventListener('click', () => { if (audio.paused && musicEnabled && activePlaylist.length) { loadTrack(currentTrack); playMusic(); } }, { once: true });
 
-        // DOM элементы
-        const chatMessagesDiv = document.getElementById('chatMessages');
-        const chatInput = document.getElementById('chatInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const userNameInput = document.getElementById('userNameInput');
-        const setNameBtn = document.getElementById('setNameBtn');
-        const currentUserNameSpan = document.getElementById('currentUserName');
+        // ЛАЙТБОКС
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        window.openLightbox = function(src) { lightboxImg.src = src; lightbox.classList.add('active'); };
+        window.closeLightbox = () => lightbox.classList.remove('active');
 
-        // Загрузка сообщений
-        async function loadMessages() {
-            const { data, error } = await supabase
-                .from('messages')
-                .select('*')
-                .order('created_at', { ascending: true })
-                .limit(100);
-            
-            if (data) {
-                chatMessagesDiv.innerHTML = data.map(msg => `
-                    <div class="chat-message">
-                        <div class="chat-message-avatar" style="background: #444; display: flex; align-items: center; justify-content: center; font-size: 18px;">👤</div>
-                        <div class="chat-message-content">
-                            <div class="chat-message-name">${escapeHtml(msg.user_name || 'Аноним')}</div>
-                            <div class="chat-message-text">${escapeHtml(msg.text)}</div>
-                            <div class="chat-message-time">${new Date(msg.created_at).toLocaleTimeString()}</div>
-                        </div>
-                    </div>
-                `).join('');
-                chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
-            }
-        }
-
-        // Отправка сообщения
-        async function sendMessage() {
-            if (!chatEnabled || !chatInput.value.trim()) return;
-            
-            const text = chatInput.value.trim();
-            const { error } = await supabase.from('messages').insert({
-                user_name: currentUserName,
-                text: text
+        // КАРУСЕЛЬ ДЛЯ НОВОСТЕЙ
+        function initCarousel(container) {
+            const slidesContainer = container.querySelector('.carousel-slides');
+            const leftArrow = container.querySelector('.carousel-arrow-left');
+            const rightArrow = container.querySelector('.carousel-arrow-right');
+            const dotsContainer = container.querySelector('.carousel-dots');
+            let images = [];
+            try {
+                images = JSON.parse(container.closest('.news-card').getAttribute('data-images'));
+            } catch(e) { images = []; }
+            if (!images.length) return;
+            let currentIndex = 0;
+            slidesContainer.innerHTML = '';
+            images.forEach((src, idx) => {
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = 'Новость';
+                img.onclick = (e) => { e.stopPropagation(); openLightbox(src); };
+                slide.appendChild(img);
+                slidesContainer.appendChild(slide);
             });
-            
-            if (!error) {
-                chatInput.value = '';
-            } else {
-                console.error('Ошибка отправки:', error);
+            dotsContainer.innerHTML = '';
+            images.forEach((_, idx) => {
+                const dot = document.createElement('div');
+                dot.className = 'carousel-dot' + (idx === currentIndex ? ' active' : '');
+                dot.addEventListener('click', () => goToSlide(idx));
+                dotsContainer.appendChild(dot);
+            });
+            function updateSlides() {
+                const width = slidesContainer.clientWidth;
+                slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+                document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+                    dot.classList.toggle('active', i === currentIndex);
+                });
             }
-        }
-
-        // Установка имени
-        function setUserName() {
-            const newName = userNameInput.value.trim();
-            if (newName) {
-                currentUserName = newName;
-                localStorage.setItem('chatUserName', currentUserName);
-                currentUserNameSpan.textContent = currentUserName;
-                chatEnabled = true;
-                chatInput.disabled = false;
-                sendBtn.disabled = false;
-                userNameInput.disabled = true;
-                setNameBtn.disabled = true;
-                userNameInput.style.opacity = '0.5';
-                setNameBtn.style.opacity = '0.5';
+            function goToSlide(index) {
+                currentIndex = index;
+                updateSlides();
             }
+            function next() { if (currentIndex + 1 < images.length) goToSlide(currentIndex + 1); }
+            function prev() { if (currentIndex - 1 >= 0) goToSlide(currentIndex - 1); }
+            leftArrow.addEventListener('click', prev);
+            rightArrow.addEventListener('click', next);
+            if (images.length <= 1) {
+                leftArrow.style.display = 'none';
+                rightArrow.style.display = 'none';
+                dotsContainer.style.display = 'none';
+            }
+            window.addEventListener('resize', updateSlides);
+            updateSlides();
         }
+        document.querySelectorAll('.news-card').forEach(card => {
+            const carousel = card.querySelector('.carousel-container');
+            if (carousel) initCarousel(carousel);
+        });
 
-        // Подписка на новые сообщения
-        function startMessagesSubscription() {
-            supabase
-                .channel('messages-channel')
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => loadMessages())
-                .subscribe();
-        }
-
-        function escapeHtml(str) { 
-            return str?.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]) || ''; 
-        }
-
-        // Восстановление имени при загрузке
-        if (currentUserName) {
-            currentUserNameSpan.textContent = currentUserName;
-            chatEnabled = true;
-            chatInput.disabled = false;
-            sendBtn.disabled = false;
-            userNameInput.value = currentUserName;
-            userNameInput.disabled = true;
-            setNameBtn.disabled = true;
-            userNameInput.style.opacity = '0.5';
-            setNameBtn.style.opacity = '0.5';
-        } else {
-            currentUserNameSpan.textContent = 'Не указано';
-        }
-
-        // Обработчики
-        setNameBtn.addEventListener('click', setUserName);
-        sendBtn.addEventListener('click', sendMessage);
-        chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
-        userNameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') setUserName(); });
+        // РАБОТЫ: клик для показа зарплаты под названием (цвет как у названия)
+        const jobItems = document.querySelectorAll('.job-item');
+        jobItems.forEach(item => {
+            let salarySpan = item.querySelector('.job-salary-text');
+            if (!salarySpan) {
+                salarySpan = document.createElement('div');
+                salarySpan.className = 'job-salary-text';
+                item.appendChild(salarySpan);
+            }
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const salary = item.getAttribute('data-salary');
+                // скрываем все другие
+                document.querySelectorAll('.job-salary-text').forEach(span => {
+                    if (span !== salarySpan) span.classList.remove('show');
+                });
+                if (salarySpan.classList.contains('show')) {
+                    salarySpan.classList.remove('show');
+                } else {
+                    salarySpan.innerHTML = ` ${salary}`;
+                    salarySpan.classList.add('show');
+                }
+            });
+        });
 
         // ТАБЫ
         const tabs = document.querySelectorAll('.tab');
@@ -1450,20 +1528,17 @@
         pagesContainer.addEventListener('scroll', () => scrollBtn.classList.toggle('visible', pagesContainer.scrollTop > 300));
         scrollBtn.addEventListener('click', () => pagesContainer.scrollTo({ top: 0, behavior: 'smooth' }));
 
-        // ЛАЙТБОКС
-        window.openLightbox = function(src) { 
-            const img = document.getElementById('lightboxImg');
-            img.src = src; 
-            document.getElementById('lightbox').classList.add('active'); 
-        };
-        window.closeLightbox = () => document.getElementById('lightbox').classList.remove('active');
+        // СПРАВКА МОДАЛКА
+        const helpModal = document.getElementById('helpModal');
+        const helpBtn = document.getElementById('helpBtn');
+        helpBtn.addEventListener('click', () => helpModal.classList.add('active'));
+        document.getElementById('closeHelpBtn')?.addEventListener('click', () => helpModal.classList.remove('active'));
+        document.getElementById('closeHelpApplyBtn')?.addEventListener('click', () => helpModal.classList.remove('active'));
 
-        // НАСТРОЙКИ (упрощённые)
+        // НАСТРОЙКИ
         const modal = document.getElementById('settingsModal');
         const modalBody = document.getElementById('modalBody');
         const settingsBtn = document.getElementById('settingsBtn');
-        let devClicks = 0;
-        
         function buildModal() {
             modalBody.innerHTML = `
                 <div class="settings-section"><h3>🎵 МУЗЫКА</h3>
@@ -1477,6 +1552,7 @@
                     <div class="setting-item"><input type="file" id="modalBgFile" accept="image/*" style="display:none;"><button id="modalChooseBg" class="music-btn" style="width:100%;">📁 Выбрать файл</button></div></div>
                     <div class="setting-item"><label>Прозрачность</label><input type="range" id="modalBgOpacity" min="0" max="0.5" step="0.05" value="0.25"></div></div>
                 <div class="settings-section"><h3>📱 ИНТЕРФЕЙС</h3>
+                    <div class="setting-item"><label>Размер шрифта</label><input type="range" id="modalFontSize" min="12" max="20" value="14"></div>
                     <div class="setting-item"><div class="setting-row"><label>Уменьшенная анимация</label><input type="checkbox" id="modalReduceMotion"></div></div>
                     <div class="setting-item"><div class="setting-row"><label>Компактный режим</label><input type="checkbox" id="modalCompactMode"></div></div>
                 </div>
@@ -1494,61 +1570,37 @@
             document.getElementById('modalChooseBg')?.addEventListener('click', () => document.getElementById('modalBgFile').click());
             document.getElementById('modalBgFile')?.addEventListener('change', e => { if (e.target.files[0]) { const r = new FileReader(); r.onload = ev => { bgCustom.style.backgroundImage = `url(${ev.target.result})`; localStorage.setItem('bgImage', ev.target.result); }; r.readAsDataURL(e.target.files[0]); } });
             document.getElementById('modalBgOpacity')?.addEventListener('input', e => { bgCustom.style.opacity = e.target.value; localStorage.setItem('bgOpacity', e.target.value); });
+            document.getElementById('modalFontSize')?.addEventListener('input', e => { const s = e.target.value + 'px'; document.querySelectorAll('body, p, .rule-desc, .job-item, .news-text, .tab, .tg-desc, .changelog-list li, .modal-body, .version-badge, .sub-text').forEach(el => el.style.fontSize = s); localStorage.setItem('fontSize', e.target.value); });
             document.getElementById('modalReduceMotion')?.addEventListener('change', e => { document.body.classList.toggle('reduce-motion', e.target.checked); localStorage.setItem('reduceMotion', e.target.checked); });
             document.getElementById('modalCompactMode')?.addEventListener('change', e => { document.body.classList.toggle('compact', e.target.checked); localStorage.setItem('compactMode', e.target.checked); });
             document.getElementById('modalAccentColor')?.addEventListener('input', e => { document.body.style.setProperty('--accent-color', e.target.value); localStorage.setItem('accentColor', e.target.value); });
             if (localStorage.getItem('bgEnabled') === 'true') { bgToggle.checked = true; document.getElementById('modalBgSettings').style.display = 'block'; }
             if (localStorage.getItem('bgImage')) bgCustom.style.backgroundImage = `url(${localStorage.getItem('bgImage')})`;
             if (localStorage.getItem('bgOpacity')) document.getElementById('modalBgOpacity').value = localStorage.getItem('bgOpacity');
+            if (localStorage.getItem('fontSize')) document.getElementById('modalFontSize').value = localStorage.getItem('fontSize');
             if (localStorage.getItem('musicVol')) document.getElementById('modalVolume').value = localStorage.getItem('musicVol');
             if (localStorage.getItem('musicEnabled') === 'false') document.getElementById('modalMusicToggle').checked = false;
             if (localStorage.getItem('reduceMotion') === 'true') document.getElementById('modalReduceMotion').checked = true;
             if (localStorage.getItem('compactMode') === 'true') document.getElementById('modalCompactMode').checked = true;
             if (localStorage.getItem('accentColor')) document.getElementById('modalAccentColor').value = localStorage.getItem('accentColor');
         }
-        
         function showLoading(cb) {
             const ov = document.createElement('div'); ov.className = 'loading-overlay'; ov.innerHTML = '<div class="loading-spinner"></div>'; document.body.appendChild(ov);
             setTimeout(() => ov.classList.add('active'), 10);
             setTimeout(() => { ov.remove(); cb(); }, 500);
         }
-        
         settingsBtn.addEventListener('click', () => showLoading(() => { buildModal(); modal.classList.add('active'); }));
         document.getElementById('closeModalBtn')?.addEventListener('click', () => modal.classList.remove('active'));
         document.getElementById('applyCloseBtn')?.addEventListener('click', () => modal.classList.remove('active'));
         document.getElementById('resetSettingsBtn')?.addEventListener('click', () => { localStorage.clear(); location.reload(); });
-
         const changelogModal = document.getElementById('changelogModal');
         document.getElementById('changelogHeaderBtn')?.addEventListener('click', () => changelogModal.classList.add('active'));
         document.getElementById('closeChangelogBtn')?.addEventListener('click', () => changelogModal.classList.remove('active'));
         document.getElementById('closeChangelogApplyBtn')?.addEventListener('click', () => changelogModal.classList.remove('active'));
-
+        let devClicks = 0;
         document.getElementById('mainTitle').addEventListener('click', () => { devClicks++; if (devClicks >= 5) { const d = document.getElementById('devModalSettings'); if (d) d.style.display = 'block'; devClicks = 0; } setTimeout(() => devClicks = 0, 1000); });
-
-        // МУЗЫКА
-        const userTracks = [
-            "https://videotourl.com/audio/1776773135234-2f337560-23a9-4c7d-b4eb-2d5f12b95acc.mp3",
-            "https://videotourl.com/audio/1776772963454-0e08f48e-88fe-4034-8a7e-2c92e73514ce.mp3",
-            "https://videotourl.com/audio/1776772835949-62c6e9bd-ef97-4380-8bba-b684315c6938.mp3",
-            "https://videotourl.com/audio/1776772777711-559e1db2-dffb-4f3f-97c2-34644a594240.mp3",
-            "https://videotourl.com/audio/1776772742813-a2bc6dd2-2f10-4b66-a63e-be8f90b91dd8.mp3"
-        ];
-        let activePlaylist = [...userTracks];
-        let currentTrack = 0;
-        const audio = document.getElementById('bgMusic');
-        let musicEnabled = true;
-        function loadTrack(i) { if (activePlaylist.length) { audio.src = activePlaylist[i % activePlaylist.length]; audio.load(); } }
-        function playMusic() { if (musicEnabled && audio.src) audio.play().catch(e => {}); }
-        function nextTrack() { if (activePlaylist.length) { currentTrack = (currentTrack + 1) % activePlaylist.length; loadTrack(currentTrack); playMusic(); } }
-        audio.addEventListener('ended', nextTrack);
-        audio.addEventListener('error', nextTrack);
-        document.body.addEventListener('click', () => { if (audio.paused && musicEnabled && activePlaylist.length) { loadTrack(currentTrack); playMusic(); } }, { once: true });
         audio.volume = 0.3;
         if (activePlaylist.length) loadTrack(0);
-
-        // Загрузка чата
-        loadMessages();
-        startMessagesSubscription();
     </script>
 </body>
 </html>
