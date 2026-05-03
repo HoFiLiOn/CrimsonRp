@@ -1347,6 +1347,7 @@
                     <button id="loginBtn" class="btn-primary" style="flex:1;">Войти</button>
                     <button id="registerBtn" class="btn-primary" style="flex:1; background:#555;">Регистрация</button>
                 </div>
+                <button id="googleLoginBtn" style="width:100%; margin-top:12px; padding:12px; background:#4285F4; border:none; border-radius:16px; color:#fff; cursor:pointer;">🔐 Войти через Google</button>
             </div>
         </div>
     </div>
@@ -1380,9 +1381,9 @@
     </div>
 
     <script>
-        // ========== SUPABASE НАСТРОЙКИ (ВСТАВЬ СВОИ ДАННЫЕ) ==========
-        const SUPABASE_URL = "{{ https://jscauqkgsvzrunhopnur.supabase.co }}";
-        const SUPABASE_ANON_KEY = "{{ 81ff99ca-3f2c-43a6-a988-d32112b25f2f }}";
+        // ========== SUPABASE НАСТРОЙКИ ==========
+        const SUPABASE_URL = "https://jscauqkgsvzrunhopnur.supabase.co";
+        const SUPABASE_ANON_KEY = "81ff99ca-3f2c-43a6-a988-d32112b25f2f";
 
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let currentUser = null;
@@ -1485,6 +1486,14 @@
             }
         }
 
+        async function googleLogin() {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: window.location.origin }
+            });
+            if (error) alert(error.message);
+        }
+
         async function logout() {
             await supabase.auth.signOut();
             currentUser = null;
@@ -1563,11 +1572,12 @@
         document.getElementById('closeAuthBtn')?.addEventListener('click', () => authModal.classList.remove('active'));
         document.getElementById('loginBtn')?.addEventListener('click', login);
         document.getElementById('registerBtn')?.addEventListener('click', register);
+        document.getElementById('googleLoginBtn')?.addEventListener('click', googleLogin);
         logoutBtn?.addEventListener('click', logout);
         sendBtn?.addEventListener('click', sendMessage);
         chatInput?.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
 
-        // НАСТРОЙКИ
+        // НАСТРОЙКИ (упрощённые)
         const modal = document.getElementById('settingsModal');
         const modalBody = document.getElementById('modalBody');
         const settingsBtn = document.getElementById('settingsBtn');
@@ -1626,7 +1636,6 @@
         document.getElementById('applyCloseBtn')?.addEventListener('click', () => modal.classList.remove('active'));
         document.getElementById('resetSettingsBtn')?.addEventListener('click', () => { localStorage.clear(); location.reload(); });
 
-        // ЧЕЙНДЖЛОГ
         const changelogModal = document.getElementById('changelogModal');
         document.getElementById('changelogHeaderBtn')?.addEventListener('click', () => changelogModal.classList.add('active'));
         document.getElementById('closeChangelogBtn')?.addEventListener('click', () => changelogModal.classList.remove('active'));
