@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>CRIMSON RP · Role Play Project</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
@@ -38,6 +39,10 @@
             --shadow-md: 0 20px 35px -12px rgba(0, 0, 0, 0.7);
             --shadow-inset: 0 0 0 0.5px rgba(255, 255, 255, 0.03) inset;
             --glow-border: 0 0 0 1px rgba(192, 57, 43, 0.2), 0 0 15px rgba(192, 57, 43, 0.1);
+            --card-radius: 28px;
+            --card-padding: 24px;
+            --card-opacity: 0.75;
+            --glass-blur: 20px;
         }
 
         .ash-overlay {
@@ -104,8 +109,7 @@
         .modal-overlay,
         .changelog-modal-overlay,
         .help-modal-overlay,
-        .share-modal-overlay,
-        .admin-modal-overlay {
+        .share-modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -125,8 +129,7 @@
         .modal-overlay.active,
         .changelog-modal-overlay.active,
         .help-modal-overlay.active,
-        .share-modal-overlay.active,
-        .admin-modal-overlay.active {
+        .share-modal-overlay.active {
             opacity: 1;
             visibility: visible;
         }
@@ -151,8 +154,7 @@
         .modal-overlay.active .modal-container,
         .changelog-modal-overlay.active .modal-container,
         .help-modal-overlay.active .modal-container,
-        .share-modal-overlay.active .modal-container,
-        .admin-modal-overlay.active .modal-container {
+        .share-modal-overlay.active .modal-container {
             transform: scale(1);
             opacity: 1;
         }
@@ -238,6 +240,44 @@
             transform: scale(1.02);
         }
 
+        .copy-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #555;
+            transform: scale(1.02);
+        }
+
+        .share-preview {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .share-preview img {
+            width: 100%;
+            border-radius: 16px;
+            margin-bottom: 10px;
+        }
+
+        .share-link {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 12px;
+            border-radius: 16px;
+            word-break: break-all;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
         .settings-section {
             margin-bottom: 28px;
         }
@@ -249,6 +289,9 @@
             color: var(--text-secondary);
             margin-bottom: 16px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .setting-item {
@@ -280,6 +323,43 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        .music-controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .music-btn,
+        .custom-file-label {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 60px;
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            transition: 0.2s;
+        }
+
+        .music-btn:hover,
+        .custom-file-label:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: scale(1.02);
+        }
+
+        .custom-file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .custom-file-upload input {
+            display: none;
         }
 
         .loading-overlay {
@@ -404,6 +484,7 @@
             box-shadow: 0 0 10px var(--accent-glow);
         }
 
+        /* Вкладки */
         .tabs {
             display: flex;
             gap: 6px;
@@ -435,6 +516,20 @@
             border-radius: 50px;
             transition: all 0.3s;
             white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tab svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         .tab:hover {
@@ -446,6 +541,10 @@
             background: var(--tab-active-bg);
             color: var(--tab-active-text);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab.active svg {
+            stroke: var(--tab-active-text);
         }
 
         .pages-container {
@@ -489,10 +588,10 @@
         }
 
         .glass {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 32px;
-            padding: 24px;
+            background: rgba(10, 10, 12, var(--card-opacity));
+            backdrop-filter: blur(var(--glass-blur));
+            border-radius: var(--card-radius);
+            padding: var(--card-padding);
             border: 1px solid rgba(255, 255, 255, 0.06);
             box-shadow: var(--shadow-md), var(--shadow-inset);
             margin-bottom: 16px;
@@ -509,18 +608,17 @@
             font-weight: 700;
             margin-bottom: 16px;
             color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        h3 {
-            font-size: 17px;
-            font-weight: 600;
-            margin: 20px 0 12px;
-            color: var(--text-primary);
-        }
-
-        p, li, .rule-desc, .news-text, .tg-desc, .changelog-list li, .modal-body, .setting-item label, .version-badge, .sub-text {
-            font-size: 14px;
-            line-height: 1.5;
+        h2 svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--accent-color);
+            fill: none;
+            stroke-width: 1.5;
         }
 
         .hero-stats {
@@ -577,6 +675,15 @@
             box-shadow: 0 0 12px var(--accent-glow);
         }
 
+        .feature-icon {
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 10px;
+            stroke: var(--text-primary);
+            fill: none;
+            stroke-width: 1.5;
+        }
+
         .feature-title {
             font-weight: 700;
             margin-bottom: 6px;
@@ -604,6 +711,8 @@
             overflow: hidden;
             box-shadow: var(--shadow-md);
             transition: transform 0.25s;
+            cursor: pointer;
+            scroll-margin-top: 80px;
         }
 
         .news-card:hover {
@@ -833,7 +942,7 @@
             color: var(--text-secondary);
         }
 
-        /* Правила */
+        /* Правила (кратко) */
         .rules-scroll {
             max-height: 55vh;
             overflow-y: auto;
@@ -841,14 +950,8 @@
         }
 
         .rule-item {
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            transition: 0.2s;
-        }
-
-        .rule-item:hover {
-            background: rgba(255, 255, 255, 0.02);
-            padding-left: 8px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .rule-title {
@@ -861,6 +964,7 @@
         .rule-desc {
             font-size: 13px;
             color: var(--text-secondary);
+            line-height: 1.5;
         }
 
         /* Jobs */
@@ -870,6 +974,17 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             padding-bottom: 6px;
             color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .job-category svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--accent-color);
+            fill: none;
+            stroke-width: 1.5;
         }
 
         .job-grid {
@@ -909,13 +1024,20 @@
             transform: translateY(0);
         }
 
-        /* VIP */
         .vip-feature {
             display: flex;
             align-items: center;
             gap: 16px;
             padding: 14px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .vip-feature svg {
+            width: 32px;
+            height: 32px;
+            stroke: var(--accent-color);
+            fill: none;
+            stroke-width: 1.5;
         }
 
         .price-tag {
@@ -926,6 +1048,21 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+        }
+
+        .dossier-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .dossier-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+        }
+
+        .dossier-list strong {
+            color: #e0e0e0;
         }
 
         .changelog-list {
@@ -1023,21 +1160,6 @@
             color: #fff;
         }
 
-        .dossier-list {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .dossier-list li {
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            color: var(--text-primary);
-        }
-
-        .dossier-list strong {
-            color: #e0e0e0;
-        }
-
         .help-steps {
             list-style: none;
             padding-left: 0;
@@ -1058,6 +1180,27 @@
             position: absolute;
             left: 0;
             color: var(--accent-color);
+        }
+
+        /* Карта */
+        .map-container {
+            text-align: center;
+        }
+
+        .map-container img {
+            max-width: 100%;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .map-description {
+            text-align: left;
+            margin-top: 16px;
+        }
+
+        .map-description p {
+            margin-bottom: 12px;
         }
 
         /* Чат */
@@ -1083,10 +1226,6 @@
             border-radius: 50%;
             object-fit: cover;
             background: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
         }
 
         .chat-message-content {
@@ -1137,68 +1276,73 @@
             cursor: pointer;
         }
 
-        .auth-form {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        .auth-input {
-            width: 100%;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 16px;
-            color: #fff;
-            font-size: 14px;
-        }
-
-        .auth-switch {
-            text-align: center;
-            margin-top: 12px;
-            font-size: 13px;
-            color: #aaa;
-        }
-
-        .auth-switch span {
-            color: #c0392b;
-            cursor: pointer;
-        }
-
-        .user-info {
+        /* Профиль */
+        .profile-header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 8px 16px;
-            border-radius: 40px;
+            gap: 20px;
+            margin-bottom: 24px;
         }
 
-        .user-avatar {
-            width: 32px;
-            height: 32px;
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
+            object-fit: cover;
             background: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
+            cursor: pointer;
         }
 
-        .user-name {
-            font-size: 13px;
-            font-weight: 600;
+        .profile-name {
+            font-size: 22px;
+            font-weight: 700;
             color: #fff;
         }
 
-        .logout-btn-sm {
-            background: none;
-            border: none;
+        .profile-email {
+            font-size: 13px;
             color: #aaa;
-            font-size: 18px;
+            margin-top: 4px;
+        }
+
+        .profile-stats {
+            margin-top: 20px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+        }
+
+        .auth-button {
+            background: #4285F4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            padding: 4px;
+            transition: 0.2s;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .auth-button:hover {
+            background: #3367d6;
+            transform: scale(1.02);
+        }
+
+        .logout-btn {
+            background: #c0392b;
+            margin-top: 12px;
+        }
+
+        .logout-btn:hover {
+            background: #a93226;
+        }
+
+        .no-account {
+            text-align: center;
+            padding: 40px 20px;
         }
     </style>
 </head>
@@ -1214,33 +1358,24 @@
             <div class="title-row">
                 <div class="title-group">
                     <h1 id="mainTitle">CRIMSON RP</h1>
-                    <span class="version-badge">v1.4.0</span>
+                    <span class="version-badge">v1.3.0</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <button class="settings-btn" id="settingsBtn">⋮</button>
-                    <button class="settings-btn" id="adminPanelBtn" style="font-size: 20px;">👑</button>
-                </div>
+                <button class="settings-btn" id="settingsBtn">⋮</button>
             </div>
             <button class="changelog-header-btn" id="changelogHeaderBtn">📋 список изменений</button>
-            <div id="userPanel" style="display: none; margin-top: 8px;">
-                <div class="user-info">
-                    <div class="user-avatar" id="userAvatar">👤</div>
-                    <span id="userName" class="user-name"></span>
-                    <button id="logoutBtn" class="logout-btn-sm" title="Выйти">🚪</button>
-                </div>
-            </div>
-            <button id="showAuthBtn" class="tab" style="background: rgba(255,255,255,0.1); padding: 6px 16px; margin-top: 8px;">🔐 Вход / Регистрация</button>
         </div>
 
         <div class="tabs" id="tabsContainer">
-            <button class="tab active" data-tab="home">ГЛАВНАЯ</button>
-            <button class="tab" data-tab="news">НОВОСТИ</button>
-            <button class="tab" data-tab="rules">ПРАВИЛА</button>
-            <button class="tab" data-tab="vip">VIP</button>
-            <button class="tab" data-tab="jobs">РАБОТЫ</button>
-            <button class="tab" data-tab="dossier">ДОСЬЕ</button>
-            <button class="tab" data-tab="chat">ЧАТ</button>
-            <button class="tab" data-tab="about">О НАС</button>
+            <button class="tab active" data-tab="home"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2h-5v-8H7v8H2a2 2 0 0 1-2-2z"/><polygon points="12 3 21 9 21 20 15 20 15 12 9 12 9 20 3 20 3 9"/></svg> ГЛАВНАЯ</button>
+            <button class="tab" data-tab="news"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg> НОВОСТИ</button>
+            <button class="tab" data-tab="rules"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg> ПРАВИЛА</button>
+            <button class="tab" data-tab="vip"><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 16 14 19 22 12 17 5 22 8 14 2 9 9 9 12 2"/></svg> VIP</button>
+            <button class="tab" data-tab="jobs"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> РАБОТЫ</button>
+            <button class="tab" data-tab="dossier"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><line x1="8" y1="8" x2="16" y2="8"/></svg> ДОСЬЕ</button>
+            <button class="tab" data-tab="chat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> ЧАТ</button>
+            <button class="tab" data-tab="profile"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 20v-2a7 7 0 0 1 14 0v2"/></svg> ПРОФИЛЬ</button>
+            <button class="tab" data-tab="map"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> КАРТА</button>
+            <button class="tab" data-tab="about"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1" fill="currentColor"/></svg> О НАС</button>
         </div>
 
         <div class="pages-container" id="pagesContainer">
@@ -1254,10 +1389,10 @@
                     </div>
                     <p style="text-align: center; margin-top: 8px;">CRIMSON RP — строгий ролевой проект. Погрузись в мир криминала, власти и интриг.</p>
                     <div class="features-grid">
-                        <div class="feature-item"><div class="feature-title">Экономика</div><div class="feature-desc">Сбалансированная</div></div>
-                        <div class="feature-item"><div class="feature-title">Криминал</div><div class="feature-desc">Банды и мафии</div></div>
-                        <div class="feature-item"><div class="feature-title">Закон</div><div class="feature-desc">Полиция и мэрия</div></div>
-                        <div class="feature-item"><div class="feature-title">Недвижимость</div><div class="feature-desc">Дома и бизнесы</div></div>
+                        <div class="feature-item"><svg class="feature-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="1" x2="12" y2="23"/><line x1="1" y1="12" x2="23" y2="12"/></svg><div class="feature-title">Экономика</div><div class="feature-desc">Сбалансированная</div></div>
+                        <div class="feature-item"><svg class="feature-icon" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg><div class="feature-title">Криминал</div><div class="feature-desc">Банды и мафии</div></div>
+                        <div class="feature-item"><svg class="feature-icon" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/><line x1="2" y1="17" x2="2" y2="22"/><line x1="22" y1="17" x2="22" y2="22"/></svg><div class="feature-title">Закон</div><div class="feature-desc">Полиция и мэрия</div></div>
+                        <div class="feature-item"><svg class="feature-icon" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="14" rx="2"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg><div class="feature-title">Недвижимость</div><div class="feature-desc">Дома и бизнесы</div></div>
                     </div>
                 </div>
             </div>
@@ -1265,28 +1400,28 @@
             <!-- НОВОСТИ -->
             <div class="page" id="newsPage">
                 <div class="news-grid">
-                    <div class="news-card" data-news-id="4" data-news-title="💬 В ЧАТЕ ТЕПЕРЬ МОЖНО ОБЩАТЬСЯ!" data-news-text="Добавлен реальный чат на Firebase! Зарегистрируйся и общайся с другими игроками в реальном времени." data-news-images='[]'>
+                    <div class="news-card" data-news-id="4" data-news-title="💬 В ЧАТЕ ТЕПЕРЬ МОЖНО ОБЩАТЬСЯ!" data-news-text="Добавлен реальный чат на Firebase! Войди через Google и общайся с другими игроками в реальном времени." data-news-images='[]'>
                         <div class="news-content">
                             <div class="news-title">💬 В ЧАТЕ ТЕПЕРЬ МОЖНО ОБЩАТЬСЯ!</div>
-                            <div class="news-text">Добавлен реальный чат на Firebase! Зарегистрируйся и общайся с другими игроками в реальном времени. Сообщения сохраняются и видны всем.<br><br>✅ Регистрация по email и паролю<br>✅ Чат в реальном времени<br>✅ Профиль с аватаром и именем</div>
+                            <div class="news-text">Добавлен реальный чат на Firebase! Войди через Google и общайся с другими игроками в реальном времени. Сообщения сохраняются и видны всем.<br><br>✅ Регистрация в один клик через Google<br>✅ Чат в реальном времени<br>✅ Профиль с аватаром и именем</div>
                             <div class="news-footer"><button class="share-news-btn" onclick="shareNews(4)">📤 Поделиться</button></div>
                         </div>
                     </div>
                     <div class="news-card" data-news-id="1" data-news-title="🔥 CRIMSON RP: НОВАЯ ВКЛАДКА «ДОСЬЕ»!" data-news-text="Теперь у нас есть вкладка «ДОСЬЕ» — база данных с криминальными делами." data-news-images='["https://s10.iimage.su/s/28/gSrZpIxx4a3lfHjQygJNHugV8RVzdzLU1w4X27wSP.jpg","https://s10.iimage.su/s/03/g6mRgHnx4vzaQJ7Es0O6opfh26QdHVPFkdBHW7TVV.jpg"]'>
                         <div class="carousel-container"><div class="carousel-slides"></div><div class="carousel-arrow carousel-arrow-left">‹</div><div class="carousel-arrow carousel-arrow-right">›</div><div class="carousel-dots"></div></div>
-                        <div class="news-content"><div class="news-title">🔥 CRIMSON RP: НОВАЯ ВКЛАДКА «ДОСЬЕ»!</div><div class="news-text">Теперь у нас есть вкладка «ДОСЬЕ» — база данных с криминальными делами. ✅ 8 громких дел</div><div class="news-footer"><button class="share-news-btn" onclick="shareNews(1)">📤 Поделиться</button></div></div>
+                        <div class="news-content"><div class="news-title">🔥 CRIMSON RP: НОВАЯ ВКЛАДКА «ДОСЬЕ»!</div><div class="news-text">Теперь у нас есть вкладка «ДОСЬЕ» — база данных с криминальными делами. ✅ 7+ громких дел</div><div class="news-footer"><button class="share-news-btn" onclick="shareNews(1)">📤 Поделиться</button></div></div>
                     </div>
-                    <div class="news-card" data-news-id="2" data-news-title="🚨 САЙТ CRIMSON RP ОФИЦИАЛЬНО ЗАПУЩЕН!" data-news-text="Мы долго этого ждали, и этот момент настал!" data-news-images='["https://s10.iimage.su/s/03/g2BARDrxcPZkHntVoItav83M8UArQ9zwpJotWOcce.jpg"]'>
+                    <div class="news-card" data-news-id="2" data-news-title="🚨 САЙТ CRIMSON RP ОФИЦИАЛЬНО ЗАПУЩЕН!" data-news-text="Мы долго этого ждали, и этот момент настал! Наш новый дом в сети открыт." data-news-images='["https://s10.iimage.su/s/03/g2BARDrxcPZkHntVoItav83M8UArQ9zwpJotWOcce.jpg"]'>
                         <div class="carousel-container"><div class="carousel-slides"></div><div class="carousel-arrow carousel-arrow-left">‹</div><div class="carousel-arrow carousel-arrow-right">›</div><div class="carousel-dots"></div></div>
                         <div class="news-content"><div class="news-title">🚨 САЙТ CRIMSON RP ОФИЦИАЛЬНО ЗАПУЩЕН!</div><div class="news-text">Удачи тебе, друг 🏁</div><div class="news-footer"><button class="share-news-btn" onclick="shareNews(2)">📤 Поделиться</button></div></div>
                     </div>
                 </div>
             </div>
 
-            <!-- ПРАВИЛА -->
+            <!-- ПРАВИЛА (кратко для экономии места) -->
             <div class="page" id="rulesPage">
                 <div class="glass">
-                    <h2>📜 ПРАВИЛА ROLE PLAY</h2>
+                    <h2><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg> ПРАВИЛА ПРОЕКТА</h2>
                     <div class="rules-scroll">
                         <div class="rule-item"><div class="rule-title">1.0 RP (Roleplay)</div><div class="rule-desc">Игра по ролям. Действуйте согласно характеру, биографии и возможностям персонажа.</div></div>
                         <div class="rule-item"><div class="rule-title">1.1 NITRP</div><div class="rule-desc">Нахождение на сервере без цели участия в РП.</div></div>
@@ -1294,7 +1429,7 @@
                         <div class="rule-item"><div class="rule-title">1.5 DM (Death Match)</div><div class="rule-desc">Убийство без причины.</div></div>
                         <div class="rule-item"><div class="rule-title">2.1 FeRP (Fear Role Play)</div><div class="rule-desc">Отыгрыш страха.</div></div>
                         <div class="rule-item"><div class="rule-title">2.5 No LGBT</div><div class="rule-desc">Никакого гейства, феминизма и бреда.</div></div>
-                        <div class="rule-item"><div class="rule-title">🚗 ОПДД (основные пункты)</div><div class="rule-desc">Уважение, адаптивная скорость, поворот с обзором, парковка по разметке.</div></div>
+                        <div class="rule-item"><div class="rule-title">🚗 ОПДД</div><div class="rule-desc">Уважение, адаптивная скорость, поворот с обзором, парковка по разметке.</div></div>
                     </div>
                 </div>
             </div>
@@ -1302,43 +1437,31 @@
             <!-- VIP -->
             <div class="page" id="vipPage">
                 <div class="glass">
-                    <h2>💎 VIP STATUS</h2>
+                    <h2><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 16 14 19 22 12 17 5 22 8 14 2 9 9 9 12 2"/></svg> VIP STATUS</h2>
                     <div class="price-tag">20.000.000₽</div>
-                    <div class="vip-feature"><div style="font-size:32px;">🏎️</div><div><div class="vip-title">Lamborghini Gallardo</div></div></div>
-                    <div class="vip-feature"><div style="font-size:32px;">🏠</div><div><div class="vip-title">Дом на побережье</div></div></div>
-                    <div class="vip-feature"><div style="font-size:32px;">💳</div><div><div class="vip-title">Premium-карта (скидка 15%)</div></div></div>
+                    <div class="vip-feature"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M8 6V4h8v2"/></svg><div><div class="vip-title">Lamborghini Gallardo</div></div></div>
+                    <div class="vip-feature"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="14" rx="2"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg><div><div class="vip-title">Дом на побережье</div></div></div>
+                    <div class="vip-feature"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="8" y1="10" x2="16" y2="10"/></svg><div><div class="vip-title">Premium-карта (скидка 15%)</div></div></div>
                 </div>
             </div>
 
-            <!-- РАБОТЫ -->
+            <!-- РАБОТЫ (сокращённо) -->
             <div class="page" id="jobsPage">
                 <div class="glass">
-                    <h2>💼 ВСЕ РАБОТЫ</h2>
-                    <div class="job-category">🏛️ Армия</div>
-                    <div class="job-grid">
-                        <div class="job-item" data-salary="10.000₽">Призывник</div>
-                        <div class="job-item" data-salary="30.000₽">Разведчик</div>
-                        <div class="job-item" data-salary="38.000₽">Десантник</div>
-                        <div class="job-item" data-salary="50.000₽ (2 рп)">Ком. Войск</div>
-                    </div>
-                    <div class="job-category">👔 Гражданские</div>
-                    <div class="job-grid">
-                        <div class="job-item" data-salary="4.000₽">Дворник</div>
-                        <div class="job-item" data-salary="цена заказа">Водитель такси</div>
-                        <div class="job-item" data-salary="21.000₽">Шахтёр</div>
-                    </div>
-                    <div class="job-category">👮 Полиция</div>
-                    <div class="job-grid">
-                        <div class="job-item" data-salary="20.000₽">Оперативник</div>
-                        <div class="job-item" data-salary="60.000₽">Спецназовец</div>
-                    </div>
+                    <h2><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> ВСЕ РАБОТЫ</h2>
+                    <div class="job-category"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> Армия</div>
+                    <div class="job-grid"><div class="job-item" data-salary="10.000₽">Призывник</div><div class="job-item" data-salary="30.000₽">Разведчик</div><div class="job-item" data-salary="38.000₽">Десантник</div><div class="job-item" data-salary="42.000₽">Военный лётчик</div><div class="job-item" data-salary="50.000₽ (2 рп)">Ком. Войск</div></div>
+                    <div class="job-category"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Гражданские</div>
+                    <div class="job-grid"><div class="job-item" data-salary="4.000₽">Дворник</div><div class="job-item" data-salary="цена заказа">Водитель такси</div><div class="job-item" data-salary="21.000₽">Шахтёр</div></div>
+                    <div class="job-category"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg> Полиция</div>
+                    <div class="job-grid"><div class="job-item" data-salary="20.000₽">Оперативник</div><div class="job-item" data-salary="60.000₽">Спецназовец</div></div>
                 </div>
             </div>
 
             <!-- ДОСЬЕ -->
             <div class="page" id="dossierPage">
                 <div class="glass">
-                    <h2>📂 БАЗА ДОСЬЕ</h2>
+                    <h2><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><line x1="8" y1="8" x2="16" y2="8"/></svg> БАЗА ДОСЬЕ</h2>
                     <ul class="dossier-list">
                         <li><strong>▌ДЕЛО №1</strong> – «KR Амонгасик»: убийство Министра Обороны РФ. <span>Задержан, 3 года.</span></li>
                         <li><strong>▌ДЕЛО №2</strong> – Богданов Андрей Юрьевич: убийство 4 человек. <span>Пожизненно.</span></li>
@@ -1352,10 +1475,10 @@
                 </div>
             </div>
 
-            <!-- ЧАТ -->
+            <!-- ЧАТ (Firebase) -->
             <div class="page" id="chatPage">
                 <div class="glass">
-                    <h2>💬 ОБЩИЙ ЧАТ</h2>
+                    <h2><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> ОБЩИЙ ЧАТ</h2>
                     <div id="chatMessages" class="chat-messages"></div>
                     <div class="chat-input-area">
                         <input type="text" id="chatInput" placeholder="Введите сообщение..." maxlength="500" disabled>
@@ -1364,10 +1487,37 @@
                 </div>
             </div>
 
+            <!-- ПРОФИЛЬ -->
+            <div class="page" id="profilePage">
+                <div class="glass" id="profileContent">
+                    <div class="no-account">
+                        <p>Войдите через Google, чтобы увидеть свой профиль и участвовать в чате</p>
+                        <button id="googleLoginBtn" class="auth-button">🔐 Войти через Google</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- КАРТА -->
+            <div class="page" id="mapPage">
+                <div class="glass">
+                    <h2><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> КАРТА АРЗАМАСА</h2>
+                    <div class="map-container">
+                        <img src="https://s10.iimage.su/s/08/gG8CwFrxGPhuQpsjmE3VO225p534qvWYscvXioUPF.jpg" alt="Карта Арзамаса">
+                        <div class="map-description">
+                            <p><strong>Трущобский район:</strong> улицы Курдейская, Патриот. Здесь находится МВД.</p>
+                            <p><strong>Свободный район:</strong> улица Самойлова (в честь Министра обороны). Прокуратура.</p>
+                            <p><strong>Центральный район:</strong> улица Победа, парк и здание Правительства.</p>
+                            <p><strong>Пригородной район:</strong> улица Сирийская.</p>
+                            <p><strong>Улица Дечебалы:</strong> граница между северными и южными районами.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- О НАС -->
             <div class="page" id="aboutPage">
                 <div class="glass">
-                    <h2>📌 О ПРОЕКТЕ</h2>
+                    <h2><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1"/></svg> О ПРОЕКТЕ</h2>
                     <p><strong>CRIMSON RP</strong> — ролевой проект. Строгая атмосфера, живое сообщество.</p>
                     <div class="tg-links">
                         <a href="https://t.me/+uKqXQ1aKmn4zMzVi" class="tg-link"><div class="tg-icon"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111644.png"></div><div class="tg-info"><div class="tg-name">Чат сообщества</div></div></a>
@@ -1377,7 +1527,7 @@
                 </div>
             </div>
         </div>
-        <footer><span>© 2026 CRIMSON RP · v1.4.0</span><button id="helpBtn">📘 Справка</button></footer>
+        <footer><span>© 2026 CRIMSON RP · v1.3.0</span><button id="helpBtn">📘 Справка</button></footer>
     </div>
 
     <button class="scroll-top-btn" id="scrollTopBtn">↑</button>
@@ -1389,382 +1539,390 @@
         </div>
     </div>
 
-    <!-- Модалка авторизации -->
-    <div id="authModal" class="modal-overlay">
-        <div class="modal-container">
-            <div class="modal-header"><h2>🔐 АВТОРИЗАЦИЯ</h2><div class="modal-close" id="closeAuthBtn">✕</div></div>
-            <div class="modal-body" id="authBody">
-                <div class="auth-form" id="loginForm">
-                    <input type="email" id="loginEmail" class="auth-input" placeholder="Email">
-                    <input type="password" id="loginPassword" class="auth-input" placeholder="Пароль">
-                    <button id="doLoginBtn" class="btn-close-modal" style="width:100%;">Войти</button>
-                    <div class="auth-switch">Нет аккаунта? <span id="showRegisterBtn">Зарегистрироваться</span></div>
-                </div>
-                <div class="auth-form" id="registerForm" style="display:none;">
-                    <input type="text" id="regUsername" class="auth-input" placeholder="Имя пользователя">
-                    <input type="email" id="regEmail" class="auth-input" placeholder="Email">
-                    <input type="password" id="regPassword" class="auth-input" placeholder="Пароль">
-                    <button id="doRegisterBtn" class="btn-close-modal" style="width:100%;">Зарегистрироваться</button>
-                    <div class="auth-switch">Уже есть аккаунт? <span id="showLoginBtn">Войти</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модалка админ-панели -->
-    <div id="adminModal" class="admin-modal-overlay">
-        <div class="modal-container">
-            <div class="modal-header"><h2>👑 АДМИН-ПАНЕЛЬ</h2><div class="modal-close" id="closeAdminBtn">✕</div></div>
-            <div class="modal-body" id="adminBody">
-                <div class="auth-form">
-                    <input type="password" id="adminPassword" class="auth-input" placeholder="Пароль администратора">
-                    <button id="doAdminLoginBtn" class="btn-close-modal" style="width:100%;">Войти</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="helpModal" class="help-modal-overlay"><div class="modal-container"><div class="modal-header"><h2>📘 СПРАВКА</h2><div class="modal-close" id="closeHelpBtn">✕</div></div><div class="modal-body"><p>6 этапов регистрации: паспорт, медкнижка, банк, права, диплом, работа.</p></div><div class="modal-footer"><button class="btn-close-modal" id="closeHelpApplyBtn">ЗАКРЫТЬ</button></div></div></div>
     <div id="shareModal" class="share-modal-overlay"><div class="modal-container"><div class="modal-header"><h2>📤 ПОДЕЛИТЬСЯ</h2><div class="modal-close" id="closeShareBtn">✕</div></div><div class="modal-body" id="shareModalBody"></div><div class="modal-footer"><button class="btn-close-modal" id="closeShareApplyBtn">ЗАКРЫТЬ</button></div></div></div>
     <div id="settingsModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h2>⚙️ НАСТРОЙКИ</h2><div class="modal-close" id="closeModalBtn">✕</div></div><div class="modal-body" id="modalBody"></div><div class="modal-footer"><button class="btn-reset" id="resetSettingsBtn">СБРОСИТЬ ВСЁ</button><button class="btn-close-modal" id="applyCloseBtn">ЗАКРЫТЬ</button></div></div></div>
-    <div id="changelogModal" class="changelog-modal-overlay"><div class="modal-container"><div class="modal-header"><h2>📋 СПИСОК ИЗМЕНЕНИЙ</h2><div class="modal-close" id="closeChangelogBtn">✕</div></div><div class="modal-body"><div class="changelog-version-tag">Версия 1.4.0</div><ul class="changelog-list"><li><strong>🔐 АВТОРИЗАЦИЯ</strong><span>Регистрация/вход по email и паролю</span></li><li><strong>👑 АДМИН-ПАНЕЛЬ</strong><span>Доступ по паролю: hofilionclkc@gmail.comSsshj8?838393okakeblan</span></li><li><strong>💬 ЧАТ</strong><span>Только для авторизованных пользователей</span></li><li><strong>📰 НОВОСТИ</strong><span>Полные новости с поделиться</span></li><li><strong>📜 ПРАВИЛА</strong><span>Полные правила RP, чата и ПДД</span></li></ul></div><div class="modal-footer"><button class="btn-close-modal" id="closeChangelogApplyBtn">ЗАКРЫТЬ</button></div></div></div>
+    <div id="changelogModal" class="changelog-modal-overlay"><div class="modal-container"><div class="modal-header"><h2>📋 СПИСОК ИЗМЕНЕНИЙ</h2><div class="modal-close" id="closeChangelogBtn">✕</div></div><div class="modal-body"><div class="changelog-version-tag">Версия 1.3.0</div><ul class="changelog-list"><li><strong>💬 ЧАТ</strong><span>Добавлен реальный чат на Firebase</span></li><li><strong>🔐 АВТОРИЗАЦИЯ</strong><span>Вход через Google</span></li><li><strong>👤 ПРОФИЛЬ</strong><span>Аватар, имя, email</span></li><li><strong>🎨 ИКОНКИ</strong><span>Везде заменены на SVG</span></li><li><strong>⚙️ НАСТРОЙКИ</strong><span>Радиус, прозрачность, размытие и др.</span></li></ul></div><div class="modal-footer"><button class="btn-close-modal" id="closeChangelogApplyBtn">ЗАКРЫТЬ</button></div></div></div>
 
-    <script>
-        // ========== FIREBASE ==========
-        const firebaseConfig = {
-            apiKey: "AIzaSyBWGafqUNSUo7B5Yopdrl_SiaNvjeZ0zFc",
-            authDomain: "crimsonrp.firebaseapp.com",
-            projectId: "crimsonrp",
-            storageBucket: "crimsonrp.firebasestorage.app",
-            messagingSenderId: "438585836765",
-            appId: "1:438585836765:web:863db1f1784a6818504734",
-            measurementId: "G-QXKHJ42VJB"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
+  <script>
+    // ========== FIREBASE НАСТРОЙКИ ==========
+    const firebaseConfig = {
+        apiKey: "AIzaSyBWGafqUNSUo7B5Yopdrl_SiaNvjeZ0zFc",
+        authDomain: "crimsonrp.firebaseapp.com",
+        projectId: "crimsonrp",
+        storageBucket: "crimsonrp.firebasestorage.app",
+        messagingSenderId: "438585836765",
+        appId: "1:438585836765:web:863db1f1784a6818504734",
+        measurementId: "G-QXKHJ42VJB"
+    };
 
-        let currentUser = null;
-        let currentUserProfile = null;
+    // Инициализация Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
 
-        // DOM элементы
-        const authModal = document.getElementById('authModal');
-        const showAuthBtn = document.getElementById('showAuthBtn');
-        const userPanel = document.getElementById('userPanel');
-        const userNameSpan = document.getElementById('userName');
-        const userAvatarDiv = document.getElementById('userAvatar');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const chatMessagesDiv = document.getElementById('chatMessages');
-        const chatInput = document.getElementById('chatInput');
-        const sendBtn = document.getElementById('sendBtn');
+    // DOM элементы
+    const chatMessagesDiv = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const profileContent = document.getElementById('profileContent');
+    const googleLoginBtn = document.getElementById('googleLoginBtn');
 
-        // Переключение форм авторизации
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        document.getElementById('showRegisterBtn')?.addEventListener('click', () => {
-            loginForm.style.display = 'none';
-            registerForm.style.display = 'block';
-        });
-        document.getElementById('showLoginBtn')?.addEventListener('click', () => {
-            registerForm.style.display = 'none';
-            loginForm.style.display = 'block';
-        });
+    let currentUser = null;
 
-        // Регистрация
-        document.getElementById('doRegisterBtn')?.addEventListener('click', async () => {
-            const username = document.getElementById('regUsername').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const password = document.getElementById('regPassword').value;
-            if (!username || !email || !password) {
-                alert('Заполните все поля');
+    // ========== УЛУЧШЕННЫЙ ВХОД ЧЕРЕЗ GOOGLE ==========
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('profile');
+    provider.addScope('email');
+
+    // Функция показа ошибок пользователю
+    function showAuthError(error) {
+        console.error("Ошибка авторизации:", error);
+        let message = "Не удалось войти через Google. ";
+        switch (error.code) {
+            case 'auth/operation-not-allowed':
+                message += "Провайдер Google не включён в консоли Firebase. Обратитесь к администратору.";
+                break;
+            case 'auth/popup-blocked':
+                message += "Браузер заблокировал всплывающее окно. Разрешите всплывающие окна для этого сайта или используйте кнопку ниже.";
+                // Предлагаем альтернативный вход через редирект
+                if (confirm(message + "\n\nХотите войти через перенаправление (redirect)?")) {
+                    auth.signInWithRedirect(provider);
+                }
                 return;
-            }
-            try {
-                const userCred = await auth.createUserWithEmailAndPassword(email, password);
-                await userCred.user.updateProfile({ displayName: username });
-                await database.ref('users/' + userCred.user.uid).set({
-                    username: username,
-                    email: email,
-                    avatar: '👤',
-                    createdAt: Date.now()
-                });
-                alert('Регистрация успешна!');
-                authModal.classList.remove('active');
-            } catch (error) {
-                alert(error.message);
-            }
-        });
-
-        // Вход
-        document.getElementById('doLoginBtn')?.addEventListener('click', async () => {
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            if (!email || !password) {
-                alert('Введите email и пароль');
-                return;
-            }
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-                authModal.classList.remove('active');
-            } catch (error) {
-                alert(error.message);
-            }
-        });
-
-        // Загрузка профиля пользователя из Realtime Database
-        async function loadUserProfile(uid) {
-            const snapshot = await database.ref('users/' + uid).once('value');
-            return snapshot.val();
+            case 'auth/unauthorized-domain':
+                message += "Текущий домен не добавлен в список авторизованных в Firebase Console. Добавьте этот домен (или localhost для тестов).";
+                break;
+            default:
+                message += error.message;
         }
+        alert(message);
+    }
 
-        // Обновление UI при авторизации
-        async function updateUIForAuth(user) {
-            if (user) {
-                currentUser = user;
-                const profile = await loadUserProfile(user.uid);
-                currentUserProfile = profile;
-                const displayName = profile?.username || user.displayName || user.email.split('@')[0];
-                userNameSpan.textContent = displayName;
-                userAvatarDiv.textContent = profile?.avatar || '👤';
-                userPanel.style.display = 'flex';
-                showAuthBtn.style.display = 'none';
-                chatInput.disabled = false;
-                sendBtn.disabled = false;
-                loadMessages();
+    // Функция входа с обработкой ошибок и fallback
+    async function signInWithGoogle() {
+        try {
+            // Сначала пытаемся через popup
+            const result = await auth.signInWithPopup(provider);
+            console.log("Вход успешен:", result.user);
+        } catch (error) {
+            // Если popup заблокирован или другая ошибка
+            if (error.code === 'auth/popup-blocked') {
+                // Пробуем редирект
+                try {
+                    await auth.signInWithRedirect(provider);
+                } catch (redirectErr) {
+                    showAuthError(redirectErr);
+                }
             } else {
-                currentUser = null;
-                currentUserProfile = null;
-                userPanel.style.display = 'none';
-                showAuthBtn.style.display = 'block';
-                chatInput.disabled = true;
-                sendBtn.disabled = true;
-                if (chatMessagesDiv) chatMessagesDiv.innerHTML = '<div style="text-align:center; padding:20px; color:#aaa;">Войдите, чтобы участвовать в чате</div>';
+                showAuthError(error);
             }
         }
+    }
 
-        auth.onAuthStateChanged(updateUIForAuth);
+    // Функция для выхода
+    async function signOut() {
+        try {
+            await auth.signOut();
+        } catch (error) {
+            console.error("Ошибка выхода:", error);
+        }
+    }
 
-        // Выход
-        logoutBtn?.addEventListener('click', () => auth.signOut());
-
-        showAuthBtn?.addEventListener('click', () => authModal.classList.add('active'));
-        document.getElementById('closeAuthBtn')?.addEventListener('click', () => authModal.classList.remove('active'));
-
-        // ========== ЧАТ ==========
-        function loadMessages() {
-            const messagesRef = database.ref('messages');
-            messagesRef.orderByChild('timestamp').limitToLast(100).on('value', (snapshot) => {
-                const messages = [];
-                snapshot.forEach((childSnapshot) => {
-                    messages.push(childSnapshot.val());
-                });
-                renderMessages(messages.reverse());
+    // Функция для отображения сообщений
+    function loadMessages() {
+        const messagesRef = database.ref('messages');
+        messagesRef.orderByChild('timestamp').limitToLast(100).on('value', (snapshot) => {
+            const messages = [];
+            snapshot.forEach((childSnapshot) => {
+                messages.push(childSnapshot.val());
             });
-        }
-
-        function renderMessages(messages) {
-            if (!chatMessagesDiv) return;
-            chatMessagesDiv.innerHTML = messages.map(msg => `
-                <div class="chat-message">
-                    <div class="chat-message-avatar">${msg.avatar || '👤'}</div>
-                    <div class="chat-message-content">
-                        <div class="chat-message-name">${escapeHtml(msg.name || 'Пользователь')}</div>
-                        <div class="chat-message-text">${escapeHtml(msg.text)}</div>
-                        <div class="chat-message-time">${new Date(msg.timestamp).toLocaleTimeString()}</div>
-                    </div>
-                </div>
-            `).join('');
-            chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
-        }
-
-        async function sendMessage() {
-            if (!currentUser || !chatInput.value.trim()) return;
-            const text = chatInput.value.trim();
-            const name = currentUserProfile?.username || currentUser.displayName || currentUser.email.split('@')[0];
-            const avatar = currentUserProfile?.avatar || '👤';
-            await database.ref('messages').push({
-                text: text,
-                name: name,
-                avatar: avatar,
-                userId: currentUser.uid,
-                timestamp: Date.now()
-            });
-            chatInput.value = '';
-        }
-
-        sendBtn?.addEventListener('click', sendMessage);
-        chatInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
-
-        // ========== АДМИН-ПАНЕЛЬ ==========
-        const adminModal = document.getElementById('adminModal');
-        const adminPanelBtn = document.getElementById('adminPanelBtn');
-        adminPanelBtn?.addEventListener('click', () => adminModal.classList.add('active'));
-        document.getElementById('closeAdminBtn')?.addEventListener('click', () => adminModal.classList.remove('active'));
-        document.getElementById('doAdminLoginBtn')?.addEventListener('click', () => {
-            const pwd = document.getElementById('adminPassword').value;
-            if (pwd === 'hofilionclkc@gmail.comSsshj8?838393okakeblan') {
-                alert('Добро пожаловать в админ-панель!');
-                // Здесь можно добавить реальную админ-панель, но по запросу оставляем заглушку
-                adminModal.classList.remove('active');
-            } else {
-                alert('Неверный пароль!');
-            }
+            renderMessages(messages.reverse());
         });
+    }
 
-        // ========== НАСТРОЙКИ (упрощённые) ==========
-        const settingsModal = document.getElementById('settingsModal');
-        const settingsBtn = document.getElementById('settingsBtn');
-        const modalBody = document.getElementById('modalBody');
-        let devClicks = 0;
+    function renderMessages(messages) {
+        if (!chatMessagesDiv) return;
+        if (!messages.length && !currentUser) {
+            chatMessagesDiv.innerHTML = '<div style="text-align:center; padding:20px; color:#aaa;">Войдите через Google, чтобы участвовать в чате</div>';
+            return;
+        }
+        chatMessagesDiv.innerHTML = messages.map(msg => `
+            <div class="chat-message">
+                <img class="chat-message-avatar" src="${escapeHtml(msg.avatar || 'https://via.placeholder.com/36?text=👤')}" onerror="this.src='https://via.placeholder.com/36?text=👤'">
+                <div class="chat-message-content">
+                    <div class="chat-message-name">${escapeHtml(msg.name || 'Пользователь')}</div>
+                    <div class="chat-message-text">${escapeHtml(msg.text)}</div>
+                    <div class="chat-message-time">${new Date(msg.timestamp).toLocaleTimeString()}</div>
+                </div>
+            </div>
+        `).join('');
+        chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+    }
 
-        function buildSettingsModal() {
-            modalBody.innerHTML = `
-                <div class="settings-section"><h3>🎵 МУЗЫКА</h3>
-                    <div class="setting-item"><label>Громкость</label><input type="range" id="volSlider" min="0" max="1" step="0.05" value="${audio.volume}"></div>
-                    <div class="setting-item"><div class="setting-row"><label>Музыка</label><input type="checkbox" id="musicToggle" ${musicEnabled ? 'checked' : ''}></div></div>
-                </div>
-                <div class="settings-section"><h3>🖼️ ФОН</h3>
-                    <div class="setting-item"><div class="setting-row"><label>Фоновое изображение</label><input type="checkbox" id="bgToggle"></div></div>
-                    <div id="bgSettings" style="display:none;"><input type="text" id="bgUrl" placeholder="URL изображения" style="width:100%; margin-bottom:8px;"><input type="file" id="bgFile" accept="image/*" style="display:none;"><button id="chooseBgBtn" class="music-btn">📁 Выбрать файл</button></div>
-                </div>
-                <div class="settings-section dev-section" id="devModalSettings" style="display:none;"><h3>🛠️ РАЗРАБОТЧИК</h3>
-                    <div class="setting-item"><label>Акцентный цвет</label><input type="color" id="accentColorPicker" value="#c0392b"></div>
-                    <div class="setting-item"><div class="setting-row"><label>Компактный режим</label><input type="checkbox" id="compactModeCheck"></div></div>
+    // Отправка сообщения
+    async function sendMessage() {
+        if (!currentUser || !chatInput.value.trim()) return;
+        const text = chatInput.value.trim();
+        const messagesRef = database.ref('messages');
+        await messagesRef.push({
+            text: text,
+            name: currentUser.displayName,
+            avatar: currentUser.photoURL,
+            userId: currentUser.uid,
+            timestamp: Date.now()
+        });
+        chatInput.value = '';
+    }
+
+    // Обновление UI в зависимости от авторизации
+    function updateUIForAuth(user) {
+        if (user) {
+            currentUser = user;
+            chatInput.disabled = false;
+            sendBtn.disabled = false;
+            // Загружаем профиль
+            renderProfilePage();
+            // Если чат уже открыт, подгружаем сообщения
+            if (chatMessagesDiv) loadMessages();
+        } else {
+            currentUser = null;
+            chatInput.disabled = true;
+            sendBtn.disabled = true;
+            if (chatMessagesDiv) chatMessagesDiv.innerHTML = '<div style="text-align:center; padding:20px; color:#aaa;">Войдите через Google, чтобы участвовать в чате</div>';
+            renderProfilePage();
+        }
+    }
+
+    // Отображение страницы профиля
+    async function renderProfilePage() {
+        if (!currentUser) {
+            profileContent.innerHTML = `
+                <div class="no-account">
+                    <p>Войдите через Google, чтобы увидеть свой профиль и участвовать в чате</p>
+                    <button id="googleLoginBtnProfile" class="auth-button">🔐 Войти через Google</button>
                 </div>
             `;
-            document.getElementById('volSlider').oninput = e => { audio.volume = parseFloat(e.target.value); localStorage.setItem('musicVol', e.target.value); };
-            document.getElementById('musicToggle').onchange = e => { musicEnabled = e.target.checked; if (musicEnabled && activePlaylist.length) { loadTrack(currentTrack); playMusic(); } else audio.pause(); localStorage.setItem('musicEnabled', musicEnabled); };
-            const bgToggle = document.getElementById('bgToggle');
-            const bgCustom = document.getElementById('bgCustom');
-            bgToggle.onchange = e => { document.getElementById('bgSettings').style.display = e.target.checked ? 'block' : 'none'; if(!e.target.checked) bgCustom.style.backgroundImage = ''; localStorage.setItem('bgEnabled', e.target.checked); };
-            document.getElementById('chooseBgBtn')?.addEventListener('click', () => document.getElementById('bgFile').click());
-            document.getElementById('bgFile')?.addEventListener('change', e => { if(e.target.files[0]) { const r = new FileReader(); r.onload = ev => { bgCustom.style.backgroundImage = `url(${ev.target.result})`; localStorage.setItem('bgImage', ev.target.result); }; r.readAsDataURL(e.target.files[0]); } });
-            if (localStorage.getItem('bgEnabled') === 'true') { bgToggle.checked = true; document.getElementById('bgSettings').style.display = 'block'; }
-            if (localStorage.getItem('bgImage')) bgCustom.style.backgroundImage = `url(${localStorage.getItem('bgImage')})`;
+            const newLoginBtn = document.getElementById('googleLoginBtnProfile');
+            if (newLoginBtn) newLoginBtn.addEventListener('click', signInWithGoogle);
+            return;
+        }
+        profileContent.innerHTML = `
+            <div class="profile-header">
+                <img class="profile-avatar" src="${escapeHtml(currentUser.photoURL) || 'https://via.placeholder.com/80?text=👤'}" onerror="this.src='https://via.placeholder.com/80?text=👤'">
+                <div>
+                    <div class="profile-name">${escapeHtml(currentUser.displayName || 'Без имени')}</div>
+                    <div class="profile-email">${escapeHtml(currentUser.email || '')}</div>
+                </div>
+            </div>
+            <div class="profile-stats">
+                <p>✅ Статус: <span style="color:#00ffaa;">Авторизован</span></p>
+                <p>📅 Дата регистрации: ${new Date(currentUser.metadata.creationTime).toLocaleDateString()}</p>
+            </div>
+            <button id="logoutBtn" class="auth-button logout-btn">🚪 Выйти</button>
+        `;
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) logoutBtn.addEventListener('click', signOut);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]);
+    }
+
+    // Обработчики кнопок
+    if (googleLoginBtn) googleLoginBtn.addEventListener('click', signInWithGoogle);
+
+    if (sendBtn) sendBtn.addEventListener('click', sendMessage);
+    if (chatInput) chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+    // Обработка редиректа (если использовался signInWithRedirect)
+    auth.getRedirectResult().then((result) => {
+        if (result.user) {
+            console.log("Вход через редирект успешен:", result.user);
+        }
+    }).catch((error) => {
+        if (error.code !== 'auth/popup-closed-by-user') {
+            showAuthError(error);
+        }
+    });
+
+    auth.onAuthStateChanged((user) => {
+        updateUIForAuth(user);
+    });
+
+    // МУЗЫКА
+    const userTracks = ["https://videotourl.com/audio/1776773135234-2f337560-23a9-4c7d-b4eb-2d5f12b95acc.mp3"];
+    let activePlaylist = [...userTracks];
+    let currentTrack = 0;
+    const audio = document.getElementById('bgMusic');
+    let musicEnabled = true;
+    function loadTrack(i) { if (activePlaylist.length) { audio.src = activePlaylist[i % activePlaylist.length]; audio.load(); } }
+    function playMusic() { if (musicEnabled && audio.src) audio.play().catch(e => {}); }
+    function nextTrack() { if (activePlaylist.length) { currentTrack = (currentTrack+1)%activePlaylist.length; loadTrack(currentTrack); playMusic(); } }
+    audio.addEventListener('ended', nextTrack);
+    audio.addEventListener('error', nextTrack);
+    document.body.addEventListener('click', () => { if (audio.paused && musicEnabled && activePlaylist.length) { loadTrack(currentTrack); playMusic(); } }, { once: true });
+
+    // ЛАЙТБОКС
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    window.openLightbox = function(src) { lightboxImg.src = src; lightbox.classList.add('active'); };
+    window.closeLightbox = () => lightbox.classList.remove('active');
+
+    // КАРУСЕЛИ
+    function initCarousel(container) {
+        const slidesContainer = container.querySelector('.carousel-slides');
+        const leftArrow = container.querySelector('.carousel-arrow-left');
+        const rightArrow = container.querySelector('.carousel-arrow-right');
+        const dotsContainer = container.querySelector('.carousel-dots');
+        let images = [];
+        try { const card = container.closest('.news-card'); images = JSON.parse(card.getAttribute('data-news-images') || '[]'); } catch(e) { images = []; }
+        if (!images.length) return;
+        let currentIndex = 0;
+        slidesContainer.innerHTML = '';
+        images.forEach((src, idx) => {
+            const slide = document.createElement('div'); slide.className = 'carousel-slide';
+            const img = document.createElement('img'); img.src = src; img.onclick = (e) => { e.stopPropagation(); openLightbox(src); };
+            slide.appendChild(img); slidesContainer.appendChild(slide);
+        });
+        dotsContainer.innerHTML = '';
+        images.forEach((_, idx) => { const dot = document.createElement('div'); dot.className = 'carousel-dot' + (idx === currentIndex ? ' active' : ''); dot.addEventListener('click', () => goToSlide(idx)); dotsContainer.appendChild(dot); });
+        function updateSlides() { slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`; document.querySelectorAll('.carousel-dot').forEach((dot,i)=>dot.classList.toggle('active',i===currentIndex)); }
+        function goToSlide(idx) { currentIndex = idx; updateSlides(); }
+        leftArrow.addEventListener('click', () => { if (currentIndex > 0) goToSlide(currentIndex-1); });
+        rightArrow.addEventListener('click', () => { if (currentIndex+1 < images.length) goToSlide(currentIndex+1); });
+        if (images.length <= 1) { leftArrow.style.display = 'none'; rightArrow.style.display = 'none'; dotsContainer.style.display = 'none'; }
+        updateSlides();
+    }
+    document.querySelectorAll('.news-card .carousel-container').forEach(initCarousel);
+
+    // ПОДЕЛИТЬСЯ
+    window.shareNews = function(newsId) {
+        const card = document.querySelector(`.news-card[data-news-id="${newsId}"]`);
+        if (!card) return;
+        const title = card.getAttribute('data-news-title');
+        const text = card.getAttribute('data-news-text');
+        const images = JSON.parse(card.getAttribute('data-news-images') || '[]');
+        const firstImage = images.length>0?images[0]:'';
+        const shareUrl = `${window.location.origin}${window.location.pathname}?news=${newsId}`;
+        const modalBody = document.getElementById('shareModalBody');
+        modalBody.innerHTML = `<div class="share-preview">${firstImage?`<img src="${firstImage}">`:''}<div style="font-weight:700;">${title}</div><div style="font-size:13px;color:#aaa;">${text.substring(0,100)}${text.length>100?'...':''}</div></div><div class="share-link">${shareUrl}</div><button class="copy-btn" id="copyShareLinkBtn" style="width:100%;">📋 Копировать ссылку</button>`;
+        document.getElementById('shareModal').classList.add('active');
+        document.getElementById('copyShareLinkBtn').onclick = () => { navigator.clipboard.writeText(shareUrl).then(()=>{ const btn=document.getElementById('copyShareLinkBtn'); btn.textContent='✅ Скопировано!'; setTimeout(()=>btn.textContent='📋 Копировать ссылку',2000); }); };
+    };
+
+    // РАБОТЫ
+    document.querySelectorAll('.job-item').forEach(item => {
+        let salarySpan = item.querySelector('.job-salary-text');
+        if (!salarySpan) { salarySpan = document.createElement('div'); salarySpan.className = 'job-salary-text'; item.appendChild(salarySpan); }
+        item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const salary = item.getAttribute('data-salary');
+            document.querySelectorAll('.job-salary-text').forEach(span => { if (span !== salarySpan) span.classList.remove('show'); });
+            if (salarySpan.classList.contains('show')) salarySpan.classList.remove('show');
+            else { salarySpan.innerHTML = `💰 ${salary}`; salarySpan.classList.add('show'); }
+        });
+    });
+
+    // ВКЛАДКИ
+    const tabs = document.querySelectorAll('.tab');
+    const pages = document.querySelectorAll('.page');
+    function switchTab(tabId) {
+        pages.forEach(p => p.classList.remove('active-page'));
+        const active = document.getElementById(tabId + 'Page');
+        if (active) active.classList.add('active-page');
+        tabs.forEach(t => t.classList.remove('active'));
+        const activeTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
+        if (activeTab) activeTab.classList.add('active');
+    }
+    tabs.forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
+
+    // КНОПКА НАВЕРХ
+    const scrollBtn = document.getElementById('scrollTopBtn');
+    const pagesContainer = document.getElementById('pagesContainer');
+    pagesContainer.addEventListener('scroll', () => scrollBtn.classList.toggle('visible', pagesContainer.scrollTop > 300));
+    scrollBtn.addEventListener('click', () => pagesContainer.scrollTo({ top:0, behavior:'smooth' }));
+
+    // МОДАЛКИ
+    document.getElementById('helpBtn').onclick = () => document.getElementById('helpModal').classList.add('active');
+    document.getElementById('closeHelpBtn').onclick = () => document.getElementById('helpModal').classList.remove('active');
+    document.getElementById('closeHelpApplyBtn').onclick = () => document.getElementById('helpModal').classList.remove('active');
+    document.getElementById('closeShareBtn').onclick = () => document.getElementById('shareModal').classList.remove('active');
+    document.getElementById('closeShareApplyBtn').onclick = () => document.getElementById('shareModal').classList.remove('active');
+
+    // НАСТРОЙКИ
+    const settingsModal = document.getElementById('settingsModal');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const modalBody = document.getElementById('modalBody');
+    let devUnlocked = localStorage.getItem('devUnlocked') === 'true';
+    
+    function buildSettingsModal() {
+        let devHtml = '';
+        if (devUnlocked) {
+            devHtml = `<div class="settings-section"><h3>🛠️ РАЗРАБОТЧИК</h3>
+                <div class="setting-item"><label>Акцентный цвет</label><input type="color" id="accentColorPicker" value="#c0392b"></div>
+                <div class="setting-item"><div class="setting-row"><label>Компактный режим</label><input type="checkbox" id="compactModeCheck"></div></div>
+            </div>`;
+        } else {
+            devHtml = `<div class="settings-section"><h3>🔒 СЕКРЕТНЫЕ НАСТРОЙКИ</h3><div class="setting-item"><label>Введите пароль</label><input type="password" id="devPassword" style="width:100%; margin-bottom:8px;"><button id="unlockDevBtn" class="music-btn" style="width:100%;">Разблокировать</button></div></div>`;
+        }
+        modalBody.innerHTML = `
+            <div class="settings-section"><h3>🎵 МУЗЫКА</h3>
+                <div class="setting-item"><label>Громкость</label><input type="range" id="volSlider" min="0" max="1" step="0.05" value="${audio.volume}"></div>
+                <div class="setting-item"><div class="setting-row"><label>Музыка</label><input type="checkbox" id="musicToggle" ${musicEnabled?'checked':''}></div></div>
+                <button class="music-btn" id="nextTrackBtn">Следующий трек</button>
+            </div>
+            <div class="settings-section"><h3>🖼️ ВИЗУАЛ</h3>
+                <div class="setting-item"><label>Радиус скругления (px)</label><input type="range" id="radiusRange" min="8" max="48" step="2" value="28"></div>
+                <div class="setting-item"><label>Прозрачность карточек</label><input type="range" id="opacityRange" min="0.4" max="0.95" step="0.05" value="0.75"></div>
+                <div class="setting-item"><label>Сила размытия (px)</label><input type="range" id="blurRange" min="4" max="32" step="2" value="20"></div>
+                <div class="setting-item"><div class="setting-row"><label>Уменьшенная анимация</label><input type="checkbox" id="reduceMotionCheck"></div></div>
+            </div>
+            ${devHtml}
+        `;
+        document.getElementById('volSlider').oninput = e => { audio.volume = parseFloat(e.target.value); localStorage.setItem('musicVol', e.target.value); };
+        document.getElementById('musicToggle').onchange = e => { musicEnabled = e.target.checked; if (musicEnabled && activePlaylist.length) { loadTrack(currentTrack); playMusic(); } else audio.pause(); localStorage.setItem('musicEnabled', musicEnabled); };
+        document.getElementById('nextTrackBtn').onclick = nextTrack;
+        document.getElementById('radiusRange').oninput = e => { document.body.style.setProperty('--card-radius', e.target.value + 'px'); localStorage.setItem('cardRadius', e.target.value); };
+        document.getElementById('opacityRange').oninput = e => { document.body.style.setProperty('--card-opacity', e.target.value); localStorage.setItem('cardOpacity', e.target.value); };
+        document.getElementById('blurRange').oninput = e => { document.body.style.setProperty('--glass-blur', e.target.value + 'px'); localStorage.setItem('glassBlur', e.target.value); };
+        document.getElementById('reduceMotionCheck').onchange = e => { document.body.classList.toggle('reduce-motion', e.target.checked); localStorage.setItem('reduceMotion', e.target.checked); };
+        
+        if (devUnlocked) {
+            document.getElementById('accentColorPicker').oninput = e => { document.body.style.setProperty('--accent-color', e.target.value); localStorage.setItem('accentColor', e.target.value); };
+            document.getElementById('compactModeCheck').onchange = e => { document.body.classList.toggle('compact', e.target.checked); localStorage.setItem('compactMode', e.target.checked); };
             if (localStorage.getItem('accentColor')) document.getElementById('accentColorPicker').value = localStorage.getItem('accentColor');
             if (localStorage.getItem('compactMode') === 'true') document.getElementById('compactModeCheck').checked = true;
+        } else {
+            document.getElementById('unlockDevBtn').onclick = () => {
+                const pwd = document.getElementById('devPassword').value;
+                if (pwd === '2026' || pwd === 'crimson') {
+                    devUnlocked = true;
+                    localStorage.setItem('devUnlocked', 'true');
+                    buildSettingsModal();
+                } else alert('Неверный пароль!');
+            };
         }
+        if (localStorage.getItem('cardRadius')) document.getElementById('radiusRange').value = localStorage.getItem('cardRadius');
+        if (localStorage.getItem('cardOpacity')) document.getElementById('opacityRange').value = localStorage.getItem('cardOpacity');
+        if (localStorage.getItem('glassBlur')) document.getElementById('blurRange').value = localStorage.getItem('glassBlur');
+        if (localStorage.getItem('reduceMotion') === 'true') document.getElementById('reduceMotionCheck').checked = true;
+        if (localStorage.getItem('musicVol')) document.getElementById('volSlider').value = localStorage.getItem('musicVol');
+        if (localStorage.getItem('musicEnabled') === 'false') document.getElementById('musicToggle').checked = false;
+    }
+    settingsBtn.onclick = () => { buildSettingsModal(); settingsModal.classList.add('active'); };
+    document.getElementById('closeModalBtn').onclick = () => settingsModal.classList.remove('active');
+    document.getElementById('applyCloseBtn').onclick = () => settingsModal.classList.remove('active');
+    document.getElementById('resetSettingsBtn').onclick = () => { localStorage.clear(); location.reload(); };
 
-        settingsBtn.onclick = () => { buildSettingsModal(); settingsModal.classList.add('active'); };
-        document.getElementById('closeModalBtn').onclick = () => settingsModal.classList.remove('active');
-        document.getElementById('applyCloseBtn').onclick = () => settingsModal.classList.remove('active');
-        document.getElementById('resetSettingsBtn').onclick = () => { localStorage.clear(); location.reload(); };
+    const changelogModal = document.getElementById('changelogModal');
+    document.getElementById('changelogHeaderBtn').onclick = () => changelogModal.classList.add('active');
+    document.getElementById('closeChangelogBtn').onclick = () => changelogModal.classList.remove('active');
+    document.getElementById('closeChangelogApplyBtn').onclick = () => changelogModal.classList.remove('active');
 
-        // МУЗЫКА
-        const userTracks = ["https://videotourl.com/audio/1776773135234-2f337560-23a9-4c7d-b4eb-2d5f12b95acc.mp3"];
-        let activePlaylist = [...userTracks];
-        let currentTrack = 0;
-        const audio = document.getElementById('bgMusic');
-        let musicEnabled = true;
-        function loadTrack(i) { if (activePlaylist.length) { audio.src = activePlaylist[i % activePlaylist.length]; audio.load(); } }
-        function playMusic() { if (musicEnabled && audio.src) audio.play().catch(e => {}); }
-        function nextTrack() { if (activePlaylist.length) { currentTrack = (currentTrack+1)%activePlaylist.length; loadTrack(currentTrack); playMusic(); } }
-        audio.addEventListener('ended', nextTrack);
-        audio.addEventListener('error', nextTrack);
-        document.body.addEventListener('click', () => { if (audio.paused && musicEnabled && activePlaylist.length) { loadTrack(currentTrack); playMusic(); } }, { once: true });
-
-        // ЛАЙТБОКС
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightboxImg');
-        window.openLightbox = function(src) { lightboxImg.src = src; lightbox.classList.add('active'); };
-        window.closeLightbox = () => lightbox.classList.remove('active');
-
-        // КАРУСЕЛИ
-        function initCarousel(container) {
-            const slidesContainer = container.querySelector('.carousel-slides');
-            const leftArrow = container.querySelector('.carousel-arrow-left');
-            const rightArrow = container.querySelector('.carousel-arrow-right');
-            const dotsContainer = container.querySelector('.carousel-dots');
-            let images = [];
-            try { const card = container.closest('.news-card'); images = JSON.parse(card.getAttribute('data-news-images') || '[]'); } catch(e) { images = []; }
-            if (!images.length) return;
-            let currentIndex = 0;
-            slidesContainer.innerHTML = '';
-            images.forEach((src, idx) => {
-                const slide = document.createElement('div'); slide.className = 'carousel-slide';
-                const img = document.createElement('img'); img.src = src; img.onclick = (e) => { e.stopPropagation(); openLightbox(src); };
-                slide.appendChild(img); slidesContainer.appendChild(slide);
-            });
-            dotsContainer.innerHTML = '';
-            images.forEach((_, idx) => { const dot = document.createElement('div'); dot.className = 'carousel-dot' + (idx === currentIndex ? ' active' : ''); dot.addEventListener('click', () => goToSlide(idx)); dotsContainer.appendChild(dot); });
-            function updateSlides() { slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`; document.querySelectorAll('.carousel-dot').forEach((dot,i)=>dot.classList.toggle('active',i===currentIndex)); }
-            function goToSlide(idx) { currentIndex = idx; updateSlides(); }
-            leftArrow.addEventListener('click', () => { if (currentIndex > 0) goToSlide(currentIndex-1); });
-            rightArrow.addEventListener('click', () => { if (currentIndex+1 < images.length) goToSlide(currentIndex+1); });
-            if (images.length <= 1) { leftArrow.style.display = 'none'; rightArrow.style.display = 'none'; dotsContainer.style.display = 'none'; }
-            updateSlides();
-        }
-        document.querySelectorAll('.news-card .carousel-container').forEach(initCarousel);
-
-        // ПОДЕЛИТЬСЯ
-        window.shareNews = function(newsId) {
-            const card = document.querySelector(`.news-card[data-news-id="${newsId}"]`);
-            if (!card) return;
-            const title = card.querySelector('.news-title')?.innerText || '';
-            const text = card.querySelector('.news-text')?.innerText || '';
-            const shareUrl = window.location.href;
-            navigator.clipboard.writeText(`${title}\n${text}\n\nИсточник: ${shareUrl}`).then(() => alert('✅ Новость скопирована!'));
-        };
-
-        // РАБОТЫ
-        document.querySelectorAll('.job-item').forEach(item => {
-            let salarySpan = item.querySelector('.job-salary-text');
-            if (!salarySpan) { salarySpan = document.createElement('div'); salarySpan.className = 'job-salary-text'; item.appendChild(salarySpan); }
-            item.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const salary = item.getAttribute('data-salary');
-                document.querySelectorAll('.job-salary-text').forEach(span => { if (span !== salarySpan) span.classList.remove('show'); });
-                if (salarySpan.classList.contains('show')) salarySpan.classList.remove('show');
-                else { salarySpan.innerHTML = `💰 ${salary}`; salarySpan.classList.add('show'); }
-            });
-        });
-
-        // ВКЛАДКИ
-        const tabs = document.querySelectorAll('.tab');
-        const pages = document.querySelectorAll('.page');
-        function switchTab(tabId) {
-            pages.forEach(p => p.classList.remove('active-page'));
-            const active = document.getElementById(tabId + 'Page');
-            if (active) active.classList.add('active-page');
-            tabs.forEach(t => t.classList.remove('active'));
-            const activeTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
-            if (activeTab) activeTab.classList.add('active');
-        }
-        tabs.forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
-
-        // КНОПКА НАВЕРХ
-        const scrollBtn = document.getElementById('scrollTopBtn');
-        const pagesContainer = document.getElementById('pagesContainer');
-        pagesContainer.addEventListener('scroll', () => scrollBtn.classList.toggle('visible', pagesContainer.scrollTop > 300));
-        scrollBtn.addEventListener('click', () => pagesContainer.scrollTo({ top: 0, behavior: 'smooth' }));
-
-        // МОДАЛКИ СПРАВКИ И ШАРИНГА
-        const helpModal = document.getElementById('helpModal'), helpBtn = document.getElementById('helpBtn');
-        helpBtn.onclick = () => helpModal.classList.add('active');
-        document.getElementById('closeHelpBtn').onclick = () => helpModal.classList.remove('active');
-        document.getElementById('closeHelpApplyBtn').onclick = () => helpModal.classList.remove('active');
-        const shareModal = document.getElementById('shareModal');
-        document.getElementById('closeShareBtn').onclick = () => shareModal.classList.remove('active');
-        document.getElementById('closeShareApplyBtn').onclick = () => shareModal.classList.remove('active');
-
-        // СЕКРЕТНЫЕ НАСТРОЙКИ
-        document.getElementById('mainTitle').addEventListener('click', () => {
-            devClicks++;
-            if (devClicks >= 5) {
-                const d = document.getElementById('devModalSettings');
-                if (d) d.style.display = 'block';
-                devClicks = 0;
-            }
-            setTimeout(() => devClicks = 0, 1000);
-        });
-
-        const changelogModal = document.getElementById('changelogModal');
-        document.getElementById('changelogHeaderBtn').onclick = () => changelogModal.classList.add('active');
-        document.getElementById('closeChangelogBtn').onclick = () => changelogModal.classList.remove('active');
-        document.getElementById('closeChangelogApplyBtn').onclick = () => changelogModal.classList.remove('active');
-
-        audio.volume = 0.3;
-        if (activePlaylist.length) loadTrack(0);
-    </script>
+    audio.volume = 0.3;
+    if (activePlaylist.length) loadTrack(0);
+  </script>
 </body>
 </html>
