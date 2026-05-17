@@ -10,6 +10,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <style>
+        /* ========== ВЕСЬ ТВОЙ СУЩЕСТВУЮЩИЙ CSS ОСТАЁТСЯ ========== */
         * {
             margin: 0;
             padding: 0;
@@ -109,7 +110,9 @@
         .modal-overlay,
         .changelog-modal-overlay,
         .help-modal-overlay,
-        .share-modal-overlay {
+        .share-modal-overlay,
+        .admin-modal-overlay,
+        .customize-modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -129,7 +132,9 @@
         .modal-overlay.active,
         .changelog-modal-overlay.active,
         .help-modal-overlay.active,
-        .share-modal-overlay.active {
+        .share-modal-overlay.active,
+        .admin-modal-overlay.active,
+        .customize-modal-overlay.active {
             opacity: 1;
             visibility: visible;
         }
@@ -154,7 +159,9 @@
         .modal-overlay.active .modal-container,
         .changelog-modal-overlay.active .modal-container,
         .help-modal-overlay.active .modal-container,
-        .share-modal-overlay.active .modal-container {
+        .share-modal-overlay.active .modal-container,
+        .admin-modal-overlay.active .modal-container,
+        .customize-modal-overlay.active .modal-container {
             transform: scale(1);
             opacity: 1;
         }
@@ -410,6 +417,153 @@
             z-index: 2;
         }
 
+        /* Нормальный режим (все вкладки) */
+        .normal-mode {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* Полноэкранный чат */
+        .fullscreen-chat {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050505;
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .fullscreen-chat.active {
+            display: flex;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .close-chat {
+            font-size: 28px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+        }
+
+        .chat-messages-full {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            display: flex;
+            max-width: 80%;
+        }
+
+        .message-left {
+            align-self: flex-start;
+        }
+
+        .message-right {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .message-right .message-avatar {
+            margin-left: 8px;
+            margin-right: 0;
+        }
+
+        .message-bubble {
+            background: #2d2d2f;
+            padding: 10px 14px;
+            border-radius: 20px;
+            word-break: break-word;
+        }
+
+        .message-right .message-bubble {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .message-name {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #aaa;
+        }
+
+        .message-time {
+            font-size: 10px;
+            color: #888;
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        .chat-input-area-full {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chat-input-area-full input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 30px;
+            border: none;
+            background: #1e1e1e;
+            color: white;
+        }
+
+        .chat-input-area-full button {
+            background: var(--accent-color);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .admin-user {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-bottom: 1px solid #333;
+        }
+
+        .ban-btn, .delete-msg-btn {
+            background: #c0392b;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Остальные твои стили... */
         .header {
             margin-bottom: 16px;
         }
@@ -484,7 +638,6 @@
             box-shadow: 0 0 10px var(--accent-glow);
         }
 
-        /* Вкладки */
         .tabs {
             display: flex;
             gap: 6px;
@@ -695,7 +848,6 @@
             color: var(--text-secondary);
         }
 
-        /* НОВОСТИ */
         .news-grid {
             display: flex;
             flex-direction: column;
@@ -809,6 +961,12 @@
 
         .news-text {
             color: var(--text-secondary);
+        }
+
+        .views-counter {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 8px;
         }
 
         .news-footer {
@@ -942,7 +1100,6 @@
             color: var(--text-secondary);
         }
 
-        /* Правила (кратко) */
         .rules-scroll {
             max-height: 55vh;
             overflow-y: auto;
@@ -967,7 +1124,6 @@
             line-height: 1.5;
         }
 
-        /* Jobs */
         .job-category {
             margin: 22px 0 10px;
             font-weight: 700;
@@ -1182,7 +1338,6 @@
             color: var(--accent-color);
         }
 
-        /* Карта */
         .map-container {
             text-align: center;
         }
@@ -1203,7 +1358,6 @@
             margin-bottom: 12px;
         }
 
-        /* Чат */
         .chat-messages {
             height: 350px;
             overflow-y: auto;
@@ -1251,32 +1405,6 @@
             margin-top: 4px;
         }
 
-        .chat-input-area {
-            display: flex;
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        .chat-input-area input {
-            flex: 1;
-            padding: 12px 16px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 16px;
-            color: #fff;
-            font-size: 14px;
-        }
-
-        .chat-input-area button {
-            padding: 12px 20px;
-            background: #333;
-            border: none;
-            border-radius: 16px;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        /* Профиль */
         .profile-header {
             display: flex;
             align-items: center;
@@ -1302,6 +1430,12 @@
         .profile-email {
             font-size: 13px;
             color: #aaa;
+            margin-top: 4px;
+        }
+
+        .profile-status {
+            font-size: 13px;
+            color: #00ffaa;
             margin-top: 4px;
         }
 
@@ -1344,6 +1478,15 @@
             text-align: center;
             padding: 40px 20px;
         }
+
+        .customize-btn {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 16px;
+        }
     </style>
 </head>
 <body>
@@ -1353,12 +1496,13 @@
     <div class="noise-texture"></div>
     <audio id="bgMusic" preload="auto"></audio>
 
-    <div class="container">
+    <!-- НОРМАЛЬНЫЙ РЕЖИМ (ВСЕ ВКЛАДКИ) -->
+    <div id="normalMode" class="normal-mode container">
         <div class="header">
             <div class="title-row">
                 <div class="title-group">
                     <h1 id="mainTitle">CRIMSON RP</h1>
-                    <span class="version-badge">v1.3.0</span>
+                    <span class="version-badge">v2.0</span>
                 </div>
                 <button class="settings-btn" id="settingsBtn">⋮</button>
             </div>
@@ -1399,26 +1543,10 @@
 
             <!-- НОВОСТИ -->
             <div class="page" id="newsPage">
-                <div class="news-grid">
-                    <div class="news-card" data-news-id="4" data-news-title="💬 В ЧАТЕ ТЕПЕРЬ МОЖНО ОБЩАТЬСЯ!" data-news-text="Добавлен реальный чат на Firebase! Войди через Google и общайся с другими игроками в реальном времени." data-news-images='[]'>
-                        <div class="news-content">
-                            <div class="news-title">💬 В ЧАТЕ ТЕПЕРЬ МОЖНО ОБЩАТЬСЯ!</div>
-                            <div class="news-text">Добавлен реальный чат на Firebase! Войди через Google и общайся с другими игроками в реальном времени. Сообщения сохраняются и видны всем.<br><br>✅ Регистрация в один клик через Google<br>✅ Чат в реальном времени<br>✅ Профиль с аватаром и именем</div>
-                            <div class="news-footer"><button class="share-news-btn" onclick="shareNews(4)">📤 Поделиться</button></div>
-                        </div>
-                    </div>
-                    <div class="news-card" data-news-id="1" data-news-title="🔥 CRIMSON RP: НОВАЯ ВКЛАДКА «ДОСЬЕ»!" data-news-text="Теперь у нас есть вкладка «ДОСЬЕ» — база данных с криминальными делами." data-news-images='["https://s10.iimage.su/s/28/gSrZpIxx4a3lfHjQygJNHugV8RVzdzLU1w4X27wSP.jpg","https://s10.iimage.su/s/03/g6mRgHnx4vzaQJ7Es0O6opfh26QdHVPFkdBHW7TVV.jpg"]'>
-                        <div class="carousel-container"><div class="carousel-slides"></div><div class="carousel-arrow carousel-arrow-left">‹</div><div class="carousel-arrow carousel-arrow-right">›</div><div class="carousel-dots"></div></div>
-                        <div class="news-content"><div class="news-title">🔥 CRIMSON RP: НОВАЯ ВКЛАДКА «ДОСЬЕ»!</div><div class="news-text">Теперь у нас есть вкладка «ДОСЬЕ» — база данных с криминальными делами. ✅ 7+ громких дел</div><div class="news-footer"><button class="share-news-btn" onclick="shareNews(1)">📤 Поделиться</button></div></div>
-                    </div>
-                    <div class="news-card" data-news-id="2" data-news-title="🚨 САЙТ CRIMSON RP ОФИЦИАЛЬНО ЗАПУЩЕН!" data-news-text="Мы долго этого ждали, и этот момент настал! Наш новый дом в сети открыт." data-news-images='["https://s10.iimage.su/s/03/g2BARDrxcPZkHntVoItav83M8UArQ9zwpJotWOcce.jpg"]'>
-                        <div class="carousel-container"><div class="carousel-slides"></div><div class="carousel-arrow carousel-arrow-left">‹</div><div class="carousel-arrow carousel-arrow-right">›</div><div class="carousel-dots"></div></div>
-                        <div class="news-content"><div class="news-title">🚨 САЙТ CRIMSON RP ОФИЦИАЛЬНО ЗАПУЩЕН!</div><div class="news-text">Удачи тебе, друг 🏁</div><div class="news-footer"><button class="share-news-btn" onclick="shareNews(2)">📤 Поделиться</button></div></div>
-                    </div>
-                </div>
+                <div class="news-grid" id="newsGrid"></div>
             </div>
 
-            <!-- ПРАВИЛА (кратко для экономии места) -->
+            <!-- ПРАВИЛА -->
             <div class="page" id="rulesPage">
                 <div class="glass">
                     <h2><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg> ПРАВИЛА ПРОЕКТА</h2>
@@ -1445,7 +1573,7 @@
                 </div>
             </div>
 
-            <!-- РАБОТЫ (сокращённо) -->
+            <!-- РАБОТЫ -->
             <div class="page" id="jobsPage">
                 <div class="glass">
                     <h2><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> ВСЕ РАБОТЫ</h2>
@@ -1475,7 +1603,7 @@
                 </div>
             </div>
 
-            <!-- ЧАТ (Firebase) -->
+            <!-- ЧАТ (старая версия, будет заменён полноэкранным) -->
             <div class="page" id="chatPage">
                 <div class="glass">
                     <h2><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> ОБЩИЙ ЧАТ</h2>
@@ -1527,402 +1655,434 @@
                 </div>
             </div>
         </div>
-        <footer><span>© 2026 CRIMSON RP · v1.3.0</span><button id="helpBtn">📘 Справка</button></footer>
+        <footer><span>© 2026 CRIMSON RP · v2.0</span><button id="helpBtn">📘 Справка</button></footer>
     </div>
 
-    <button class="scroll-top-btn" id="scrollTopBtn">↑</button>
-
-    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-        <div class="lightbox-content" onclick="event.stopPropagation()">
-            <img class="lightbox-img" id="lightboxImg" src="">
-            <div class="lightbox-close" onclick="closeLightbox()">✕</div>
+    <!-- ПОЛНОЭКРАННЫЙ ЧАТ -->
+    <div id="fullscreenChat" class="fullscreen-chat">
+        <div class="chat-header">
+            <div class="chat-header-left"><span style="font-weight:bold;">Общий чат</span></div>
+            <button class="close-chat" id="closeFullscreenChat">✕</button>
+        </div>
+        <div id="fullChatMessages" class="chat-messages-full"></div>
+        <div class="chat-input-area-full">
+            <input type="text" id="fullChatInput" placeholder="Сообщение...">
+            <button id="fullSendBtn">📤</button>
         </div>
     </div>
 
+    <!-- МОДАЛКИ -->
+    <div id="settingsModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h2>⚙️ НАСТРОЙКИ</h2><div class="modal-close" id="closeModalBtn">✕</div></div><div class="modal-body" id="modalBody"></div><div class="modal-footer"><button class="btn-reset" id="resetSettingsBtn">СБРОСИТЬ ВСЁ</button><button class="btn-close-modal" id="applyCloseBtn">ЗАКРЫТЬ</button></div></div></div>
+    <div id="adminModal" class="admin-modal-overlay"><div class="modal-container"><div class="modal-header"><h2>👑 АДМИН-ПАНЕЛЬ</h2><div class="modal-close" id="closeAdminBtn">✕</div></div><div class="modal-body" id="adminContent"></div><div class="modal-footer"><button class="btn-close-modal" id="closeAdminApplyBtn">ЗАКРЫТЬ</button></div></div></div>
+    <div id="customizeModal" class="customize-modal-overlay"><div class="modal-container"><div class="modal-header"><h2>🎨 КАСТОМИЗАЦИЯ</h2><div class="modal-close" id="closeCustomizeBtn">✕</div></div><div class="modal-body"><input type="text" id="customName" placeholder="Ваше имя" style="width:100%; margin-bottom:12px; padding:12px; border-radius:16px; background:#1e1e1e; color:white; border:none;"><input type="text" id="customStatus" placeholder="Статус" style="width:100%; margin-bottom:12px; padding:12px; border-radius:16px; background:#1e1e1e; color:white; border:none;"><label style="display:block; margin-bottom:8px;">Цвет ника:</label><input type="color" id="customColor" value="#ffffff" style="width:100%; margin-bottom:12px;"><button id="saveCustomizeBtn" class="auth-button" style="margin-top:0;">СОХРАНИТЬ</button></div></div></div>
     <div id="helpModal" class="help-modal-overlay"><div class="modal-container"><div class="modal-header"><h2>📘 СПРАВКА</h2><div class="modal-close" id="closeHelpBtn">✕</div></div><div class="modal-body"><p>6 этапов регистрации: паспорт, медкнижка, банк, права, диплом, работа.</p></div><div class="modal-footer"><button class="btn-close-modal" id="closeHelpApplyBtn">ЗАКРЫТЬ</button></div></div></div>
     <div id="shareModal" class="share-modal-overlay"><div class="modal-container"><div class="modal-header"><h2>📤 ПОДЕЛИТЬСЯ</h2><div class="modal-close" id="closeShareBtn">✕</div></div><div class="modal-body" id="shareModalBody"></div><div class="modal-footer"><button class="btn-close-modal" id="closeShareApplyBtn">ЗАКРЫТЬ</button></div></div></div>
-    <div id="settingsModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h2>⚙️ НАСТРОЙКИ</h2><div class="modal-close" id="closeModalBtn">✕</div></div><div class="modal-body" id="modalBody"></div><div class="modal-footer"><button class="btn-reset" id="resetSettingsBtn">СБРОСИТЬ ВСЁ</button><button class="btn-close-modal" id="applyCloseBtn">ЗАКРЫТЬ</button></div></div></div>
-    <div id="changelogModal" class="changelog-modal-overlay"><div class="modal-container"><div class="modal-header"><h2>📋 СПИСОК ИЗМЕНЕНИЙ</h2><div class="modal-close" id="closeChangelogBtn">✕</div></div><div class="modal-body"><div class="changelog-version-tag">Версия 1.3.0</div><ul class="changelog-list"><li><strong>💬 ЧАТ</strong><span>Добавлен реальный чат на Firebase</span></li><li><strong>🔐 АВТОРИЗАЦИЯ</strong><span>Вход через Google</span></li><li><strong>👤 ПРОФИЛЬ</strong><span>Аватар, имя, email</span></li><li><strong>🎨 ИКОНКИ</strong><span>Везде заменены на SVG</span></li><li><strong>⚙️ НАСТРОЙКИ</strong><span>Радиус, прозрачность, размытие и др.</span></li></ul></div><div class="modal-footer"><button class="btn-close-modal" id="closeChangelogApplyBtn">ЗАКРЫТЬ</button></div></div></div>
+    <div id="changelogModal" class="changelog-modal-overlay"><div class="modal-container"><div class="modal-header"><h2>📋 СПИСОК ИЗМЕНЕНИЙ</h2><div class="modal-close" id="closeChangelogBtn">✕</div></div><div class="modal-body"><div class="changelog-version-tag">Версия 2.0</div><ul class="changelog-list"><li><strong>💬 ЧАТ</strong><span>Полноэкранный режим как в Telegram</span></li><li><strong>👑 АДМИН-ПАНЕЛЬ</strong><span>Удаление сообщений, бан пользователей</span></li><li><strong>🎨 КАСТОМИЗАЦИЯ</strong><span>Имя, статус, цвет ника</span></li><li><strong>👁️ СЧЁТЧИКИ</strong><span>Просмотры новостей</span></li><li><strong>🔐 АВТОРИЗАЦИЯ</strong><span>Вход через Google</span></li></ul></div><div class="modal-footer"><button class="btn-close-modal" id="closeChangelogApplyBtn">ЗАКРЫТЬ</button></div></div></div>
 
-  <script>
-    // ========== FIREBASE НАСТРОЙКИ ==========
-    const firebaseConfig = {
-        apiKey: "AIzaSyBWGafqUNSUo7B5Yopdrl_SiaNvjeZ0zFc",
-        authDomain: "crimsonrp.firebaseapp.com",
-        projectId: "crimsonrp",
-        storageBucket: "crimsonrp.firebasestorage.app",
-        messagingSenderId: "438585836765",
-        appId: "1:438585836765:web:863db1f1784a6818504734",
-        measurementId: "G-QXKHJ42VJB"
-    };
+    <button class="scroll-top-btn" id="scrollTopBtn">↑</button>
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()"><div class="lightbox-content" onclick="event.stopPropagation()"><img class="lightbox-img" id="lightboxImg" src=""><div class="lightbox-close" onclick="closeLightbox()">✕</div></div></div>
 
-    // Инициализация Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const database = firebase.database();
+    <script>
+        // ========== FIREBASE НАСТРОЙКИ ==========
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWGafqUNSUo7B5Yopdrl_SiaNvjeZ0zFc",
+            authDomain: "crimsonrp.firebaseapp.com",
+            projectId: "crimsonrp",
+            storageBucket: "crimsonrp.firebasestorage.app",
+            messagingSenderId: "438585836765",
+            appId: "1:438585836765:web:863db1f1784a6818504734"
+        };
 
-    // DOM элементы
-    const chatMessagesDiv = document.getElementById('chatMessages');
-    const chatInput = document.getElementById('chatInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const profileContent = document.getElementById('profileContent');
-    const googleLoginBtn = document.getElementById('googleLoginBtn');
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+        const provider = new firebase.auth.GoogleAuthProvider();
+        provider.addScope('profile');
+        provider.addScope('email');
 
-    let currentUser = null;
+        // ========== НАСТРОЙКИ АДМИНА (ЗАМЕНИ НА СВОЙ EMAIL) ==========
+        const adminEmail = "danasosok111@gmail.com"
 
-    // ========== УЛУЧШЕННЫЙ ВХОД ЧЕРЕЗ GOOGLE ==========
-    const provider = new firebase.auth.GoogleAuthProvider();
-    provider.addScope('profile');
-    provider.addScope('email');
+        let currentUser = null;
+        let isAdmin = false;
+        let currentTab = localStorage.getItem('currentTab') || 'home';
 
-    // Функция показа ошибок пользователю
-    function showAuthError(error) {
-        console.error("Ошибка авторизации:", error);
-        let message = "Не удалось войти через Google. ";
-        switch (error.code) {
-            case 'auth/operation-not-allowed':
-                message += "Провайдер Google не включён в консоли Firebase. Обратитесь к администратору.";
-                break;
-            case 'auth/popup-blocked':
-                message += "Браузер заблокировал всплывающее окно. Разрешите всплывающие окна для этого сайта или используйте кнопку ниже.";
-                // Предлагаем альтернативный вход через редирект
-                if (confirm(message + "\n\nХотите войти через перенаправление (redirect)?")) {
-                    auth.signInWithRedirect(provider);
+        // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+        function escapeHtml(str) { return str?.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]) || ''; }
+
+        // ========== НОВОСТИ СО СЧЁТЧИКАМИ ==========
+        const newsData = [
+            { id: 1, title: "🔥 CRIMSON RP: НОВАЯ ВКЛАДКА «ДОСЬЕ»!", text: "Теперь у нас есть вкладка «ДОСЬЕ» — база данных с криминальными делами.", images: ["https://s10.iimage.su/s/28/gSrZpIxx4a3lfHjQygJNHugV8RVzdzLU1w4X27wSP.jpg","https://s10.iimage.su/s/03/g6mRgHnx4vzaQJ7Es0O6opfh26QdHVPFkdBHW7TVV.jpg"] },
+            { id: 2, title: "🚨 САЙТ CRIMSON RP ОФИЦИАЛЬНО ЗАПУЩЕН!", text: "Мы долго этого ждали, и этот момент настал!", images: ["https://s10.iimage.su/s/03/g2BARDrxcPZkHntVoItav83M8UArQ9zwpJotWOcce.jpg"] },
+            { id: 3, title: "💬 В ЧАТЕ ТЕПЕРЬ МОЖНО ОБЩАТЬСЯ!", text: "Добавлен реальный чат на Firebase! Войди через Google и общайся.", images: [] }
+        ];
+
+        async function renderNews() {
+            const container = document.getElementById('newsGrid');
+            if (!container) return;
+            let html = '';
+            for (let news of newsData) {
+                const views = (await db.ref(`newsViews/${news.id}/count`).once('value')).val() || 0;
+                html += `<div class="news-card" data-id="${news.id}">`;
+                if (news.images && news.images.length > 0) {
+                    html += `<div class="carousel-container"><div class="carousel-slides"></div><div class="carousel-arrow carousel-arrow-left">‹</div><div class="carousel-arrow carousel-arrow-right">›</div><div class="carousel-dots"></div></div>`;
                 }
-                return;
-            case 'auth/unauthorized-domain':
-                message += "Текущий домен не добавлен в список авторизованных в Firebase Console. Добавьте этот домен (или localhost для тестов).";
-                break;
-            default:
-                message += error.message;
+                html += `<div class="news-content"><div class="news-title">${news.title}</div><div class="news-text">${news.text}</div><div class="views-counter">👁️ ${views} просмотров</div><div class="news-footer"><button class="share-news-btn" onclick="shareNews(${news.id})">📤 Поделиться</button></div></div></div>`;
+            }
+            container.innerHTML = html;
+            
+            // Инициализация каруселей
+            document.querySelectorAll('.news-card .carousel-container').forEach(initCarousel);
+            
+            // Обработчики кликов для просмотров
+            document.querySelectorAll('.news-card').forEach(card => {
+                card.addEventListener('click', async (e) => {
+                    if (e.target.classList.contains('share-news-btn') || e.target.closest('.share-news-btn')) return;
+                    if (!currentUser) { alert("Войдите, чтобы учитывать просмотры"); return; }
+                    const id = card.dataset.id;
+                    const userViewRef = db.ref(`newsViews/${id}/${currentUser.uid}`);
+                    const already = await userViewRef.once('value');
+                    if (!already.exists()) {
+                        await userViewRef.set(true);
+                        const countRef = db.ref(`newsViews/${id}/count`);
+                        const old = (await countRef.once('value')).val() || 0;
+                        await countRef.set(old + 1);
+                        renderNews();
+                    }
+                });
+            });
         }
-        alert(message);
-    }
 
-    // Функция входа с обработкой ошибок и fallback
-    async function signInWithGoogle() {
-        try {
-            // Сначала пытаемся через popup
-            const result = await auth.signInWithPopup(provider);
-            console.log("Вход успешен:", result.user);
-        } catch (error) {
-            // Если popup заблокирован или другая ошибка
-            if (error.code === 'auth/popup-blocked') {
-                // Пробуем редирект
-                try {
-                    await auth.signInWithRedirect(provider);
-                } catch (redirectErr) {
-                    showAuthError(redirectErr);
+        // ========== КАРУСЕЛИ ==========
+        function initCarousel(container) {
+            const slidesContainer = container.querySelector('.carousel-slides');
+            const leftArrow = container.querySelector('.carousel-arrow-left');
+            const rightArrow = container.querySelector('.carousel-arrow-right');
+            const dotsContainer = container.querySelector('.carousel-dots');
+            const card = container.closest('.news-card');
+            const newsId = parseInt(card.dataset.id);
+            const news = newsData.find(n => n.id === newsId);
+            const images = news?.images || [];
+            if (!images.length) return;
+            let currentIndex = 0;
+            slidesContainer.innerHTML = '';
+            images.forEach((src, idx) => {
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                const img = document.createElement('img');
+                img.src = src;
+                img.onclick = (e) => { e.stopPropagation(); openLightbox(src); };
+                slide.appendChild(img);
+                slidesContainer.appendChild(slide);
+            });
+            dotsContainer.innerHTML = '';
+            images.forEach((_, idx) => {
+                const dot = document.createElement('div');
+                dot.className = 'carousel-dot' + (idx === currentIndex ? ' active' : '');
+                dot.addEventListener('click', () => goToSlide(idx));
+                dotsContainer.appendChild(dot);
+            });
+            function updateSlides() { slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`; document.querySelectorAll('.carousel-dot').forEach((dot,i)=>dot.classList.toggle('active',i===currentIndex)); }
+            function goToSlide(idx) { currentIndex = idx; updateSlides(); }
+            leftArrow.addEventListener('click', () => { if (currentIndex > 0) goToSlide(currentIndex-1); });
+            rightArrow.addEventListener('click', () => { if (currentIndex+1 < images.length) goToSlide(currentIndex+1); });
+            if (images.length <= 1) { leftArrow.style.display = 'none'; rightArrow.style.display = 'none'; dotsContainer.style.display = 'none'; }
+            updateSlides();
+        }
+
+        // ========== ПОЛНОЭКРАННЫЙ ЧАТ ==========
+        async function loadFullMessages() {
+            if (!currentUser) return;
+            db.ref('messages').orderByChild('timestamp').limitToLast(100).on('value', (snap) => {
+                const msgs = [];
+                snap.forEach(ch => msgs.push({ id: ch.key, ...ch.val() }));
+                renderFullChat(msgs.reverse());
+            });
+        }
+
+        async function renderFullChat(messages) {
+            const container = document.getElementById('fullChatMessages');
+            if (!container) return;
+            if (!currentUser) { container.innerHTML = '<div style="text-align:center">Войдите чтобы писать</div>'; return; }
+            const bans = await db.ref('bans').once('value');
+            const isBanned = bans.val()?.[currentUser.uid];
+            if (isBanned) {
+                container.innerHTML = '<div style="text-align:center; color:red;">❌ Вы забанены в чате</div>';
+                return;
+            }
+            container.innerHTML = messages.map(msg => {
+                const isMine = msg.userId === currentUser.uid;
+                const avatarHtml = (!isMine && msg.avatar) ? `<img class="message-avatar" src="${msg.avatar}" onerror="this.src='https://via.placeholder.com/36'">` : '';
+                const nameHtml = !isMine ? `<div class="message-name" style="color:${msg.color || '#aaa'}">${escapeHtml(msg.name)}</div>` : '';
+                const delBtn = isAdmin ? `<button class="delete-msg-btn" onclick="deleteMessage('${msg.id}')">🗑️</button>` : '';
+                return `<div class="message ${isMine ? 'message-right' : 'message-left'}">
+                            ${avatarHtml}
+                            <div class="message-bubble">
+                                ${nameHtml}
+                                <div>${escapeHtml(msg.text)}</div>
+                                <div class="message-time">${new Date(msg.timestamp).toLocaleTimeString()}</div>
+                                ${delBtn}
+                            </div>
+                        </div>`;
+            }).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendFullMessage() {
+            const input = document.getElementById('fullChatInput');
+            if (!input.value.trim() || !currentUser) return;
+            const bans = await db.ref('bans').once('value');
+            if (bans.val()?.[currentUser.uid]) { alert("❌ Вы забанены"); return; }
+            const profileSnap = await db.ref(`profiles/${currentUser.uid}`).once('value');
+            const profile = profileSnap.val() || {};
+            const displayName = profile.customName || currentUser.displayName;
+            const color = profile.customColor || null;
+            await db.ref('messages').push({
+                text: input.value.trim(),
+                name: displayName,
+                avatar: currentUser.photoURL,
+                userId: currentUser.uid,
+                timestamp: Date.now(),
+                color: color
+            });
+            input.value = '';
+        }
+
+        window.deleteMessage = async function(msgId) { if(isAdmin) await db.ref(`messages/${msgId}`).remove(); };
+
+        // ========== ПРОФИЛЬ И КАСТОМИЗАЦИЯ ==========
+        async function saveProfileCustom(name, status, color) {
+            if (!currentUser) return;
+            await db.ref(`profiles/${currentUser.uid}`).update({ customName: name, customStatus: status, customColor: color });
+            renderProfilePage();
+        }
+
+        async function renderProfilePage() {
+            const container = document.getElementById('profileContent');
+            if (!container) return;
+            if (!currentUser) {
+                container.innerHTML = `<div class="no-account"><p>Войдите через Google, чтобы увидеть свой профиль</p><button id="googleLoginBtnProfile" class="auth-button">🔐 Войти через Google</button></div>`;
+                document.getElementById('googleLoginBtnProfile')?.addEventListener('click', signInWithGoogle);
+                return;
+            }
+            const profile = (await db.ref(`profiles/${currentUser.uid}`).once('value')).val() || {};
+            const name = profile.customName || currentUser.displayName;
+            const status = profile.customStatus || "Игрок";
+            const color = profile.customColor || "#ffffff";
+            container.innerHTML = `
+                <div class="profile-header">
+                    <img class="profile-avatar" src="${currentUser.photoURL}" onerror="this.src='https://via.placeholder.com/80'">
+                    <div>
+                        <div class="profile-name" style="color:${color}">${escapeHtml(name)}</div>
+                        <div class="profile-email">${escapeHtml(currentUser.email)}</div>
+                        <div class="profile-status">${escapeHtml(status)}</div>
+                    </div>
+                </div>
+                <button class="customize-btn" id="openCustomizeBtn">🎨 Кастомизация</button>
+                <button id="logoutBtn" class="auth-button logout-btn">🚪 Выйти</button>
+            `;
+            document.getElementById('openCustomizeBtn')?.addEventListener('click', () => document.getElementById('customizeModal').classList.add('active'));
+            document.getElementById('logoutBtn')?.addEventListener('click', signOut);
+        }
+
+        // ========== АДМИН-ПАНЕЛЬ ==========
+        async function loadAdminPanel() {
+            if (!isAdmin) return;
+            const usersSnap = await db.ref('profiles').once('value');
+            const bansSnap = await db.ref('bans').once('value');
+            const bans = bansSnap.val() || {};
+            let usersHtml = '<h3>👥 Пользователи</h3>';
+            usersSnap.forEach(snap => {
+                const uid = snap.key;
+                const data = snap.val();
+                const name = data.customName || uid.slice(0, 8);
+                const isBanned = !!bans[uid];
+                usersHtml += `<div class="admin-user"><span>${escapeHtml(name)}</span><button class="ban-btn" data-uid="${uid}">${isBanned ? "🔓 Разбанить" : "🔨 Забанить"}</button></div>`;
+            });
+            const messagesSnap = await db.ref('messages').limitToLast(50).once('value');
+            let msgsHtml = '<h3>💬 Последние сообщения</h3>';
+            messagesSnap.forEach(msgSnap => {
+                const msg = msgSnap.val();
+                msgsHtml += `<div class="admin-user"><span><b>${escapeHtml(msg.name)}:</b> ${escapeHtml(msg.text)}</span><button class="delete-msg-btn" data-id="${msgSnap.key}">🗑️</button></div>`;
+            });
+            document.getElementById('adminContent').innerHTML = usersHtml + msgsHtml;
+            
+            document.querySelectorAll('.ban-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const uid = btn.dataset.uid;
+                    const isBanned = !!bans[uid];
+                    if (isBanned) await db.ref(`bans/${uid}`).remove();
+                    else await db.ref(`bans/${uid}`).set(true);
+                    loadAdminPanel();
+                });
+            });
+            document.querySelectorAll('.delete-msg-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const id = btn.dataset.id;
+                    await db.ref(`messages/${id}`).remove();
+                    loadAdminPanel();
+                });
+            });
+        }
+
+        // ========== ВХОД/ВЫХОД ==========
+        async function signInWithGoogle() {
+            try {
+                const result = await auth.signInWithPopup(provider);
+                console.log("Вход успешен:", result.user);
+            } catch (error) {
+                if (error.code === 'auth/popup-blocked') {
+                    if (confirm("Браузер заблокировал окно. Использовать перенаправление?")) {
+                        await auth.signInWithRedirect(provider);
+                    }
+                } else {
+                    alert("Ошибка: " + error.message);
                 }
-            } else {
-                showAuthError(error);
             }
         }
-    }
 
-    // Функция для выхода
-    async function signOut() {
-        try {
+        async function signOut() {
             await auth.signOut();
-        } catch (error) {
-            console.error("Ошибка выхода:", error);
         }
-    }
 
-    // Функция для отображения сообщений
-    function loadMessages() {
-        const messagesRef = database.ref('messages');
-        messagesRef.orderByChild('timestamp').limitToLast(100).on('value', (snapshot) => {
-            const messages = [];
-            snapshot.forEach((childSnapshot) => {
-                messages.push(childSnapshot.val());
-            });
-            renderMessages(messages.reverse());
-        });
-    }
-
-    function renderMessages(messages) {
-        if (!chatMessagesDiv) return;
-        if (!messages.length && !currentUser) {
-            chatMessagesDiv.innerHTML = '<div style="text-align:center; padding:20px; color:#aaa;">Войдите через Google, чтобы участвовать в чате</div>';
-            return;
+        // ========== ВКЛАДКИ ==========
+        function switchTab(tabId) {
+            currentTab = tabId;
+            localStorage.setItem('currentTab', tabId);
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            const activePage = document.getElementById(tabId + 'Page');
+            if (activePage) activePage.classList.add('active-page');
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            const activeTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
+            if (activeTab) activeTab.classList.add('active');
+            
+            // Если переключились на чат — открываем полноэкранный режим
+            if (tabId === 'chat') {
+                document.getElementById('fullscreenChat').classList.add('active');
+                document.getElementById('normalMode').style.display = 'none';
+                if (currentUser) loadFullMessages();
+            }
         }
-        chatMessagesDiv.innerHTML = messages.map(msg => `
-            <div class="chat-message">
-                <img class="chat-message-avatar" src="${escapeHtml(msg.avatar || 'https://via.placeholder.com/36?text=👤')}" onerror="this.src='https://via.placeholder.com/36?text=👤'">
-                <div class="chat-message-content">
-                    <div class="chat-message-name">${escapeHtml(msg.name || 'Пользователь')}</div>
-                    <div class="chat-message-text">${escapeHtml(msg.text)}</div>
-                    <div class="chat-message-time">${new Date(msg.timestamp).toLocaleTimeString()}</div>
-                </div>
-            </div>
-        `).join('');
-        chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
-    }
 
-    // Отправка сообщения
-    async function sendMessage() {
-        if (!currentUser || !chatInput.value.trim()) return;
-        const text = chatInput.value.trim();
-        const messagesRef = database.ref('messages');
-        await messagesRef.push({
-            text: text,
-            name: currentUser.displayName,
-            avatar: currentUser.photoURL,
-            userId: currentUser.uid,
-            timestamp: Date.now()
-        });
-        chatInput.value = '';
-    }
-
-    // Обновление UI в зависимости от авторизации
-    function updateUIForAuth(user) {
-        if (user) {
-            currentUser = user;
-            chatInput.disabled = false;
-            sendBtn.disabled = false;
-            // Загружаем профиль
-            renderProfilePage();
-            // Если чат уже открыт, подгружаем сообщения
-            if (chatMessagesDiv) loadMessages();
-        } else {
-            currentUser = null;
-            chatInput.disabled = true;
-            sendBtn.disabled = true;
-            if (chatMessagesDiv) chatMessagesDiv.innerHTML = '<div style="text-align:center; padding:20px; color:#aaa;">Войдите через Google, чтобы участвовать в чате</div>';
-            renderProfilePage();
+        function exitFullscreenChat() {
+            document.getElementById('fullscreenChat').classList.remove('active');
+            document.getElementById('normalMode').style.display = 'flex';
         }
-    }
 
-    // Отображение страницы профиля
-    async function renderProfilePage() {
-        if (!currentUser) {
-            profileContent.innerHTML = `
-                <div class="no-account">
-                    <p>Войдите через Google, чтобы увидеть свой профиль и участвовать в чате</p>
-                    <button id="googleLoginBtnProfile" class="auth-button">🔐 Войти через Google</button>
-                </div>
-            `;
-            const newLoginBtn = document.getElementById('googleLoginBtnProfile');
-            if (newLoginBtn) newLoginBtn.addEventListener('click', signInWithGoogle);
-            return;
-        }
-        profileContent.innerHTML = `
-            <div class="profile-header">
-                <img class="profile-avatar" src="${escapeHtml(currentUser.photoURL) || 'https://via.placeholder.com/80?text=👤'}" onerror="this.src='https://via.placeholder.com/80?text=👤'">
-                <div>
-                    <div class="profile-name">${escapeHtml(currentUser.displayName || 'Без имени')}</div>
-                    <div class="profile-email">${escapeHtml(currentUser.email || '')}</div>
-                </div>
-            </div>
-            <div class="profile-stats">
-                <p>✅ Статус: <span style="color:#00ffaa;">Авторизован</span></p>
-                <p>📅 Дата регистрации: ${new Date(currentUser.metadata.creationTime).toLocaleDateString()}</p>
-            </div>
-            <button id="logoutBtn" class="auth-button logout-btn">🚪 Выйти</button>
-        `;
-        const logoutBtn = document.getElementById('logoutBtn');
-        if (logoutBtn) logoutBtn.addEventListener('click', signOut);
-    }
-
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]);
-    }
-
-    // Обработчики кнопок
-    if (googleLoginBtn) googleLoginBtn.addEventListener('click', signInWithGoogle);
-
-    if (sendBtn) sendBtn.addEventListener('click', sendMessage);
-    if (chatInput) chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
-
-    // Обработка редиректа (если использовался signInWithRedirect)
-    auth.getRedirectResult().then((result) => {
-        if (result.user) {
-            console.log("Вход через редирект успешен:", result.user);
-        }
-    }).catch((error) => {
-        if (error.code !== 'auth/popup-closed-by-user') {
-            showAuthError(error);
-        }
-    });
-
-    auth.onAuthStateChanged((user) => {
-        updateUIForAuth(user);
-    });
-
-    // МУЗЫКА
-    const userTracks = ["https://videotourl.com/audio/1776773135234-2f337560-23a9-4c7d-b4eb-2d5f12b95acc.mp3"];
-    let activePlaylist = [...userTracks];
-    let currentTrack = 0;
-    const audio = document.getElementById('bgMusic');
-    let musicEnabled = true;
-    function loadTrack(i) { if (activePlaylist.length) { audio.src = activePlaylist[i % activePlaylist.length]; audio.load(); } }
-    function playMusic() { if (musicEnabled && audio.src) audio.play().catch(e => {}); }
-    function nextTrack() { if (activePlaylist.length) { currentTrack = (currentTrack+1)%activePlaylist.length; loadTrack(currentTrack); playMusic(); } }
-    audio.addEventListener('ended', nextTrack);
-    audio.addEventListener('error', nextTrack);
-    document.body.addEventListener('click', () => { if (audio.paused && musicEnabled && activePlaylist.length) { loadTrack(currentTrack); playMusic(); } }, { once: true });
-
-    // ЛАЙТБОКС
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightboxImg');
-    window.openLightbox = function(src) { lightboxImg.src = src; lightbox.classList.add('active'); };
-    window.closeLightbox = () => lightbox.classList.remove('active');
-
-    // КАРУСЕЛИ
-    function initCarousel(container) {
-        const slidesContainer = container.querySelector('.carousel-slides');
-        const leftArrow = container.querySelector('.carousel-arrow-left');
-        const rightArrow = container.querySelector('.carousel-arrow-right');
-        const dotsContainer = container.querySelector('.carousel-dots');
-        let images = [];
-        try { const card = container.closest('.news-card'); images = JSON.parse(card.getAttribute('data-news-images') || '[]'); } catch(e) { images = []; }
-        if (!images.length) return;
-        let currentIndex = 0;
-        slidesContainer.innerHTML = '';
-        images.forEach((src, idx) => {
-            const slide = document.createElement('div'); slide.className = 'carousel-slide';
-            const img = document.createElement('img'); img.src = src; img.onclick = (e) => { e.stopPropagation(); openLightbox(src); };
-            slide.appendChild(img); slidesContainer.appendChild(slide);
-        });
-        dotsContainer.innerHTML = '';
-        images.forEach((_, idx) => { const dot = document.createElement('div'); dot.className = 'carousel-dot' + (idx === currentIndex ? ' active' : ''); dot.addEventListener('click', () => goToSlide(idx)); dotsContainer.appendChild(dot); });
-        function updateSlides() { slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`; document.querySelectorAll('.carousel-dot').forEach((dot,i)=>dot.classList.toggle('active',i===currentIndex)); }
-        function goToSlide(idx) { currentIndex = idx; updateSlides(); }
-        leftArrow.addEventListener('click', () => { if (currentIndex > 0) goToSlide(currentIndex-1); });
-        rightArrow.addEventListener('click', () => { if (currentIndex+1 < images.length) goToSlide(currentIndex+1); });
-        if (images.length <= 1) { leftArrow.style.display = 'none'; rightArrow.style.display = 'none'; dotsContainer.style.display = 'none'; }
-        updateSlides();
-    }
-    document.querySelectorAll('.news-card .carousel-container').forEach(initCarousel);
-
-    // ПОДЕЛИТЬСЯ
-    window.shareNews = function(newsId) {
-        const card = document.querySelector(`.news-card[data-news-id="${newsId}"]`);
-        if (!card) return;
-        const title = card.getAttribute('data-news-title');
-        const text = card.getAttribute('data-news-text');
-        const images = JSON.parse(card.getAttribute('data-news-images') || '[]');
-        const firstImage = images.length>0?images[0]:'';
-        const shareUrl = `${window.location.origin}${window.location.pathname}?news=${newsId}`;
-        const modalBody = document.getElementById('shareModalBody');
-        modalBody.innerHTML = `<div class="share-preview">${firstImage?`<img src="${firstImage}">`:''}<div style="font-weight:700;">${title}</div><div style="font-size:13px;color:#aaa;">${text.substring(0,100)}${text.length>100?'...':''}</div></div><div class="share-link">${shareUrl}</div><button class="copy-btn" id="copyShareLinkBtn" style="width:100%;">📋 Копировать ссылку</button>`;
-        document.getElementById('shareModal').classList.add('active');
-        document.getElementById('copyShareLinkBtn').onclick = () => { navigator.clipboard.writeText(shareUrl).then(()=>{ const btn=document.getElementById('copyShareLinkBtn'); btn.textContent='✅ Скопировано!'; setTimeout(()=>btn.textContent='📋 Копировать ссылку',2000); }); };
-    };
-
-    // РАБОТЫ
-    document.querySelectorAll('.job-item').forEach(item => {
-        let salarySpan = item.querySelector('.job-salary-text');
-        if (!salarySpan) { salarySpan = document.createElement('div'); salarySpan.className = 'job-salary-text'; item.appendChild(salarySpan); }
-        item.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const salary = item.getAttribute('data-salary');
-            document.querySelectorAll('.job-salary-text').forEach(span => { if (span !== salarySpan) span.classList.remove('show'); });
-            if (salarySpan.classList.contains('show')) salarySpan.classList.remove('show');
-            else { salarySpan.innerHTML = `💰 ${salary}`; salarySpan.classList.add('show'); }
-        });
-    });
-
-    // ВКЛАДКИ
-    const tabs = document.querySelectorAll('.tab');
-    const pages = document.querySelectorAll('.page');
-    function switchTab(tabId) {
-        pages.forEach(p => p.classList.remove('active-page'));
-        const active = document.getElementById(tabId + 'Page');
-        if (active) active.classList.add('active-page');
-        tabs.forEach(t => t.classList.remove('active'));
-        const activeTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
-        if (activeTab) activeTab.classList.add('active');
-    }
-    tabs.forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
-
-    // КНОПКА НАВЕРХ
-    const scrollBtn = document.getElementById('scrollTopBtn');
-    const pagesContainer = document.getElementById('pagesContainer');
-    pagesContainer.addEventListener('scroll', () => scrollBtn.classList.toggle('visible', pagesContainer.scrollTop > 300));
-    scrollBtn.addEventListener('click', () => pagesContainer.scrollTo({ top:0, behavior:'smooth' }));
-
-    // МОДАЛКИ
-    document.getElementById('helpBtn').onclick = () => document.getElementById('helpModal').classList.add('active');
-    document.getElementById('closeHelpBtn').onclick = () => document.getElementById('helpModal').classList.remove('active');
-    document.getElementById('closeHelpApplyBtn').onclick = () => document.getElementById('helpModal').classList.remove('active');
-    document.getElementById('closeShareBtn').onclick = () => document.getElementById('shareModal').classList.remove('active');
-    document.getElementById('closeShareApplyBtn').onclick = () => document.getElementById('shareModal').classList.remove('active');
-
-    // НАСТРОЙКИ
-    const settingsModal = document.getElementById('settingsModal');
-    const settingsBtn = document.getElementById('settingsBtn');
-    const modalBody = document.getElementById('modalBody');
-    let devUnlocked = localStorage.getItem('devUnlocked') === 'true';
-    
-    function buildSettingsModal() {
-        let devHtml = '';
-        if (devUnlocked) {
-            devHtml = `<div class="settings-section"><h3>🛠️ РАЗРАБОТЧИК</h3>
-                <div class="setting-item"><label>Акцентный цвет</label><input type="color" id="accentColorPicker" value="#c0392b"></div>
-                <div class="setting-item"><div class="setting-row"><label>Компактный режим</label><input type="checkbox" id="compactModeCheck"></div></div>
-            </div>`;
-        } else {
-            devHtml = `<div class="settings-section"><h3>🔒 СЕКРЕТНЫЕ НАСТРОЙКИ</h3><div class="setting-item"><label>Введите пароль</label><input type="password" id="devPassword" style="width:100%; margin-bottom:8px;"><button id="unlockDevBtn" class="music-btn" style="width:100%;">Разблокировать</button></div></div>`;
-        }
-        modalBody.innerHTML = `
-            <div class="settings-section"><h3>🎵 МУЗЫКА</h3>
-                <div class="setting-item"><label>Громкость</label><input type="range" id="volSlider" min="0" max="1" step="0.05" value="${audio.volume}"></div>
-                <div class="setting-item"><div class="setting-row"><label>Музыка</label><input type="checkbox" id="musicToggle" ${musicEnabled?'checked':''}></div></div>
-                <button class="music-btn" id="nextTrackBtn">Следующий трек</button>
-            </div>
-            <div class="settings-section"><h3>🖼️ ВИЗУАЛ</h3>
-                <div class="setting-item"><label>Радиус скругления (px)</label><input type="range" id="radiusRange" min="8" max="48" step="2" value="28"></div>
-                <div class="setting-item"><label>Прозрачность карточек</label><input type="range" id="opacityRange" min="0.4" max="0.95" step="0.05" value="0.75"></div>
-                <div class="setting-item"><label>Сила размытия (px)</label><input type="range" id="blurRange" min="4" max="32" step="2" value="20"></div>
-                <div class="setting-item"><div class="setting-row"><label>Уменьшенная анимация</label><input type="checkbox" id="reduceMotionCheck"></div></div>
-            </div>
-            ${devHtml}
-        `;
-        document.getElementById('volSlider').oninput = e => { audio.volume = parseFloat(e.target.value); localStorage.setItem('musicVol', e.target.value); };
-        document.getElementById('musicToggle').onchange = e => { musicEnabled = e.target.checked; if (musicEnabled && activePlaylist.length) { loadTrack(currentTrack); playMusic(); } else audio.pause(); localStorage.setItem('musicEnabled', musicEnabled); };
-        document.getElementById('nextTrackBtn').onclick = nextTrack;
-        document.getElementById('radiusRange').oninput = e => { document.body.style.setProperty('--card-radius', e.target.value + 'px'); localStorage.setItem('cardRadius', e.target.value); };
-        document.getElementById('opacityRange').oninput = e => { document.body.style.setProperty('--card-opacity', e.target.value); localStorage.setItem('cardOpacity', e.target.value); };
-        document.getElementById('blurRange').oninput = e => { document.body.style.setProperty('--glass-blur', e.target.value + 'px'); localStorage.setItem('glassBlur', e.target.value); };
-        document.getElementById('reduceMotionCheck').onchange = e => { document.body.classList.toggle('reduce-motion', e.target.checked); localStorage.setItem('reduceMotion', e.target.checked); };
+        // ========== НАСТРОЙКИ ==========
+        const audio = document.getElementById('bgMusic');
+        let musicEnabled = true;
+        const userTracks = ["https://videotourl.com/audio/1776773135234-2f337560-23a9-4c7d-b4eb-2d5f12b95acc.mp3"];
+        let activePlaylist = [...userTracks];
+        let currentTrack = 0;
         
-        if (devUnlocked) {
-            document.getElementById('accentColorPicker').oninput = e => { document.body.style.setProperty('--accent-color', e.target.value); localStorage.setItem('accentColor', e.target.value); };
-            document.getElementById('compactModeCheck').onchange = e => { document.body.classList.toggle('compact', e.target.checked); localStorage.setItem('compactMode', e.target.checked); };
-            if (localStorage.getItem('accentColor')) document.getElementById('accentColorPicker').value = localStorage.getItem('accentColor');
-            if (localStorage.getItem('compactMode') === 'true') document.getElementById('compactModeCheck').checked = true;
-        } else {
-            document.getElementById('unlockDevBtn').onclick = () => {
-                const pwd = document.getElementById('devPassword').value;
-                if (pwd === '2026' || pwd === 'crimson') {
-                    devUnlocked = true;
-                    localStorage.setItem('devUnlocked', 'true');
-                    buildSettingsModal();
-                } else alert('Неверный пароль!');
-            };
-        }
-        if (localStorage.getItem('cardRadius')) document.getElementById('radiusRange').value = localStorage.getItem('cardRadius');
-        if (localStorage.getItem('cardOpacity')) document.getElementById('opacityRange').value = localStorage.getItem('cardOpacity');
-        if (localStorage.getItem('glassBlur')) document.getElementById('blurRange').value = localStorage.getItem('glassBlur');
-        if (localStorage.getItem('reduceMotion') === 'true') document.getElementById('reduceMotionCheck').checked = true;
-        if (localStorage.getItem('musicVol')) document.getElementById('volSlider').value = localStorage.getItem('musicVol');
-        if (localStorage.getItem('musicEnabled') === 'false') document.getElementById('musicToggle').checked = false;
-    }
-    settingsBtn.onclick = () => { buildSettingsModal(); settingsModal.classList.add('active'); };
-    document.getElementById('closeModalBtn').onclick = () => settingsModal.classList.remove('active');
-    document.getElementById('applyCloseBtn').onclick = () => settingsModal.classList.remove('active');
-    document.getElementById('resetSettingsBtn').onclick = () => { localStorage.clear(); location.reload(); };
-
-    const changelogModal = document.getElementById('changelogModal');
-    document.getElementById('changelogHeaderBtn').onclick = () => changelogModal.classList.add('active');
-    document.getElementById('closeChangelogBtn').onclick = () => changelogModal.classList.remove('active');
-    document.getElementById('closeChangelogApplyBtn').onclick = () => changelogModal.classList.remove('active');
-
-    audio.volume = 0.3;
-    if (activePlaylist.length) loadTrack(0);
-  </script>
+        function loadTrack(i) { if (activePlaylist.length) { audio.src = activePlaylist[i % activePlaylist.length]; audio.load(); } }
+        function playMusic() { if (musicEnabled && audio.src) audio.play().catch(e => {}); }
+        function nextTrack() { if (activePlaylist.length) { currentTrack = (currentTrack+1)%activePlaylist.length; loadTrack(currentTrack); playMusic(); } }
+        
+        audio.addEventListener('ended', nextTrack);
+        document.body.addEventListener('click', () => { if (audio.paused && musicEnabled && activePlaylist.length) { loadTrack(currentTrack); playMusic(); } }, { once: true });
+        
+        // ========== ИНИЦИАЛИЗАЦИЯ ==========
+        auth.onAuthStateChanged(async (user) => {
+            currentUser = user;
+            if (user) {
+                const profileRef = db.ref(`profiles/${user.uid}`);
+                if (!(await profileRef.once('value')).exists()) {
+                    await profileRef.set({ customName: user.displayName, customStatus: "Игрок", customColor: "#ffffff" });
+                }
+                isAdmin = (user.email === adminEmail);
+                if (isAdmin) document.getElementById('settingsBtn').innerHTML = "👑⋮";
+                renderProfilePage();
+                renderNews();
+                if (document.getElementById('fullscreenChat').classList.contains('active')) loadFullMessages();
+            } else {
+                isAdmin = false;
+                renderProfilePage();
+                renderNews();
+            }
+        });
+        
+        // Обработчики событий
+        document.getElementById('settingsBtn').onclick = () => {
+            const modal = document.getElementById('settingsModal');
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = `
+                <div class="settings-section"><h3>🎵 МУЗЫКА</h3><div class="setting-item"><label>Громкость</label><input type="range" id="volSlider" min="0" max="1" step="0.05" value="${audio.volume}"></div>
+                <div class="setting-item"><div class="setting-row"><label>Музыка</label><input type="checkbox" id="musicToggle" ${musicEnabled?'checked':''}></div></div>
+                <button class="music-btn" id="nextTrackBtn">Следующий трек</button></div>
+                ${isAdmin ? '<div class="settings-section"><button class="music-btn" id="openAdminBtn" style="width:100%;">👑 АДМИН-ПАНЕЛЬ</button></div>' : ''}
+            `;
+            document.getElementById('volSlider').oninput = e => { audio.volume = parseFloat(e.target.value); localStorage.setItem('musicVol', e.target.value); };
+            document.getElementById('musicToggle').onchange = e => { musicEnabled = e.target.checked; if (musicEnabled && activePlaylist.length) { loadTrack(currentTrack); playMusic(); } else audio.pause(); localStorage.setItem('musicEnabled', musicEnabled); };
+            document.getElementById('nextTrackBtn').onclick = nextTrack;
+            if (isAdmin) document.getElementById('openAdminBtn').onclick = () => { document.getElementById('adminModal').classList.add('active'); loadAdminPanel(); };
+            modal.classList.add('active');
+        };
+        
+        document.getElementById('closeModalBtn').onclick = () => document.getElementById('settingsModal').classList.remove('active');
+        document.getElementById('applyCloseBtn').onclick = () => document.getElementById('settingsModal').classList.remove('active');
+        document.getElementById('resetSettingsBtn').onclick = () => { localStorage.clear(); location.reload(); };
+        document.getElementById('closeAdminBtn').onclick = () => document.getElementById('adminModal').classList.remove('active');
+        document.getElementById('closeAdminApplyBtn').onclick = () => document.getElementById('adminModal').classList.remove('active');
+        document.getElementById('closeCustomizeBtn').onclick = () => document.getElementById('customizeModal').classList.remove('active');
+        document.getElementById('saveCustomizeBtn').onclick = async () => {
+            const name = document.getElementById('customName').value;
+            const status = document.getElementById('customStatus').value;
+            const color = document.getElementById('customColor').value;
+            await saveProfileCustom(name, status, color);
+            document.getElementById('customizeModal').classList.remove('active');
+        };
+        document.getElementById('closeFullscreenChat').onclick = exitFullscreenChat;
+        document.getElementById('fullSendBtn').onclick = sendFullMessage;
+        document.getElementById('fullChatInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendFullMessage(); });
+        
+        document.getElementById('helpBtn').onclick = () => document.getElementById('helpModal').classList.add('active');
+        document.getElementById('closeHelpBtn').onclick = () => document.getElementById('helpModal').classList.remove('active');
+        document.getElementById('closeHelpApplyBtn').onclick = () => document.getElementById('helpModal').classList.remove('active');
+        document.getElementById('closeShareBtn').onclick = () => document.getElementById('shareModal').classList.remove('active');
+        document.getElementById('closeShareApplyBtn').onclick = () => document.getElementById('shareModal').classList.remove('active');
+        document.getElementById('closeChangelogBtn').onclick = () => document.getElementById('changelogModal').classList.remove('active');
+        document.getElementById('closeChangelogApplyBtn').onclick = () => document.getElementById('changelogModal').classList.remove('active');
+        document.getElementById('changelogHeaderBtn').onclick = () => document.getElementById('changelogModal').classList.add('active');
+        
+        window.shareNews = function(newsId) {
+            const news = newsData.find(n => n.id === newsId);
+            if (!news) return;
+            const shareUrl = `${window.location.origin}${window.location.pathname}?news=${newsId}`;
+            document.getElementById('shareModalBody').innerHTML = `<div class="share-preview"><div style="font-weight:700;">${news.title}</div><div style="font-size:13px;color:#aaa;">${news.text.substring(0,100)}</div></div><div class="share-link">${shareUrl}</div><button class="copy-btn" id="copyShareLinkBtn" style="width:100%;">📋 Копировать ссылку</button>`;
+            document.getElementById('shareModal').classList.add('active');
+            document.getElementById('copyShareLinkBtn').onclick = () => { navigator.clipboard.writeText(shareUrl).then(()=>{ const btn=document.getElementById('copyShareLinkBtn'); btn.textContent='✅ Скопировано!'; setTimeout(()=>btn.textContent='📋 Копировать ссылку',2000); }); };
+        };
+        
+        window.openLightbox = function(src) { const lb = document.getElementById('lightbox'); document.getElementById('lightboxImg').src = src; lb.classList.add('active'); };
+        window.closeLightbox = () => document.getElementById('lightbox').classList.remove('active');
+        
+        document.querySelectorAll('.job-item').forEach(item => {
+            let salarySpan = item.querySelector('.job-salary-text');
+            if (!salarySpan) { salarySpan = document.createElement('div'); salarySpan.className = 'job-salary-text'; item.appendChild(salarySpan); }
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const salary = item.getAttribute('data-salary');
+                document.querySelectorAll('.job-salary-text').forEach(span => { if (span !== salarySpan) span.classList.remove('show'); });
+                if (salarySpan.classList.contains('show')) salarySpan.classList.remove('show');
+                else { salarySpan.innerHTML = `💰 ${salary}`; salarySpan.classList.add('show'); }
+            });
+        });
+        
+        document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
+        
+        const scrollBtn = document.getElementById('scrollTopBtn');
+        const pagesContainer = document.getElementById('pagesContainer');
+        pagesContainer.addEventListener('scroll', () => scrollBtn.classList.toggle('visible', pagesContainer.scrollTop > 300));
+        scrollBtn.addEventListener('click', () => pagesContainer.scrollTo({ top:0, behavior:'smooth' }));
+        
+        audio.volume = localStorage.getItem('musicVol') || 0.3;
+        musicEnabled = localStorage.getItem('musicEnabled') !== 'false';
+        if (activePlaylist.length) loadTrack(0);
+        
+        // Восстановление последней вкладки
+        switchTab(currentTab);
+    </script>
 </body>
 </html>
